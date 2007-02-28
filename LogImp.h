@@ -102,7 +102,8 @@ namespace glite_api_wrapper
         private:
             std::string GetModuleName()
             {
-                return reinterpret_cast<_T*>( this ) ->GetModuleName();
+                _T *pT = static_cast<_T*>(this);
+                return pT->GetModuleName();
             }
     };
 };
