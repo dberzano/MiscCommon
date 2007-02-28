@@ -21,6 +21,7 @@ typedef const size_t ERRORCODE_C;
 
 ERRORCODE_C erOK( 0 );
 ERRORCODE_C erError( 1 );
+ERRORCODE_C erNotImpl( 3 );
 
 // General Error codes
 ERRORCODE_C BASE_FOR_GENERAL_ERR( 50 ); // <<<----- BASE counter

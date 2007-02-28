@@ -23,7 +23,7 @@
 // STL
 #include <string>
 // gLite API Wrapper
-#include "ConstRes.h"
+#include "Res.h"
 #include "def.h"
 
 namespace glite_api_wrapper
