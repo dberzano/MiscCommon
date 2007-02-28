@@ -16,6 +16,7 @@
 #define MISCUTILS_H
 
 #include <iostream>
+#include <algorithm>
 
 /** @namespace glite_api_wrapper::MiscUtils
  *  @brief Miscellaneous functions and helpers located in glite_api_wrapper::MiscUtils
@@ -141,6 +142,17 @@ namespace glite_api_wrapper
             return ( *_pString );
         }
 
+	// HACK: because of the bug in gcc 3.3 we need to use this nesty ToLower and ToUpper instead of direct calls of tolower...
+	 struct ToLower
+        {
+          char operator() (char c) const  { return std::tolower(c); }
+        };
+
+   struct ToUpper
+   {
+     char operator() (char c) const  { return std::toupper(c); }
+   };
+
         /** @fn  _T& to_upper(_T& _str)
          *  @brief convert string to upper case.
          *  @param _str - [in] Sting to convert.
@@ -149,7 +161,7 @@ namespace glite_api_wrapper
         template <typename _T>
         _T& to_upper( _T& _str )
         {
-            std::transform( _str.begin(), _str.end(), _str.begin(), toupper );
+            std::transform( _str.begin(), _str.end(), _str.begin(), ToUpper() );
             return _str;
         }
 
@@ -161,7 +173,7 @@ namespace glite_api_wrapper
         template <typename _T>
         _T& to_lower( _T& _str )
         {
-            std::transform( _str.begin(), _str.end(), _str.begin(), tolower );
+            std::transform( _str.begin(), _str.end(), _str.begin(), ToLower() );
             return _str;
         }
     };
