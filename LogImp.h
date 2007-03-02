@@ -18,7 +18,7 @@
 //GAW
 #include "Log.h"
 
-namespace glite_api_wrapper
+namespace MiscCommon
 {
 
 #define REGISTER_LOG_MODULE(name)             std::string GetModuleName() const  {  return #name; }

@@ -26,7 +26,7 @@
 #include "Res.h"
 #include "def.h"
 
-namespace glite_api_wrapper
+namespace MiscCommon
 {
 
     /*! \typedef LOG_SEVERITY
