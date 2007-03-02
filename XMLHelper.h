@@ -17,7 +17,7 @@
 
 // Xerces-C++ headers
 #include <xercesc/util/XMLString.hpp>
-#include<xercesc/dom/DOMElement.hpp> 
+#include<xercesc/dom/DOMElement.hpp>
 
 // STD headers
 #include <string>
@@ -99,7 +99,7 @@ namespace MiscCommon
             smart_XMLCh attr_name( _attr );
             smart_XMLCh xmlTmpStr( _element->getAttribute( attr_name ) );
             std::string str( xmlTmpStr.ToString() );
-            MiscUtils::to_lower(str);
+            MiscCommon::to_lower( str );
             *_data = !( str.empty() || ( "no" == str ) );
         }
 
