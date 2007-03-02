@@ -26,9 +26,9 @@
 // Our
 #include "MiscUtils.h"
 
-namespace glite_api_wrapper
+namespace MiscCommon
 {
-    /** @namespace glite_api_wrapper::XMLHelper
+    /** @namespace MiscCommon::XMLHelper
      *  @brief Helpers for Xerces XML parser.
      */
     namespace XMLHelper
