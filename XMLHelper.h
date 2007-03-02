@@ -18,9 +18,13 @@
 // Xerces-C++ headers
 #include <xercesc/util/XMLString.hpp>
 #include<xercesc/dom/DOMElement.hpp> 
+
 // STD headers
 #include <string>
 #include <sstream>
+
+// Our
+#include "MiscUtils.h"
 
 namespace glite_api_wrapper
 {
@@ -82,23 +86,21 @@ namespace glite_api_wrapper
         /** @brief template functions, which helps to retrieve different types of attributes from an XML file*/
         template <typename _T>
         void get_attr_value( const xercesc::DOMElement *_element, const char *_attr, _T *_data )
-    {}
-        /** @brief instantiation of get_attr_value with the std::string type*/
-        template <>
-        inline void get_attr_value<std::string>( const xercesc::DOMElement *_element, const char *_attr, std::string *_data )
-        {
-            smart_XMLCh attr_name( _attr );
-            smart_XMLCh xmlTmpStr( _element->getAttribute( attr_name ) );
-            *_data = xmlTmpStr.ToString();
-        }
-        /** @brief instantiation of get_attr_value with the size_t type*/
-        template <>
-        inline void get_attr_value<size_t>( const xercesc::DOMElement *_element, const char *_attr, size_t *_data )
         {
             smart_XMLCh attr_name( _attr );
             smart_XMLCh xmlTmpStr( _element->getAttribute( attr_name ) );
             std::stringstream str( xmlTmpStr.ToString() );
             str >> *_data;
+        }
+        /** @brief instantiation of get_attr_value with the bool type -- xml value: true or false*/
+        template <>
+        inline void get_attr_value<bool>( const xercesc::DOMElement *_element, const char *_attr, bool *_data )
+        {
+            smart_XMLCh attr_name( _attr );
+            smart_XMLCh xmlTmpStr( _element->getAttribute( attr_name ) );
+            std::string str( xmlTmpStr.ToString() );
+            MiscUtils::to_lower(str);
+            *_data = !( str.empty() || ( "no" == str ) );
         }
 
     };

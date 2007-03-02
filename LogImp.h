@@ -20,6 +20,9 @@
 
 namespace glite_api_wrapper
 {
+
+#define REGISTER_LOG_MODULE(name)             std::string GetModuleName() const  {  return #name; }
+    
     /*! \class CLogSinglton
     \brief It represents logbook as a singlton.
     \brief ofstream specialization of CLog
@@ -65,6 +68,7 @@ namespace glite_api_wrapper
     /*! \class CLogImp
     \brief Template class. High-end helper implementation of CLog, its ofstream specialization.
      */
+   // TODO: Add comment to doxygen about REGISTER_LOG_MODULE(name), which must be declared in a child class
     template <typename _T>
     class CLogImp
     {
@@ -102,9 +106,10 @@ namespace glite_api_wrapper
         private:
             std::string GetModuleName()
             {
-                _T *pT = static_cast<_T*>(this);
+                _T *pT = reinterpret_cast<_T*>(this);
                 return pT->GetModuleName();
             }
     };
+
 };
 #endif
