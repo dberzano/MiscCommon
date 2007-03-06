@@ -19,7 +19,7 @@ namespace MiscCommon
 {
 
     typedef size_t ERRORCODE;
-    typedef const size_t ERRORCODE_C;
+    typedef const ERRORCODE ERRORCODE_C;
 
 
     ERRORCODE_C erOK( 0 );
