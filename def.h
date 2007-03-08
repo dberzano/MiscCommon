@@ -39,6 +39,7 @@ namespace MiscCommon
     \brief STL vector of char(s)
      */
     typedef std::vector<char> CHARVector_t;
+    typedef std::vector<unsigned char> BYTEVector_t;
     /*! \typedef UIntStringMap_t
     \brief STL map, which is mapping pair of size_t (as a key) and string (as a value)
      */

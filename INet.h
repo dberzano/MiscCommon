@@ -19,10 +19,12 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <netdb.h>
 
 // STD
 #include <unistd.h>
 #include <stdexcept>
+#include <def.h>
 
 namespace MiscCommon
 {
@@ -31,7 +33,6 @@ namespace MiscCommon
 
         typedef int Socket_t;
 
-
         class smart_socket
         {
             public:
@@ -39,6 +40,12 @@ namespace MiscCommon
                 {}
                 smart_socket( int _Socket ) : m_Socket( _Socket )
                 {}
+                smart_socket( smart_socket &_Obj )
+                {
+                    _Obj.add_ref();
+                    m_Socket = _Obj;
+                    m_Counter =_Obj.count();
+                }
                 smart_socket( int _domain, int _type, int _protocol )
                 {
                     m_Socket = ::socket( _domain, _type, _protocol );
@@ -51,7 +58,7 @@ namespace MiscCommon
                 {
                     return & m_Socket;
                 }
-                operator int()
+                operator int() const
                 {
                     return static_cast<int>( m_Socket );
                 }
@@ -62,13 +69,58 @@ namespace MiscCommon
                 }
                 void close()
                 {
-                    if ( m_Socket )
+                    if ( m_Socket && 1 == m_Counter )
                         ::close( m_Socket );
+                }
+                size_t count() const
+                {
+                    return m_Counter;
+                }
+                void add_ref()
+                {
+                    ++m_Counter;
+                }
+                void release_ref ()
+                {
+                    --m_Counter;
+                    close();
                 }
 
             private:
                 Socket_t m_Socket;
+                size_t m_Counter;
         };
+
+        template <typename _T>
+        smart_socket& operator >> ( smart_socket &_Socket, _T *_Buf ) throw ( std::exception );
+
+        template <>
+        inline smart_socket& operator >> ( smart_socket &_Socket, BYTEVector_t *_Buf ) throw ( std::exception )
+        {
+            if ( !_Buf )
+                throw std::runtime_error( "The given buffer pointer is NULL." );
+
+            const ssize_t bytes_read = ::recv( _Socket, &( *_Buf ) [ 0 ], _Buf->capacity(), 0 );
+            if ( bytes_read > 0 )
+                _Buf->resize( bytes_read );
+            else
+            {
+                std::string sErr;
+                MiscCommon::errno2str( &sErr );
+                throw std::runtime_error( sErr.c_str() );
+            }
+            return _Socket;
+        }
+
+        template <typename _T>
+        smart_socket& operator << ( smart_socket &_Socket, _T &_Buf );
+
+        template <>
+        inline smart_socket& operator << ( smart_socket &_Socket, BYTEVector_t &_Buf )
+        {
+            ::send( _Socket, &_Buf[ 0 ], _Buf.size(), 0 );
+            return _Socket;
+        }
 
         class CSocketServer
         {
@@ -78,7 +130,7 @@ namespace MiscCommon
                 void Bind( unsigned short _nPort, const std::string *_Addr = NULL ) throw ( std::exception )
                 {
                     if ( m_ServerSocket < 0 )
-                        std::runtime_error( "Soket error..." ); // TODO: perror( "socket" );
+                        throw std::runtime_error( "Soket error..." ); // TODO: perror( "socket" );
 
                     sockaddr_in addr;
                     addr.sin_family = AF_INET;
@@ -89,7 +141,7 @@ namespace MiscCommon
                         ::inet_aton( _Addr->c_str(), &addr.sin_addr );
 
                     if ( bind( m_ServerSocket, ( struct sockaddr * ) & addr, sizeof( addr ) ) < 0 )
-                        std::runtime_error( "Soket bind error..." ); // TODO: perror( "bind" );
+                        throw std::runtime_error( "Soket bind error..." ); // TODO: perror( "bind" );
                 }
 
                 void Listen( int _Backlog ) throw ( std::exception )
@@ -103,8 +155,42 @@ namespace MiscCommon
                     return ::accept( m_ServerSocket, NULL, NULL ) ;
                 }
 
+                smart_socket& GetSocket()
+                {
+                    return m_ServerSocket;
+                }
+
             private:
                 smart_socket m_ServerSocket;
+        };
+
+        class CSocketClient
+        {
+            public:
+                CSocketClient() : m_ClientSocket( AF_INET, SOCK_STREAM, 0 )
+                {}
+
+                void Connect( unsigned short _nPort, const std::string &_Addr )
+                {
+                    if ( m_ClientSocket < 0 )
+                        throw std::runtime_error( "Soket error..." ); // TODO: perror( "socket" );
+
+                    sockaddr_in addr;
+                    addr.sin_family = AF_INET;
+                    addr.sin_port = ::htons( _nPort );
+                    ::inet_aton( _Addr.c_str(), &addr.sin_addr );
+
+                    if ( ::connect( m_ClientSocket, ( struct sockaddr * ) & addr, sizeof( addr ) ) < 0 )
+                        throw std::runtime_error( "Soket CONNECT error..." ); // TODO: perror( "connect" );
+                }
+
+                smart_socket& GetSocket()
+                {
+                    return m_ClientSocket;
+                }
+
+            private:
+                smart_socket m_ClientSocket;
         };
 
 
