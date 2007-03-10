@@ -26,6 +26,9 @@
 #include <stdexcept>
 #include <def.h>
 
+// OUR
+#include "ErrorCode.h"
+
 namespace MiscCommon
 {
     namespace INet
@@ -36,16 +39,12 @@ namespace MiscCommon
         class smart_socket
         {
             public:
-                smart_socket() : m_Socket( 0 )
+                smart_socket() :
+                        m_Socket( 0 )
                 {}
-                smart_socket( int _Socket ) : m_Socket( _Socket )
+                smart_socket( int _Socket ) :
+                        m_Socket( _Socket )
                 {}
-                smart_socket( smart_socket &_Obj )
-                {
-                    _Obj.add_ref();
-                    m_Socket = _Obj;
-                    m_Counter =_Obj.count();
-                }
                 smart_socket( int _domain, int _type, int _protocol )
                 {
                     m_Socket = ::socket( _domain, _type, _protocol );
@@ -69,26 +68,12 @@ namespace MiscCommon
                 }
                 void close()
                 {
-                    if ( m_Socket && 1 == m_Counter )
+                    if ( m_Socket )
                         ::close( m_Socket );
-                }
-                size_t count() const
-                {
-                    return m_Counter;
-                }
-                void add_ref()
-                {
-                    ++m_Counter;
-                }
-                void release_ref ()
-                {
-                    --m_Counter;
-                    close();
                 }
 
             private:
                 Socket_t m_Socket;
-                size_t m_Counter;
         };
 
         template <typename _T>
