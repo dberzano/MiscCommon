@@ -36,8 +36,12 @@ namespace MiscCommon
 
         typedef int Socket_t;
 
+        // TODO: Implement reference count
         class smart_socket
         {
+                // emphasize the following members are private
+                smart_socket( const smart_socket& );
+                const smart_socket& operator=( const smart_socket& );
             public:
                 smart_socket() :
                         m_Socket( 0 )
@@ -65,6 +69,16 @@ namespace MiscCommon
                 {
                     close();
                     return m_Socket = _Val;
+                }
+                Socket_t deattach()
+                {
+                    Socket_t Socket( m_Socket );
+                    m_Socket = 0;
+                    return Socket;
+                }
+                Socket_t get()
+                {
+                    return m_Socket;
                 }
                 void close()
                 {
