@@ -20,14 +20,22 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
+#include <fcntl.h>
 
 // STD
 #include <unistd.h>
 #include <stdexcept>
 #include <def.h>
+#include <sstream>
 
 // OUR
 #include "ErrorCode.h"
+
+#define _BUILD_IP_ADDRESS_X(addr, index) static_cast<int>(reinterpret_cast<unsigned char *>(&src_addr.sin_addr.s_addr)[ index ])
+#define _BUILD_IP_ADDRESS(addr)  _BUILD_IP_ADDRESS_X(addr, 0) \
+                        << "."<< _BUILD_IP_ADDRESS_X(addr, 2) \
+                        << "."<< _BUILD_IP_ADDRESS_X(addr, 3) \
+                        << "."<< _BUILD_IP_ADDRESS_X(addr, 4)
 
 namespace MiscCommon
 {
@@ -44,23 +52,26 @@ namespace MiscCommon
                 const smart_socket& operator=( const smart_socket& );
             public:
                 smart_socket() :
-                        m_Socket( 0 )
+                        m_Socket( -1 )
                 {}
                 smart_socket( int _Socket ) :
                         m_Socket( _Socket )
                 {}
-                smart_socket( int _domain, int _type, int _protocol )
+                smart_socket( int _domain, int _type, int _protocol, bool _Block = false )
                 {
                     m_Socket = ::socket( _domain, _type, _protocol );
+                    // Blocking or Non-blocking socket
+                    if ( _Block )
+                        set_nonblock();
                 }
                 ~smart_socket()
                 {
                     close();
                 }
-                Socket_t* operator&()
-                {
-                    return & m_Socket;
-                }
+                //                 Socket_t* operator&()
+                //                 {
+                //                     return & m_Socket;
+                //                 }
                 operator int() const
                 {
                     return static_cast<int>( m_Socket );
@@ -73,16 +84,20 @@ namespace MiscCommon
                 Socket_t deattach()
                 {
                     Socket_t Socket( m_Socket );
-                    m_Socket = 0;
+                    m_Socket = -1;
                     return Socket;
                 }
                 Socket_t get()
                 {
                     return m_Socket;
                 }
+                int set_nonblock()
+                {
+                    return ::fcntl( m_Socket, F_SETFL, O_NONBLOCK );
+                }
                 void close()
                 {
-                    if ( m_Socket )
+                    if ( m_Socket > 0 )
                         ::close( m_Socket );
                 }
 
@@ -121,6 +136,22 @@ namespace MiscCommon
             return _Socket;
         }
 
+        //TODO: Impolement it! Sending a whole buffer
+        //         int sendall(int s, char *buf, int len, int flags)
+        //         {
+        //             int total = 0;
+        //             int n;
+        //
+        //             while(total < len)
+        //             {
+        //                 n = send(s, buf+total, len-total, flags);
+        //                 if(n == -1) { break; }
+        //                 total += n;
+        //             }
+        //
+        //             return (n==-1 ? -1 : total);
+        //         }
+
         class CSocketServer
         {
             public:
@@ -133,11 +164,11 @@ namespace MiscCommon
 
                     sockaddr_in addr;
                     addr.sin_family = AF_INET;
-                    addr.sin_port = ::htons( _nPort );
+                    addr.sin_port = htons( _nPort );
                     if ( !_Addr )
-                        addr.sin_addr.s_addr = ::htonl( INADDR_ANY );
+                        addr.sin_addr.s_addr = htonl( INADDR_ANY );
                     else
-                        ::inet_aton( _Addr->c_str(), &addr.sin_addr );
+                        inet_aton( _Addr->c_str(), &addr.sin_addr );
 
                     if ( bind( m_ServerSocket, ( struct sockaddr * ) & addr, sizeof( addr ) ) < 0 )
                         throw std::runtime_error( "Soket bind error..." ); // TODO: perror( "bind" );
@@ -176,8 +207,8 @@ namespace MiscCommon
 
                     sockaddr_in addr;
                     addr.sin_family = AF_INET;
-                    addr.sin_port = ::htons( _nPort );
-                    ::inet_aton( _Addr.c_str(), &addr.sin_addr );
+                    addr.sin_port = htons( _nPort );
+                    inet_aton( _Addr.c_str(), &addr.sin_addr );
 
                     if ( ::connect( m_ClientSocket, ( struct sockaddr * ) & addr, sizeof( addr ) ) < 0 )
                         throw std::runtime_error( "Soket CONNECT error..." ); // TODO: perror( "connect" );
@@ -191,6 +222,31 @@ namespace MiscCommon
             private:
                 smart_socket m_ClientSocket;
         };
+
+
+        inline void socket2string( Socket_t _Socket, std::string *_Str )
+        {
+            if ( !_Str )
+                return ;
+
+            sockaddr_in src_addr;
+            sockaddr_in dest_addr;
+            size_t size = sizeof( sockaddr );
+            if ( getsockname ( _Socket, reinterpret_cast<sockaddr *>( &src_addr ), &size ) == -1 )
+                return ;
+
+            size = sizeof( sockaddr );
+            if ( getpeername ( _Socket, reinterpret_cast<sockaddr *>( &dest_addr ), &size ) == -1 )
+                return ;
+
+            std::stringstream ss;
+            ss
+            << "[" << _BUILD_IP_ADDRESS( src_addr.sin_addr.s_addr )
+            << ":" << ntohs( src_addr.sin_port ) << "] ---> "
+            << "[" << _BUILD_IP_ADDRESS( dest_addr.sin_addr.s_addr )
+            << ":" << ntohs( dest_addr.sin_port ) << "]";
+            *_Str = ss.str();
+        }
 
 
     };
