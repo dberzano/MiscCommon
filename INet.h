@@ -31,12 +31,6 @@
 // OUR
 #include "ErrorCode.h"
 
-#define _BUILD_IP_ADDRESS_X(addr, index) static_cast<int>(reinterpret_cast<unsigned char *>(&src_addr.sin_addr.s_addr)[ index ])
-#define _BUILD_IP_ADDRESS(addr)  _BUILD_IP_ADDRESS_X(addr, 0) \
-                        << "."<< _BUILD_IP_ADDRESS_X(addr, 2) \
-                        << "."<< _BUILD_IP_ADDRESS_X(addr, 3) \
-                        << "."<< _BUILD_IP_ADDRESS_X(addr, 4)
-
 namespace MiscCommon
 {
     namespace INet
@@ -241,9 +235,9 @@ namespace MiscCommon
 
             std::stringstream ss;
             ss
-            << "[" << _BUILD_IP_ADDRESS( src_addr.sin_addr.s_addr )
+            << "[" << inet_ntoa( src_addr.sin_addr )
             << ":" << ntohs( src_addr.sin_port ) << "] ---> "
-            << "[" << _BUILD_IP_ADDRESS( dest_addr.sin_addr.s_addr )
+            << "[" << inet_ntoa( dest_addr.sin_addr )
             << ":" << ntohs( dest_addr.sin_port ) << "]";
             *_Str = ss.str();
         }
