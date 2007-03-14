@@ -236,7 +236,7 @@ namespace MiscCommon
             std::stringstream ss;
             ss
             << "[" << inet_ntoa( src_addr.sin_addr )
-                    << ":" << ntohs( src_addr.sin_port ) socket2string<< "] ---> "
+            << ":" << ntohs( src_addr.sin_port ) << "] ---> "
             << "[" << inet_ntoa( dest_addr.sin_addr )
             << ":" << ntohs( dest_addr.sin_port ) << "]";
             *_Str = ss.str();
