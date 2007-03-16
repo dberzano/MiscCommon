@@ -23,6 +23,15 @@
  **/
 namespace MiscCommon
 {
+    class NONCopyable
+    {
+        protected:
+            NONCopyable() {}
+            ~NONCopyable() {}
+        private:
+            NONCopyable( const NONCopyable& );
+            const NONCopyable& operator=( const NONCopyable& );
+    };
 
     /** @brief A helper class. Helps to automatically track environment variables. */
     class auto_setenv
@@ -175,6 +184,6 @@ namespace MiscCommon
         std::transform( _str.begin(), _str.end(), _str.begin(), ToLower() );
         return _str;
     }
-    
+
 };
 #endif

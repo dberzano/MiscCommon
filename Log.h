@@ -43,7 +43,7 @@ namespace MiscCommon
 
     enum
     {
-        e_FieldSeparator = 0x09,
+        e_FieldSeparator = 0x20,
         e_WhiteSpace = 0x20
     };
 

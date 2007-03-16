@@ -30,6 +30,7 @@
 
 // OUR
 #include "ErrorCode.h"
+#include "MiscUtils.h"
 
 namespace MiscCommon
 {
@@ -39,11 +40,8 @@ namespace MiscCommon
         typedef int Socket_t;
 
         // TODO: Implement reference count
-        class smart_socket
+        class smart_socket: public NONCopyable
         {
-                // emphasize the following members are private
-                smart_socket( const smart_socket& );
-                const smart_socket& operator=( const smart_socket& );
             public:
                 smart_socket() :
                         m_Socket( -1 )
@@ -130,21 +128,22 @@ namespace MiscCommon
             return _Socket;
         }
 
-        //TODO: Impolement it! Sending a whole buffer
-        //         int sendall(int s, char *buf, int len, int flags)
-        //         {
-        //             int total = 0;
-        //             int n;
-        //
-        //             while(total < len)
-        //             {
-        //                 n = send(s, buf+total, len-total, flags);
-        //                 if(n == -1) { break; }
-        //                 total += n;
-        //             }
-        //
-        //             return (n==-1 ? -1 : total);
-        //         }
+        //TODO: Make this code safer!!!
+        inline int sendall( int s, char *buf, int len, int flags )
+        {
+            int total = 0;
+            int n;
+
+            while ( total < len )
+            {
+                n = send( s, buf + total, len - total, flags );
+                if ( n == -1 )
+                    break;
+                total += n;
+            }
+
+            return ( n == -1 ? -1 : total );
+        }
 
         class CSocketServer
         {
@@ -218,30 +217,47 @@ namespace MiscCommon
         };
 
 
-        inline void socket2string( Socket_t _Socket, std::string *_Str )
+        struct SSocket2String_Trait
         {
-            if ( !_Str )
-                return ;
+            bool operator() ( Socket_t _socket, sockaddr_in *_addr ) const
+            {
+                size_t size = sizeof( sockaddr );
+                return ( getsockname( _socket, reinterpret_cast<sockaddr *>( _addr ), &size ) == -1 ) ? false : true;
+            }
+        };
 
-            sockaddr_in src_addr;
-            sockaddr_in dest_addr;
-            size_t size = sizeof( sockaddr );
-            if ( getsockname ( _Socket, reinterpret_cast<sockaddr *>( &src_addr ), &size ) == -1 )
-                return ;
+        struct SSocketPeer2String_Trait
+        {
+            bool operator() ( Socket_t _socket, sockaddr_in *_addr ) const
+            {
+                size_t size = sizeof( sockaddr );
+                return ( getpeername( _socket, reinterpret_cast<sockaddr *>( _addr ), &size ) == -1 ) ? false : true;
+            }
+        };
 
-            size = sizeof( sockaddr );
-            if ( getpeername ( _Socket, reinterpret_cast<sockaddr *>( &dest_addr ), &size ) == -1 )
-                return ;
+        template <class _T>
+        struct _socket2string
+        {
+            _socket2string ( Socket_t _Socket, std::string *_Str )
+            {
+                if ( !_Str )
+                    return ;
 
-            std::stringstream ss;
-            ss
-            << "[" << inet_ntoa( src_addr.sin_addr )
-            << ":" << ntohs( src_addr.sin_port ) << "] ---> "
-            << "[" << inet_ntoa( dest_addr.sin_addr )
-            << ":" << ntohs( dest_addr.sin_port ) << "]";
-            *_Str = ss.str();
-        }
+                sockaddr_in addr;
+                if ( !_T() ( _Socket, &addr ) )
+                    return ;
 
+                std::stringstream ss;
+                ss
+                << inet_ntoa( addr.sin_addr )
+                << ":"
+                << ntohs( addr.sin_port );
+                *_Str = ss.str();
+            }
+        };
+
+        typedef _socket2string<SSocket2String_Trait> socket2string;
+        typedef _socket2string<SSocketPeer2String_Trait> peer2string;
 
     };
 };
