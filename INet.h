@@ -39,6 +39,9 @@ namespace MiscCommon
 
         typedef int Socket_t;
 
+        // Forward declaration
+        inline std::string socket_error_string( Socket_t _socket, char *_strMsg = NULL );
+                
         // TODO: Implement reference count
         class smart_socket: public NONCopyable
         {
@@ -153,7 +156,7 @@ namespace MiscCommon
                 void Bind( unsigned short _nPort, const std::string *_Addr = NULL ) throw ( std::exception )
                 {
                     if ( m_ServerSocket < 0 )
-                        throw std::runtime_error( "Soket error..." ); // TODO: perror( "socket" );
+                        throw std::runtime_error( socket_error_string( m_ServerSocket, "NULL socket has been given to Bind" ) );
 
                     sockaddr_in addr;
                     addr.sin_family = AF_INET;
@@ -164,13 +167,13 @@ namespace MiscCommon
                         inet_aton( _Addr->c_str(), &addr.sin_addr );
 
                     if ( bind( m_ServerSocket, ( struct sockaddr * ) & addr, sizeof( addr ) ) < 0 )
-                        throw std::runtime_error( "Soket bind error..." ); // TODO: perror( "bind" );
+                        throw std::runtime_error( socket_error_string( m_ServerSocket, "Soket bind error..." ) );
                 }
 
                 void Listen( int _Backlog ) throw ( std::exception )
                 {
-                    // TODO: Add error handling
-                    ::listen( m_ServerSocket, _Backlog );
+                    if( ::listen( m_ServerSocket, _Backlog ) < 0 )
+                        throw std::runtime_error( socket_error_string( m_ServerSocket, "can't call listen on socket server" ) );
                 }
 
                 Socket_t Accept() throw ( std::exception )
@@ -196,7 +199,7 @@ namespace MiscCommon
                 void Connect( unsigned short _nPort, const std::string &_Addr )
                 {
                     if ( m_ClientSocket < 0 )
-                        throw std::runtime_error( "Soket error..." ); // TODO: perror( "socket" );
+                        throw std::runtime_error( socket_error_string(m_ClientSocket, "there was NULL socket given as a client socket to Connect") );
 
                     sockaddr_in addr;
                     addr.sin_family = AF_INET;
@@ -204,7 +207,7 @@ namespace MiscCommon
                     inet_aton( _Addr.c_str(), &addr.sin_addr );
 
                     if ( ::connect( m_ClientSocket, ( struct sockaddr * ) & addr, sizeof( addr ) ) < 0 )
-                        throw std::runtime_error( "Soket CONNECT error..." ); // TODO: perror( "connect" );
+                        throw std::runtime_error( socket_error_string(m_ClientSocket, "Can't connect to the server") );
                 }
 
                 smart_socket& GetSocket()
@@ -259,6 +262,25 @@ namespace MiscCommon
         typedef _socket2string<SSocket2String_Trait> socket2string;
         typedef _socket2string<SSocketPeer2String_Trait> peer2string;
 
+        inline std::string socket_error_string( Socket_t _socket, char *_strMsg )
+        {
+            std::string strSocket;
+            socket2string( _socket, &strSocket );
+            std::string sErr;
+            MiscCommon::errno2str( &sErr );
+
+            std::stringstream ss;
+            if ( _strMsg )
+            {
+                ss << _strMsg << "\n";
+            }
+            ss
+            << "Socket Error <"
+            << strSocket << ">: "
+            << sErr;
+
+            return ss.str();
+        }
     };
 };
 
