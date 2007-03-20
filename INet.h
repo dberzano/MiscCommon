@@ -138,7 +138,7 @@ namespace MiscCommon
             return _Socket;
         }
 
-        //TODO: Make this code safer!!!
+        //TODO: sendall - Make this code safer!!!
         inline int sendall( int s, char *buf, int len, int flags )
         {
             int total = 0;
