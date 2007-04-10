@@ -17,6 +17,7 @@
 
 // API
 #include <errno.h>
+#include <stdlib.h>
 
 // STD
 #include <string>
@@ -27,8 +28,8 @@ namespace MiscCommon
     typedef unsigned int ERRORCODE;
     typedef const ERRORCODE ERRORCODE_C;
 
-    ERRORCODE_C erOK( 0 );
-    ERRORCODE_C erError( 1 );
+    ERRORCODE_C erOK( EXIT_SUCCESS );
+    ERRORCODE_C erError( EXIT_FAILURE );
     ERRORCODE_C erNotImpl( 3 );
 
     // General Error codes
@@ -42,11 +43,11 @@ namespace MiscCommon
     ERRORCODE_C erXMLReadConfig( BASE_FOR_XML_ERR + 2 );
     ERRORCODE_C erXMLNullNode( BASE_FOR_XML_ERR + 3 );
 
-      /**
-     * retrieves error string
-     * @param _msg - [out] an error message will be written to this buffer, must not be NULL.
-     * @return
-       */
+    /**
+    * retrieves error string
+    * @param _msg - [out] an error message will be written to this buffer, must not be NULL.
+    * @return
+     */
     inline ERRORCODE errno2str( std::string *_msg )
     {
         if ( !_msg )
