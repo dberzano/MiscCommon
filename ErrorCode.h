@@ -25,12 +25,17 @@
 namespace MiscCommon
 {
 
-    typedef unsigned int ERRORCODE;
+    typedef int ERRORCODE;
     typedef const ERRORCODE ERRORCODE_C;
 
     ERRORCODE_C erOK( EXIT_SUCCESS );
+    ERRORCODE_C erTrue(-1);
+    ERRORCODE_C erFalse(-2);
     ERRORCODE_C erError( EXIT_FAILURE );
     ERRORCODE_C erNotImpl( 3 );
+    
+    #define SUCCEEDED(er) ( er <= erOK )
+    #define FAILED(er) ( !SUCCEEDED(er) )
 
     // General Error codes
     ERRORCODE_C BASE_FOR_GENERAL_ERR( 50 ); // <<<----- BASE counter
