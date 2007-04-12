@@ -23,18 +23,25 @@
 
 namespace MiscCommon
 {
+#ifdef _GLIBCPP_USE_WCHAR_T
+    typedef const wchar_t *LPCTSTR;
+    typedef std::basic_string<wchar_t> tstring;
+#else
+    typedef const char *LPCTSTR;
+    typedef std::basic_string<char> tstring;
+#endif
 
-    /// Long Pointer to Constant STRing
-    typedef const char * LPCSTR;
+    /// Long pointer to constant string
+    typedef const char *LPCSTR;
 
     /*! \typedef StringSet_t
     \brief STL set of strings
      */
-    typedef std::set<std::string> StringSet_t;
+    typedef std::set<tstring> StringSet_t;
     /*! \typedef StringVector_t
     \brief STL vector of strings
      */
-    typedef std::vector<std::string> StringVector_t;
+    typedef std::vector<tstring> StringVector_t;
     /*! \typedef CHARVector_t
     \brief STL vector of char(s)
      */
@@ -43,11 +50,11 @@ namespace MiscCommon
     /*! \typedef UIntStringMap_t
     \brief STL map, which is mapping pair of size_t (as a key) and string (as a value)
      */
-    typedef std::map<size_t, std::string> UIntStringMap_t;
+    typedef std::map<size_t, tstring> UIntStringMap_t;
     /*! \typedef StringUIntMap_t
     \brief STL map, which is mapping pair of string (as a key) and size_t (as a value)
      */
-    typedef std::map<std::string, size_t> StringUIntMap_t;
+    typedef std::map<tstring, size_t> StringUIntMap_t;
 
 };
 
