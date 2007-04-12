@@ -84,7 +84,7 @@ namespace MiscCommon
         };
 
         /** @brief template functions, which helps to retrieve different types of attributes from an XML file*/
-        template <typename _T>
+        template <class _T>
         void get_attr_value( const xercesc::DOMElement *_element, const char *_attr, _T *_data )
         {
             smart_XMLCh attr_name( _attr );
@@ -101,6 +101,51 @@ namespace MiscCommon
             std::string str( xmlTmpStr.ToString() );
             MiscCommon::to_lower( str );
             *_data = !( str.empty() || ( "no" == str ) );
+        }
+
+        // TODO: Simplify this template by implementing traits
+        template <class _T>
+        inline xercesc::DOMNode* GetSingleNodeByName( const _T *_Val, const std::string &_NodeName );
+
+        template <>
+        inline xercesc::DOMNode* GetSingleNodeByName( const xercesc::DOMDocument *_Doc, const std::string &_NodeName )
+        {
+            if ( !_Doc )
+                return NULL;
+            const smart_XMLCh ElementName( _NodeName.c_str() );
+
+            const xercesc::DOMNodeList *list = _Doc->getElementsByTagName( ElementName );
+            if ( !list )
+                return NULL;
+            return list->item( 0 );
+        }
+
+        template <>
+        inline xercesc::DOMNode* GetSingleNodeByName( const xercesc::DOMNode *_node, const std::string &_NodeName )
+        {
+            if ( !_node )
+                return NULL;
+            const smart_XMLCh ElementName( _NodeName.c_str() );
+
+            const xercesc::DOMElement* element( NULL );
+            if ( xercesc::DOMNode::ELEMENT_NODE == _node->getNodeType() )
+                element = dynamic_cast< const xercesc::DOMElement* >( _node ) ;
+            else
+                return NULL;
+
+            const xercesc::DOMNodeList *list = element->getElementsByTagName( ElementName );
+            if ( !list )
+                return NULL;
+            return list->item( 0 );
+        }
+
+        template < class _T>
+        inline xercesc::DOMNode* GetSingleNodeByName_Ex( const _T *_Node, const std::string &_NodeName ) throw(std::exception)
+        {
+            xercesc::DOMNode *node = GetSingleNodeByName( _Node, _NodeName.c_str() );
+            if ( !node )
+                throw( std::runtime_error( "can't find XML element \"" + _NodeName + "\"" ) );
+            return node;
         }
 
     };

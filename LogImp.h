@@ -24,7 +24,7 @@ namespace MiscCommon
 #define REGISTER_LOG_MODULE(name)             std::string GetModuleName() const  {  return #name; }
     
     /*! \class CLogSinglton
-    \brief It represents logbook as a singlton.
+    \brief It represents logbook as a singleton.
     \brief ofstream specialization of CLog
      */
     class CLogSinglton
