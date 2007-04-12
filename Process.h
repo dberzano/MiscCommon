@@ -28,6 +28,13 @@
 
 namespace MiscCommon
 {
+    /// Whether process can be found corresponding to _PID
+    inline bool IsProcessExist( pid_t _PID )
+    {
+        return !( ::kill( _PID, 0 ) == -1 && errno == ESRCH );
+    }
+
+    /// pidfile helper
     class CPIDFile
     {
         public:
@@ -65,12 +72,6 @@ namespace MiscCommon
                 f >> pid;
 
                 return pid;
-            }
-
-            /// Whether process can be found corresponding to _PID
-            bool IsProcessExist( pid_t _PID ) const
-            {
-                return !( ::kill( _PID, 0 ) == -1 && errno == ESRCH );
             }
 
         private:
