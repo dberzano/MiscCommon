@@ -17,7 +17,8 @@
 
 // Xerces-C++ headers
 #include <xercesc/util/XMLString.hpp>
-#include<xercesc/dom/DOMElement.hpp>
+#include <xercesc/dom/DOMElement.hpp>
+#include <xercesc/dom/DOM.hpp>
 
 // STD headers
 #include <string>
