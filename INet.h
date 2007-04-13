@@ -245,7 +245,7 @@ namespace MiscCommon
             }
         };
 
-        template <class _T>
+        template <class _Type>
         struct _socket2string
         {
             _socket2string ( Socket_t _Socket, std::string *_Str )
@@ -254,7 +254,7 @@ namespace MiscCommon
                     return ;
 
                 sockaddr_in addr;
-                if ( !_T() ( _Socket, &addr ) )
+                if ( !_Type() ( _Socket, &addr ) )
                     return ;
 
                 std::stringstream ss;
