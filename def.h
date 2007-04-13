@@ -23,13 +23,27 @@
 
 namespace MiscCommon
 {
+    // Unicode support
 #ifdef _GLIBCPP_USE_WCHAR_T
-    typedef const wchar_t *LPCTSTR;
+
+    typedef const wchar_t* LPCTSTR;
     typedef std::basic_string<wchar_t> tstring;
+
+#define _T(s) L##s
+
+    typedef wchar_t TCHAR;
+
 #else
+
     typedef const char *LPCTSTR;
     typedef std::basic_string<char> tstring;
+
+#define _T(s) s
+
+    typedef char TCHAR;
+
 #endif
+
 
     /// Long pointer to constant string
     typedef const char *LPCSTR;
