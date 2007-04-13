@@ -62,7 +62,7 @@ namespace MiscCommon
                 ::unlink( m_FileName.c_str() );
             }
 
-            pid_t GetPIDFromFile( const std::string &_FileName ) const
+            static pid_t GetPIDFromFile( const std::string &_FileName )
             {
                 std::ifstream f( _FileName.c_str() );
                 if ( !f. is_open() )

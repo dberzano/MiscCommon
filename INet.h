@@ -76,7 +76,7 @@ namespace MiscCommon
                     close();
                     return m_Socket = _Val;
                 }
-                Socket_t deattach()
+                Socket_t detach()
                 {
                     Socket_t Socket( m_Socket );
                     m_Socket = -1;
@@ -101,6 +101,10 @@ namespace MiscCommon
                 {
                     if ( m_Socket > 0 )
                         ::close( m_Socket );
+                }
+                int shutdown( int _How = SHUT_RDWR )
+                {
+                    return ::shutdown( m_Socket, m_Socket );
                 }
 
             private:
