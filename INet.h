@@ -101,7 +101,7 @@ namespace MiscCommon
                 {
                     if ( m_Socket > 0 )
                     {
-                        ::close( m_Socket );
+                        ::close( m_Socket ); // ignoring error code
                         m_Socket = -1;
                     }
                 }

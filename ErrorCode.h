@@ -61,7 +61,11 @@ namespace MiscCommon
         *_msg = p;
         return erOK;
     }
-
+ inline std::string errno2str()
+    {
+        char *p = strerror( errno );
+        return std::string(p);        
+    }
 
 };
 
