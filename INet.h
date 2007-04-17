@@ -100,7 +100,14 @@ namespace MiscCommon
                 void close()
                 {
                     if ( m_Socket > 0 )
+                    {
                         ::close( m_Socket );
+                        m_Socket = -1;
+                    }
+                }
+                bool is_valid()
+                {
+                    return ( m_Socket != -1 );
                 }
                 int shutdown( int _How = SHUT_RDWR )
                 {
@@ -125,9 +132,16 @@ namespace MiscCommon
                 _Buf->resize( bytes_read );
             else
             {
-                std::string sErr;
-                MiscCommon::errno2str( &sErr );
-                throw std::runtime_error( sErr.c_str() );
+                if ( 0 == bytes_read ) // The  return value will be 0 when the peer has performed an orderly shutdown
+                {
+                    _Socket.close();
+                }
+                else
+                {
+                    std::string sErr;
+                    MiscCommon::errno2str( &sErr );
+                    throw std::runtime_error( sErr.c_str() );
+                }
             }
             return _Socket;
         }
