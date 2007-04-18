@@ -40,26 +40,32 @@ namespace MiscCommon
         public:
             CPIDFile( const std::string &_FileName, pid_t _PID ): m_FileName(_FileName)
             {
-                // Preventing to start a second "instance" if the pidfile references to the running process
-                const pid_t pid = GetPIDFromFile(m_FileName);
-                if ( pid > 0 && IsProcessExist( pid ) )
+                if ( !_FileName.empty() && _PID > 0 )
                 {
-                    // We don't want to unlink this file
-                    m_FileName.clear();
-                    throw std::runtime_error("Error creating pidfile. The process corresponding to pidfile \"" + _FileName + "\" is still running");
+                    // Preventing to start a second "instance" if the pidfile references to the running process
+                    const pid_t pid = GetPIDFromFile(m_FileName);
+                    if ( pid > 0 && IsProcessExist( pid ) )
+                    {
+                        // We don't want to unlink this file
+                        m_FileName.clear();
+                        throw std::runtime_error("Error creating pidfile. The process corresponding to pidfile \"" + _FileName + "\" is still running");
+                    }
+
+                    // Wrtiting new pidfile
+                    std::ofstream f( m_FileName.c_str() );
+                    if ( !f. is_open() )
+                        throw std::runtime_error( "can't create PID file: " + m_FileName );
+
+                    f << _PID;
                 }
-
-                // Wrtiting new pidfile
-                std::ofstream f( m_FileName.c_str() );
-                if ( !f. is_open() )
-                    throw std::runtime_error( "can't create PID file: " + m_FileName );
-
-                f << _PID;
+                else
+                    m_FileName.clear();
             }
 
             ~CPIDFile()
             {
-                ::unlink( m_FileName.c_str() );
+                if ( !m_FileName.empty() )
+                    ::unlink( m_FileName.c_str() );
             }
 
             static pid_t GetPIDFromFile( const std::string &_FileName )
