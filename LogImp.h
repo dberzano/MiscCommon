@@ -22,7 +22,7 @@ namespace MiscCommon
 {
 
 #define REGISTER_LOG_MODULE(name)             std::string GetModuleName() const  {  return #name; }
-    
+
     /*! \class CLogSinglton
     \brief It represents logbook as a singleton.
     \brief ofstream specialization of CLog
@@ -40,7 +40,11 @@ namespace MiscCommon
         public:
             int Init( const std::string &_LogFileName, bool _CreateNew = false )
             {
+                if ( m_log.get() )
+                    throw std::logic_error("CLogSinglton error: singleton class has been already initialized.");
+
                 m_log = CFileLogPtr( new CFileLog( _LogFileName, _CreateNew ) );
+                push( LOG_SEVERITY_INFO, 0, "LOG singleton", "LOG singleton has been initialized." );
                 return 0;
             }
             static CLogSinglton &Instance()
@@ -50,10 +54,10 @@ namespace MiscCommon
             }
             CFileLog::stream_type &push( LOG_SEVERITY _Severity, unsigned long _ErrorCode, const std::string &_Module, const std::string &_Message )
             {
-                if( !m_log.get() )
-                    {
-                        return reinterpret_cast<CFileLog::stream_type &>(std::cerr << _Message << std::endl);
-                    }
+                if ( !m_log.get() )
+                {
+                    return reinterpret_cast<CFileLog::stream_type &>(std::cerr << _Message << std::endl);
+                }
                 return m_log->push( _Severity, _ErrorCode, _Module, _Message );
             }
             bool IsReady()
@@ -67,8 +71,8 @@ namespace MiscCommon
 
     /*! \class CLogImp
     \brief Template class. High-end helper implementation of CLog, its ofstream specialization.
-     */
-   // TODO: Add comment to doxygen about REGISTER_LOG_MODULE(name), which must be declared in a child class
+     */ 
+    // TODO: Add comment to doxygen about REGISTER_LOG_MODULE(name), which must be declared in a child class
     template <typename _T>
     class CLogImp
     {
