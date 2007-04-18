@@ -90,7 +90,7 @@ namespace MiscCommon
         {
             smart_XMLCh attr_name( _attr );
             smart_XMLCh xmlTmpStr( _element->getAttribute( attr_name ) );
-            std::stringstream str( xmlTmpStr.ToString() );
+            std::istringstream str( xmlTmpStr.ToString() );
             str >> *_data;
         }
         /** @brief instantiation of get_attr_value with the bool type -- xml value: true or false*/
@@ -102,6 +102,13 @@ namespace MiscCommon
             std::string str( xmlTmpStr.ToString() );
             MiscCommon::to_lower( str );
             *_data = !( str.empty() || ( "no" == str ) );
+        }
+        template <>
+        inline void get_attr_value<std::string>( const xercesc::DOMElement *_element, const char *_attr, std::string *_data )
+        {
+            smart_XMLCh attr_name( _attr );
+            smart_XMLCh xmlTmpStr( _element->getAttribute( attr_name ) );
+            *_data = xmlTmpStr.ToString();
         }
 
         // TODO: Simplify this template by implementing traits
