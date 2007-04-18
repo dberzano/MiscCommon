@@ -4,24 +4,29 @@
  * @brief Log engine core
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
-
+ 
         version number:    $LastChangedRevision$
         created by:        Anar Manafov
                                     2006-05-07
         last changed by:   $LastChangedBy$ $LastChangedDate$
-
+ 
         Copyright (c) 2006 GSI GridTeam. All rights reserved.
 ************************************************************************/
 #ifndef CLOG_H
 #define CLOG_H
+
+// API
+#include <sys/time.h>
 
 // STD
 #include <ctime>
 #include <iostream>
 #include <fstream>
 #include <sstream>
+
 // STL
 #include <string>
+
 // gLite API Wrapper
 #include "Res.h"
 #include "def.h"
@@ -89,11 +94,17 @@ namespace MiscCommon
                 if ( !_Buf )
                     return * _Buf;
 
-                time_t cur_time( time( NULL ) );
-                tm *tm_now( localtime( &cur_time ) );
+                // Obtain the time of day, and convert it to a tm struct.
+                timeval tv;
+                gettimeofday (&tv, NULL);
+                tm *tm_now( localtime( &tv.tv_sec ) );
                 CHARVector_t buff( LOG_DATETIME_BUFF_LEN );
                 strftime ( &buff[ 0 ], sizeof( char ) * LOG_DATETIME_BUFF_LEN, g_cszLOG_DATETIME_FRMT, tm_now );
+                const long milliseconds = tv.tv_usec / 1000;
                 *_Buf = &buff[ 0 ];
+                std::stringstream ss;
+                ss << "." << milliseconds;
+                *_Buf += ss.str();
                 return *_Buf;
             }
 
