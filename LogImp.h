@@ -15,7 +15,10 @@
 #ifndef CLOGIMP_H
 #define CLOGIMP_H
 
-//GAW
+// STD
+#include <stdexcept>
+
+// OUR
 #include "Log.h"
 
 namespace MiscCommon
