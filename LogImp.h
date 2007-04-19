@@ -34,7 +34,6 @@ namespace MiscCommon
     {
             typedef std::auto_ptr<CFileLog> CFileLogPtr;
 
-        private:
             CLogSinglton()
             {}
             ~CLogSinglton()
