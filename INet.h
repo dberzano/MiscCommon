@@ -116,7 +116,7 @@ namespace MiscCommon
                     return ::shutdown( m_Socket, m_Socket );
                 }
                 /// This function indicates that socket is ready to be read (for non-blocking sockets)
-                int is_read_ready( size_t m_SecTimeOut = 10 ) throw (std::exception)
+                int is_read_ready( size_t m_SecTimeOut, size_t m_USecTimeOut = 0 ) throw (std::exception)
                 {
                     fd_set readset;
                     FD_ZERO( &readset );
@@ -125,7 +125,7 @@ namespace MiscCommon
                     // Setting time-out
                     timeval timeout;
                     timeout.tv_sec = m_SecTimeOut;
-                    timeout.tv_usec = 0;
+                    timeout.tv_usec = m_USecTimeOut;
 
                     // TODO: Send errno to log
                     if ( ::select( m_Socket + 1, &readset, NULL, NULL, &timeout ) < 0 )
