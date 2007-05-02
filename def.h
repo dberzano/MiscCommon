@@ -24,7 +24,7 @@
 namespace MiscCommon
 {
     // Unicode support
-#ifdef _GLIBCPP_USE_WCHAR_T
+#if defined(_GLIBCPP_USE_WCHAR_T) && defined(_UNICODE) 
 
     typedef const wchar_t* LPCTSTR;
     typedef std::basic_string<wchar_t> tstring;

@@ -32,6 +32,8 @@
 #include "ErrorCode.h"
 #include "MiscUtils.h"
 
+#define INVALID_SOCKET -1
+
 namespace MiscCommon
 {
     namespace INet
@@ -47,7 +49,7 @@ namespace MiscCommon
         {
             public:
                 smart_socket() :
-                        m_Socket( -1 )
+                        m_Socket( INVALID_SOCKET )
                 {}
                 smart_socket( int _Socket ) :
                         m_Socket( _Socket )
@@ -79,7 +81,7 @@ namespace MiscCommon
                 Socket_t detach()
                 {
                     Socket_t Socket( m_Socket );
-                    m_Socket = -1;
+                    m_Socket = INVALID_SOCKET;
                     return Socket;
                 }
                 Socket_t get()
@@ -99,19 +101,37 @@ namespace MiscCommon
                 }
                 void close()
                 {
-                    if ( m_Socket > 0 )
+                    if ( INVALID_SOCKET != m_Socket )
                     {
                         ::close( m_Socket ); // ignoring error code
-                        m_Socket = -1;
+                        m_Socket = INVALID_SOCKET;
                     }
                 }
                 bool is_valid()
                 {
-                    return ( m_Socket != -1 );
+                    return ( INVALID_SOCKET != m_Socket );
                 }
                 int shutdown( int _How = SHUT_RDWR )
                 {
                     return ::shutdown( m_Socket, m_Socket );
+                }
+                /// This function indicates that socket is ready to be read (for non-blocking sockets)
+                int is_read_ready( size_t m_SecTimeOut = 10 ) throw (std::exception)
+                {
+                    fd_set readset;
+                    FD_ZERO( &readset );
+                    FD_SET( m_Socket, &readset );
+
+                    // Setting time-out
+                    timeval timeout;
+                    timeout.tv_sec = m_SecTimeOut;
+                    timeout.tv_usec = 0;
+
+                    // TODO: Send errno to log
+                    if ( ::select( m_Socket + 1, &readset, NULL, NULL, &timeout ) < 0 )
+                        throw std::runtime_error( "Server socket got error while calling \"select\"" );
+
+                    return FD_ISSET( m_Socket, &readset );
                 }
 
             private:
