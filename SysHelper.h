@@ -4,6 +4,7 @@
 // API
 #include <unistd.h>
 #include <pwd.h>
+#include <netdb.h>
 
 // OUR
 #include "def.h"
@@ -47,6 +48,23 @@ namespace MiscCommon
 
         replace<std::string>( _Path, "~/", sHome );
         replace<std::string>( _Path, "$HOME/", sHome );
+    }
+
+    inline void get_hostname( std::string *_RetVal )
+    {
+        if ( !_RetVal )
+            return ;
+
+        // getting host name - which is without domain name
+        CHARVector_t Buf( HOST_NAME_MAX );
+        gethostname( &Buf[0], Buf.capacity() );
+
+        // getting host name with FCDN
+        hostent *h = gethostbyname( std::string(&Buf[0]).c_str() );
+        if ( !h )
+            return ;
+
+        *_RetVal = h->h_name;
     }
 
 };
