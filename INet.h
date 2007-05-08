@@ -166,8 +166,10 @@ namespace MiscCommon
             return _Socket;
         }
 
+
         template <typename _T>
         smart_socket& operator << ( smart_socket &_Socket, _T &_Buf );
+
 
         template <>
         inline smart_socket& operator << ( smart_socket &_Socket, BYTEVector_t &_Buf )
@@ -193,15 +195,37 @@ namespace MiscCommon
             return ( n == -1 ? -1 : total );
         }
 
-        class CSocketServer
+        template <class _T>
+        struct CSocketHelper
+        {
+            void SendString( const std::string &_Str2Send )
+            {
+                _T *pThis = reinterpret_cast<_T*>( this );
+                BYTEVector_t buf;
+                copy( _Str2Send.begin(), _Str2Send.end(), back_inserter( buf ) );
+                pThis->GetSocket() << buf;
+            }
+            void ReceiveString( std::string *_Str2Receive, size_t _BufSize )
+            {
+                if ( !_Str2Receive )
+                    throw std::invalid_argument( "smart_socket::receive_string: Parametr is NULL" );
+
+                _T *pThis = reinterpret_cast<_T*>( this );
+                BYTEVector_t buf(_BufSize);
+                pThis->GetSocket() >> &buf;
+                *_Str2Receive = std::string( reinterpret_cast<char*>(&buf[ 0 ]), buf.size() );
+            }
+        };
+
+        class CSocketServer: public CSocketHelper<CSocketServer>
         {
             public:
-                CSocketServer() : m_ServerSocket( AF_INET, SOCK_STREAM, 0 )
+                CSocketServer() : m_Socket( AF_INET, SOCK_STREAM, 0 )
                 {}
                 void Bind( unsigned short _nPort, const std::string *_Addr = NULL ) throw ( std::exception )
                 {
-                    if ( m_ServerSocket < 0 )
-                        throw std::runtime_error( socket_error_string( m_ServerSocket, "NULL socket has been given to Bind" ) );
+                    if ( m_Socket < 0 )
+                        throw std::runtime_error( socket_error_string( m_Socket, "NULL socket has been given to Bind" ) );
 
                     sockaddr_in addr;
                     addr.sin_family = AF_INET;
@@ -211,57 +235,57 @@ namespace MiscCommon
                     else
                         inet_aton( _Addr->c_str(), &addr.sin_addr );
 
-                    if ( bind( m_ServerSocket, ( struct sockaddr * ) & addr, sizeof( addr ) ) < 0 )
-                        throw std::runtime_error( socket_error_string( m_ServerSocket, "Soket bind error..." ) );
+                    if ( bind( m_Socket, ( struct sockaddr * ) & addr, sizeof( addr ) ) < 0 )
+                        throw std::runtime_error( socket_error_string( m_Socket, "Soket bind error..." ) );
                 }
 
                 void Listen( int _Backlog ) throw ( std::exception )
                 {
-                    if ( ::listen( m_ServerSocket, _Backlog ) < 0 )
-                        throw std::runtime_error( socket_error_string( m_ServerSocket, "can't call listen on socket server" ) );
+                    if ( ::listen( m_Socket, _Backlog ) < 0 )
+                        throw std::runtime_error( socket_error_string( m_Socket, "can't call listen on socket server" ) );
                 }
 
                 Socket_t Accept() throw ( std::exception )
                 {
-                    return ::accept( m_ServerSocket, NULL, NULL ) ;
+                    return ::accept( m_Socket, NULL, NULL ) ;
                 }
 
                 smart_socket& GetSocket()
                 {
-                    return m_ServerSocket;
+                    return m_Socket;
                 }
 
-            private:
-                smart_socket m_ServerSocket;
+            protected:
+                smart_socket m_Socket;
         };
 
-        class CSocketClient
+        class CSocketClient: public CSocketHelper<CSocketClient>
         {
             public:
-                CSocketClient() : m_ClientSocket( AF_INET, SOCK_STREAM, 0 )
+                CSocketClient() : m_Socket( AF_INET, SOCK_STREAM, 0 )
                 {}
 
                 void Connect( unsigned short _nPort, const std::string &_Addr )
                 {
-                    if ( m_ClientSocket < 0 )
-                        throw std::runtime_error( socket_error_string( m_ClientSocket, "there was NULL socket given as a client socket to Connect" ) );
+                    if ( m_Socket < 0 )
+                        throw std::runtime_error( socket_error_string( m_Socket, "there was NULL socket given as a client socket to Connect" ) );
 
                     sockaddr_in addr;
                     addr.sin_family = AF_INET;
                     addr.sin_port = htons( _nPort );
                     inet_aton( _Addr.c_str(), &addr.sin_addr );
 
-                    if ( ::connect( m_ClientSocket, ( struct sockaddr * ) & addr, sizeof( addr ) ) < 0 )
-                        throw std::runtime_error( socket_error_string( m_ClientSocket, "Can't connect to the server" ) );
+                    if ( ::connect( m_Socket, ( struct sockaddr * ) & addr, sizeof( addr ) ) < 0 )
+                        throw std::runtime_error( socket_error_string( m_Socket, "Can't connect to the server" ) );
                 }
 
                 smart_socket& GetSocket()
                 {
-                    return m_ClientSocket;
+                    return m_Socket;
                 }
 
-            private:
-                smart_socket m_ClientSocket;
+            protected:
+                smart_socket m_Socket;
         };
 
 
