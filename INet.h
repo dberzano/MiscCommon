@@ -195,21 +195,21 @@ namespace MiscCommon
             return ( n == -1 ? -1 : total );
         }
 
-            inline void send_string( smart_socket &_Socket, const std::string &_Str2Send )
-            {                
-                BYTEVector_t buf;
-                copy( _Str2Send.begin(), _Str2Send.end(), back_inserter( buf ) );
-                _Socket << buf;
-            }
-           inline void receive_string( smart_socket &_Socket, std::string *_Str2Receive, size_t _BufSize )
-            {
-                if ( !_Str2Receive )
-                    throw std::invalid_argument( "smart_socket::receive_string: Parametr is NULL" );
-                
-                BYTEVector_t buf(_BufSize);
-                _Socket >> &buf;
-                *_Str2Receive = std::string( reinterpret_cast<char*>(&buf[ 0 ]), buf.size() );
-            }
+        inline void send_string( smart_socket &_Socket, const std::string &_Str2Send )
+        {
+            BYTEVector_t buf;
+            copy( _Str2Send.begin(), _Str2Send.end(), back_inserter( buf ) );
+            _Socket << buf;
+        }
+        inline void receive_string( smart_socket &_Socket, std::string *_Str2Receive, size_t _BufSize )
+        {
+            if ( !_Str2Receive )
+                throw std::invalid_argument( "smart_socket::receive_string: Parametr is NULL" );
+
+            BYTEVector_t buf(_BufSize);
+            _Socket >> &buf;
+            *_Str2Receive = std::string( reinterpret_cast<char*>(&buf[ 0 ]), buf.size() );
+        }
 
 
         class CSocketServer
@@ -352,6 +352,25 @@ namespace MiscCommon
 
             return ss.str();
         }
+
+        inline int get_free_port( int _Min, int _Max )
+        {
+            CSocketServer serv;
+            for ( int i = _Min; i < _Max; ++i )
+            {
+                try
+                {
+                    serv.Bind( i );
+                    return i;
+                }
+                catch (...)
+                {
+                    continue;
+                }
+            }
+            return 0;
+        }
+
     };
 };
 
