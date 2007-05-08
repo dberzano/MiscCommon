@@ -195,29 +195,24 @@ namespace MiscCommon
             return ( n == -1 ? -1 : total );
         }
 
-        template <class _T>
-        struct CSocketHelper
-        {
-            void SendString( const std::string &_Str2Send )
-            {
-                _T *pThis = reinterpret_cast<_T*>( this );
+            inline void send_string( smart_socket &_Socket, const std::string &_Str2Send )
+            {                
                 BYTEVector_t buf;
                 copy( _Str2Send.begin(), _Str2Send.end(), back_inserter( buf ) );
-                pThis->GetSocket() << buf;
+                _Socket << buf;
             }
-            void ReceiveString( std::string *_Str2Receive, size_t _BufSize )
+           inline void receive_string( smart_socket &_Socket, std::string *_Str2Receive, size_t _BufSize )
             {
                 if ( !_Str2Receive )
                     throw std::invalid_argument( "smart_socket::receive_string: Parametr is NULL" );
-
-                _T *pThis = reinterpret_cast<_T*>( this );
+                
                 BYTEVector_t buf(_BufSize);
-                pThis->GetSocket() >> &buf;
+                _Socket >> &buf;
                 *_Str2Receive = std::string( reinterpret_cast<char*>(&buf[ 0 ]), buf.size() );
             }
-        };
 
-        class CSocketServer: public CSocketHelper<CSocketServer>
+
+        class CSocketServer
         {
             public:
                 CSocketServer() : m_Socket( AF_INET, SOCK_STREAM, 0 )
@@ -259,7 +254,7 @@ namespace MiscCommon
                 smart_socket m_Socket;
         };
 
-        class CSocketClient: public CSocketHelper<CSocketClient>
+        class CSocketClient
         {
             public:
                 CSocketClient() : m_Socket( AF_INET, SOCK_STREAM, 0 )
