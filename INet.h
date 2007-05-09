@@ -360,10 +360,13 @@ namespace MiscCommon
                 sockaddr_in addr;
                 if ( !_Type() ( _Socket, &addr ) )
                     return ;
+                    
+                std::string host;
+                ip2host( inet_ntoa( addr.sin_addr ), &host );
 
                 std::stringstream ss;
                 ss
-                << inet_ntoa( addr.sin_addr )
+                << host
                 << ":"
                 << ntohs( addr.sin_port );
                 *_Str = ss.str();
