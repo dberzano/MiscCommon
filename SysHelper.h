@@ -127,5 +127,41 @@ namespace MiscCommon
             CMutex& m;
     };
 
+    /* Thread-safe singleton
+     
+    class Singleton
+{
+    public:
+    static Singleton& Instance();
+    int example_data;
+    ~Singleton() { }
+
+    protected:
+    Singleton(): example_data(42) { }
+
+    private:
+    static std::auto_ptr<Singleton> theSingleInstance;
+    static Mutex m;
+};
+
+    Singleton& Singleton::Instance()
+{
+    MutexLocker obtain_lock(m);
+    if (theSingleInstance.get() == 0)
+      theSingleInstance.reset(new Singleton);
+    return *theSingleInstance;
+}
+
+    std::auto_ptr<Singleton> Singleton::theSingleInstance;
+    Mutex Singleton::m;
+
+    #include <cstdio>
+    int main()
+{
+    printf("%d\n", Singleton::Instance().example_data);
+    return 0;
+}
+     */
+
 };
 #endif /*SYSHELPER_H_*/
