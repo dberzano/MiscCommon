@@ -19,7 +19,7 @@
 #include <algorithm>
 
 /** @namespace MiscCommon
- *  @brief Miscellaneous functions and helpers located
+ *  @brief Miscellaneous functions and helpers are located here
  **/
 namespace MiscCommon
 {

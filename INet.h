@@ -1,17 +1,17 @@
 /************************************************************************/
 /**
  * @file INet.h
- * @brief $$File comment$$
+ * @brief helpers for Socket and Network operations
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
  
         version number:    $LastChangedRevision$
-        created by:        Anar Manafov
-                                    2007-03-01
+        created by:           Anar Manafov
+                                   2007-03-01
         last changed by:   $LastChangedBy$ $LastChangedDate$
  
         Copyright (c) 2006,2007 GSI GridTeam. All rights reserved.
-    *************************************************************************/
+*************************************************************************/
 #ifndef INET_H
 #define INET_H
 
@@ -32,21 +32,31 @@
 #include "ErrorCode.h"
 #include "MiscUtils.h"
 
+/// this macro indicates an invalid status of the socket
 #define INVALID_SOCKET -1
 
+/**
+ *  @brief Miscellaneous functions and helpers are located here 
+ **/
 namespace MiscCommon
 {
+    /**
+     *  @brief INet declares helpers for Socket and Network operations
+     **/
     namespace INet
     {
 
+        /// A basic socket type
         typedef int Socket_t;
 
         // Forward declaration
         inline std::string socket_error_string( Socket_t _socket, char *_strMsg = NULL );
 
-        // TODO: Implement reference count
+        /**
+         *  @brief A wrapper for a basic Socket
+         **/
         class smart_socket: public NONCopyable
-        {
+        { // TODO: Implement reference count
             public:
                 smart_socket() :
                         m_Socket( INVALID_SOCKET )
@@ -138,9 +148,16 @@ namespace MiscCommon
                 Socket_t m_Socket;
         };
 
+        /**
+         * @brief This is a stream operator which helps to \b receive data from the given socket.
+         * @brief Generic declaration (no implementation). 
+         **/
         template <typename _T>
         smart_socket& operator >> ( smart_socket &_Socket, _T *_Buf ) throw ( std::exception );
-
+        /**
+          * @brief This is a stream operator which helps to \b receive data from the given socket.
+          * @brief A template specialization for BYTEVector_t type.
+          **/
         template <>
         inline smart_socket& operator >> ( smart_socket &_Socket, BYTEVector_t *_Buf ) throw ( std::exception )
         {
@@ -166,11 +183,16 @@ namespace MiscCommon
             return _Socket;
         }
 
-
+        /**
+         * @brief This is a stream operator which helps to \b send data to the given socket.
+         * @brief Generic declaration (no implementation). 
+         **/
         template <typename _T>
         smart_socket& operator << ( smart_socket &_Socket, _T &_Buf );
-
-
+        /**
+         * @brief This is a stream operator which helps to \b send data to the given socket.
+         * @brief A template specialization for BYTEVector_t type. 
+         **/
         template <>
         inline smart_socket& operator << ( smart_socket &_Socket, BYTEVector_t &_Buf )
         {
@@ -178,9 +200,11 @@ namespace MiscCommon
             return _Socket;
         }
 
-        //TODO: sendall - Make this code safer!!!
+        /**
+         * @brief A helper function, which insures that whole buffer was send. 
+         **/
         inline int sendall( int s, char *buf, int len, int flags )
-        {
+        { //TODO: sendall - Make this code safer!!!
             int total = 0;
             int n;
 
@@ -195,12 +219,19 @@ namespace MiscCommon
             return ( n == -1 ? -1 : total );
         }
 
+        /**
+         * @brief A helper function, which sends a string to the given socket.
+         **/
         inline void send_string( smart_socket &_Socket, const std::string &_Str2Send )
         {
             BYTEVector_t buf;
             copy( _Str2Send.begin(), _Str2Send.end(), back_inserter( buf ) );
             _Socket << buf;
         }
+
+        /**
+        * @brief A helper function, which receives a string from the given socket.
+        **/
         inline void receive_string( smart_socket &_Socket, std::string *_Str2Receive, size_t _BufSize )
         {
             if ( !_Str2Receive )
@@ -211,6 +242,9 @@ namespace MiscCommon
             *_Str2Receive = std::string( reinterpret_cast<char*>(&buf[ 0 ]), buf.size() );
         }
 
+        /**
+         * This function checks whether _Addr is an IP address or not.
+         **/
         inline bool is_ip_address( std::string _Addr )
         {
             // removing all dots
@@ -219,7 +253,10 @@ namespace MiscCommon
             return ( _Addr.end() == std::find_if( _Addr.begin(), _Addr.end(), std::not1(IsDigit()) ) );
         }
 
-        inline void host2ip( const std::string &_Host, std::string *_IP ) // _Host can be either hostname or IP address
+        /**
+         * @brief host2ip converts a given host name to IP address.
+         **/
+        inline void host2ip( const std::string &_Host, std::string *_IP ) // _Host can be either host name or IP address
         {
             if ( !_IP )
                 return ;
@@ -237,6 +274,9 @@ namespace MiscCommon
             *_IP = inet_ntoa( *(reinterpret_cast<in_addr*>(he->h_addr)) );
         }
 
+        /**
+         * @brief ip2host converts a given IP address to host name.
+         **/
         inline void ip2host( const std::string &_IP, std::string *_Host )
         {
             if ( !_Host )
@@ -257,6 +297,9 @@ namespace MiscCommon
             *_Host = he->h_name;
         }
 
+        /**
+         * @brief CSocketServer implements a simple socket server.
+         **/
         class CSocketServer
         {
             public:
@@ -299,6 +342,9 @@ namespace MiscCommon
                 smart_socket m_Socket;
         };
 
+        /**
+         * @brief CSocketClient implements a simple socket client. 
+         **/
         class CSocketClient
         {
             public:
@@ -330,7 +376,9 @@ namespace MiscCommon
                 smart_socket m_Socket;
         };
 
-
+        /**
+         * @brief A Trait class for _socket2string template. This class operates on a local side of the socket.
+         **/
         struct SSocket2String_Trait
         {
             bool operator() ( Socket_t _socket, sockaddr_in *_addr ) const
@@ -339,7 +387,9 @@ namespace MiscCommon
                 return ( getsockname( _socket, reinterpret_cast<sockaddr *>( _addr ), &size ) == -1 ) ? false : true;
             }
         };
-
+        /**
+        * @brief A Trait class for _socket2string template. This class operates a peer of the socket.
+        **/
         struct SSocketPeer2String_Trait
         {
             bool operator() ( Socket_t _socket, sockaddr_in *_addr ) const
@@ -348,7 +398,10 @@ namespace MiscCommon
                 return ( getpeername( _socket, reinterpret_cast<sockaddr *>( _addr ), &size ) == -1 ) ? false : true;
             }
         };
-
+        /**
+         * @brief A template class, which makes a string representation of the socket.
+         * @brief In a form of [Host name]:[Port].         
+         **/
         template <class _Type>
         struct _socket2string
         {
@@ -360,7 +413,7 @@ namespace MiscCommon
                 sockaddr_in addr;
                 if ( !_Type() ( _Socket, &addr ) )
                     return ;
-                    
+
                 std::string host;
                 ip2host( inet_ntoa( addr.sin_addr ), &host );
 
@@ -373,9 +426,14 @@ namespace MiscCommon
             }
         };
 
+        /// Socket to string representation.
         typedef _socket2string<SSocket2String_Trait> socket2string;
+        /// Socket-peer to string representation.
         typedef _socket2string<SSocketPeer2String_Trait> peer2string;
 
+        /**
+         * @brief The function returns socket's error string.
+         **/
         inline std::string socket_error_string( Socket_t _socket, char *_strMsg )
         {
             std::string strSocket;
@@ -403,6 +461,9 @@ namespace MiscCommon
             return ss.str();
         }
 
+        /**
+         * @brief The function checks and returns a free port from the given range of the ports.
+         **/
         inline int get_free_port( int _Min, int _Max )
         {
             CSocketServer serv;
