@@ -211,6 +211,51 @@ namespace MiscCommon
             *_Str2Receive = std::string( reinterpret_cast<char*>(&buf[ 0 ]), buf.size() );
         }
 
+        inline bool is_ip_address( std::string _Addr )
+        {
+            // removing all dots
+            _Addr.erase( remove(_Addr.begin(), _Addr.end(), '.'), _Addr.end() );
+            // Checking for all numerics
+            return ( _Addr.end() == std::find_if( _Addr.begin(), _Addr.end(), std::not1(IsDigit()) ) );
+        }
+
+        inline void host2ip( const std::string &_Host, std::string *_IP ) // _Host can be either hostname or IP address
+        {
+            if ( !_IP )
+                return ;
+
+            if ( is_ip_address(_Host) )
+            {
+                *_IP = _Host;
+                return ;
+            }
+
+            hostent *he = gethostbyname( _Host.c_str() );
+            if ( !he )
+                return ; // TODO: throw... herror()
+
+            *_IP = inet_ntoa( *(reinterpret_cast<in_addr*>(he->h_addr)) );
+        }
+
+        inline void ip2host( const std::string &_IP, std::string *_Host )
+        {
+            if ( !_Host )
+                return ;
+
+            if ( !is_ip_address(_IP) )
+            {
+                *_Host = _IP;
+                return ;
+            }
+
+            in_addr addr;
+            inet_aton( _IP.c_str(), &addr );
+            hostent *he = gethostbyaddr( &addr, sizeof(addr), AF_INET );
+            if ( !he )
+                return ;
+
+            *_Host = he->h_name;
+        }
 
         class CSocketServer
         {
@@ -268,7 +313,9 @@ namespace MiscCommon
                     sockaddr_in addr;
                     addr.sin_family = AF_INET;
                     addr.sin_port = htons( _nPort );
-                    inet_aton( _Addr.c_str(), &addr.sin_addr );
+                    std::string ip;
+                    host2ip( _Addr, &ip );
+                    inet_aton( ip.c_str(), &addr.sin_addr );
 
                     if ( ::connect( m_Socket, ( struct sockaddr * ) & addr, sizeof( addr ) ) < 0 )
                         throw std::runtime_error( socket_error_string( m_Socket, "Can't connect to the server" ) );

@@ -26,8 +26,10 @@ namespace MiscCommon
     class NONCopyable
     {
         protected:
-            NONCopyable() {}
-            ~NONCopyable() {}
+            NONCopyable()
+            {}
+            ~NONCopyable()
+            {}
         private:
             NONCopyable( const NONCopyable& );
             const NONCopyable& operator=( const NONCopyable& );
@@ -150,15 +152,29 @@ namespace MiscCommon
         return ( *_pString );
     }
 
-    // HACK: because of the bug in gcc 3.3 we need to use this nesty ToLower and ToUpper instead of direct calls of tolower...
+    // HACK: because of the bug in gcc 3.3 we need to use this nasty ToLower and ToUpper instead of direct calls of tolower (tolower.. is inline in this version of std lib)...
     struct ToLower
     {
-        char operator() ( char c ) const { return std::tolower( c ); }
+        char operator() ( char c ) const
+        {
+            return std::tolower( c );
+        }
     };
 
     struct ToUpper
     {
-        char operator() ( char c ) const { return std::toupper( c ); }
+        char operator() ( char c ) const
+        {
+            return std::toupper( c );
+        }
+    };
+    
+    struct IsDigit: std::unary_function<int, int>
+    {
+        int operator() ( int c ) const
+        {
+            return std::isdigit( c );
+        }
     };
 
     /** @fn  _T& to_upper(_T& _str)
