@@ -90,5 +90,42 @@ namespace MiscCommon
         return syscall(__NR_gettid);
     }
 
+    class CMutex
+    {
+        public:
+            CMutex()
+            {
+                pthread_mutex_init(&m, 0);
+            }
+
+            void Lock()
+            {
+                pthread_mutex_lock(&m);
+            }
+
+            void Unlock()
+            {
+                pthread_mutex_unlock(&m);
+            }
+
+        private:
+            pthread_mutex_t m;
+    };
+
+    class smart_mutex
+    {
+        public:
+            smart_mutex( CMutex& _pm ): m(_pm)
+            {
+                m.Lock();
+            }
+            ~smart_mutex()
+            {
+                m.Unlock();
+            }
+        private:
+            CMutex& m;
+    };
+
 };
 #endif /*SYSHELPER_H_*/
