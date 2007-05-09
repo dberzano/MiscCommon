@@ -19,9 +19,12 @@
 #include <unistd.h>
 #include <pwd.h>
 #include <netdb.h>
+#include <sys/syscall.h>
 
 // OUR
 #include "def.h"
+#include "MiscUtils.h"
+
 namespace MiscCommon
 {
 
@@ -79,6 +82,12 @@ namespace MiscCommon
             return ;
 
         *_RetVal = h->h_name;
+    }
+
+    /// Thread ID
+    inline pid_t gettid(void)
+    {
+        return syscall(__NR_gettid);
     }
 
 };

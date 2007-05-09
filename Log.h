@@ -30,6 +30,7 @@
 // gLite API Wrapper
 #include "Res.h"
 #include "def.h"
+#include "SysHelper.h"
 
 namespace MiscCommon
 {
@@ -52,7 +53,6 @@ namespace MiscCommon
         e_WhiteSpace = 0x20
     };
 
-
     /*! \class CLog
     \brief A simple template class which represents the Log engine of library.
     \brief Current Log schema:
@@ -68,13 +68,15 @@ namespace MiscCommon
 
             _T &push( LOG_SEVERITY _Severity, unsigned long _ErrorCode, const std::string &_Module, const std::string &_Message )
             {
+                // Thread ID
+                pid_t tid = gettid();
                 std::string _DTBuff;
                 std::stringstream strMsg;
                 strMsg
                 << GetCurTimeString( &_DTBuff ) << char( e_FieldSeparator )
                 << GetSeverityString( _Severity ) << char( e_FieldSeparator )
                 << GetErrorCode( _ErrorCode ) << char( e_FieldSeparator )
-                << "[" << _Module << "]" << char( e_FieldSeparator )
+                << "[" << _Module << ":thread-" << tid << "]" << char( e_FieldSeparator )
                 << _Message;
                 if ( m_stream && m_stream->good() )
                 {
