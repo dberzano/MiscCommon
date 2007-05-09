@@ -5,10 +5,10 @@
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
  
-        version number:    $LastChangedRevision: 641 $
+        version number:    $LastChangedRevision$
         created by:            Anar Manafov
                                     2007-04-17
-        last changed by:   $LastChangedBy: manafov $ $LastChangedDate: 2007-04-16 13:57:38 +0200 (Mon, 16 Apr 2007) $
+        last changed by:   $LastChangedBy$ $LastChangedDate$
  
         Copyright (c) 2007 GSI GridTeam. All rights reserved.
 *************************************************************************/

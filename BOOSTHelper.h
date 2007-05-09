@@ -1,3 +1,17 @@
+/************************************************************************/
+/**
+ * @file BOOSTHelper.h
+ * @brief $$File comment$$
+ * @author Anar Manafov A.Manafov@gsi.de
+ */ /*
+ 
+        version number:    $LastChangedRevision$
+        created by:           Anar Manafov
+                                   2007-04-20
+        last changed by:   $LastChangedBy$ $LastChangedDate$
+ 
+        Copyright (c) 2007 GSI GridTeam. All rights reserved.
+*************************************************************************/
 #ifndef BOOSTHELPER_H_
 #define BOOSTHELPER_H_
 
