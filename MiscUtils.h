@@ -160,7 +160,6 @@ namespace MiscCommon
             return std::tolower( c );
         }
     };
-
     struct ToUpper
     {
         char operator() ( char c ) const
@@ -168,7 +167,6 @@ namespace MiscCommon
             return std::toupper( c );
         }
     };
-    
     struct IsDigit: std::unary_function<int, int>
     {
         int operator() ( int c ) const
