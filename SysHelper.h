@@ -20,6 +20,7 @@
 #include <pwd.h>
 #include <netdb.h>
 #include <sys/syscall.h>
+#include <limits.h>
 
 // OUR
 #include "def.h"
