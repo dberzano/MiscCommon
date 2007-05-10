@@ -38,11 +38,13 @@
 namespace MiscCommon
 {
     /**
-     *  @brief INet declares helpers for Socket and Network operations
+     *  @brief INet declares helpers for Socket and Network operations     
      **/
     namespace INet
     {
-        /// A basic socket type
+        /**
+         * @brief A basic socket type
+         **/
         typedef int Socket_t;
 
         // Forward declaration
@@ -178,7 +180,6 @@ namespace MiscCommon
             }
             return _Socket;
         }
-
         /**
          * @brief This is a stream operator which helps to \b send data to the given socket.
          * @brief Generic declaration (no implementation). 
@@ -195,7 +196,6 @@ namespace MiscCommon
             ::send( _Socket, &_Buf[ 0 ], _Buf.size(), 0 );
             return _Socket;
         }
-
         /**
          * @brief A helper function, which insures that whole buffer was send. 
          **/
@@ -214,7 +214,6 @@ namespace MiscCommon
 
             return ( n == -1 ? -1 : total );
         }
-
         /**
          * @brief A helper function, which sends a string to the given socket.
          **/
@@ -224,7 +223,6 @@ namespace MiscCommon
             copy( _Str2Send.begin(), _Str2Send.end(), back_inserter( buf ) );
             _Socket << buf;
         }
-
         /**
         * @brief A helper function, which receives a string from the given socket.
         **/
@@ -237,7 +235,6 @@ namespace MiscCommon
             _Socket >> &buf;
             *_Str2Receive = std::string( reinterpret_cast<char*>(&buf[ 0 ]), buf.size() );
         }
-
         /**
          * This function checks whether _Addr is an IP address or not.
          **/
@@ -248,7 +245,6 @@ namespace MiscCommon
             // Checking for all numerics
             return ( _Addr.end() == std::find_if( _Addr.begin(), _Addr.end(), std::not1(IsDigit()) ) );
         }
-
         /**
          * @brief host2ip converts a given host name to IP address.
          **/
@@ -269,7 +265,6 @@ namespace MiscCommon
 
             *_IP = inet_ntoa( *(reinterpret_cast<in_addr*>(he->h_addr)) );
         }
-
         /**
          * @brief ip2host converts a given IP address to host name.
          **/
@@ -292,7 +287,6 @@ namespace MiscCommon
 
             *_Host = he->h_name;
         }
-
         /**
          * @brief CSocketServer implements a simple socket server.
          **/
@@ -337,7 +331,6 @@ namespace MiscCommon
             protected:
                 smart_socket m_Socket;
         };
-
         /**
          * @brief CSocketClient implements a simple socket client. 
          **/
@@ -371,7 +364,6 @@ namespace MiscCommon
             protected:
                 smart_socket m_Socket;
         };
-
         /**
          * @brief A Trait class for _socket2string template. This class operates on a local side of the socket.
          **/
@@ -456,7 +448,6 @@ namespace MiscCommon
 
             return ss.str();
         }
-
         /**
          * @brief The function checks and returns a free port from the given range of the ports.
          **/

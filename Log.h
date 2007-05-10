@@ -144,7 +144,7 @@ namespace MiscCommon
      **/
     typedef CLog<std::ostream> CSTDOutLog;
 
-    /** 
+    /**
      * @brief Logging to a file. 
      * @brief ofstream specialization of CLog.
      **/

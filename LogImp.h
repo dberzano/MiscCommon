@@ -23,9 +23,9 @@
 
 namespace MiscCommon
 {
-/**
- * @brief It is a supporting macro, which declares GetModuleName method. Needed by MiscCommon::CLogImp
- **/
+    /**
+     * @brief It is a supporting macro, which declares GetModuleName method. Needed by MiscCommon::CLogImp
+     **/
 #define REGISTER_LOG_MODULE(name)             std::string GetModuleName() const  {  return #name; }
 
     /**

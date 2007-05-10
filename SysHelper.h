@@ -116,7 +116,7 @@ namespace MiscCommon
     {
         return syscall(__NR_gettid);
     }
-    
+
     /**
      * @brief A Mutex wrapper. Based on \b pthread calls.
      * @note Using this implementation one can create a thread -safe singleton:
