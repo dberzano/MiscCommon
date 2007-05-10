@@ -1,9 +1,9 @@
 /************************************************************************/
 /**
-* @file XMLHelper.h
-* @brief XML Helper header
-* @author Anar Manafov A.Manafov@gsi.de
-*/ /*
+ * @file XMLHelper.h
+ * @brief XML Helper header
+ * @author Anar Manafov A.Manafov@gsi.de
+ */ /*
  
         version number:   $LastChangedRevision$
         created by:          Anar Manafov
@@ -29,13 +29,14 @@
 
 namespace MiscCommon
 {
-    /** @namespace MiscCommon::XMLHelper
+    /**
      *  @brief Helpers for Xerces XML parser.
-     */
+     **/
     namespace XMLHelper
     {
-
-        /** @brief smart-wrapper around XMLCh class*/
+        /**
+         * @brief smart-wrapper around XMLCh class
+         **/
         class smart_XMLCh
         {
             public:
@@ -83,8 +84,12 @@ namespace MiscCommon
                         xercesc::XMLString::release( &m_xmlString );
                 }
         };
-
-        /** @brief template functions, which helps to retrieve different types of attributes from an XML file*/
+        /**
+         * @brief template functions, which helps to retrieve different types of attributes from an XML file.
+         * @param _element - [in] XML node to process. Must not be NULL.
+         * @param _attr - [in] Name of the attribute to read. Must not be NULL.
+         * @param _data - [out] A buffer to keep a return value - value of the attribute. Must not be NULL.
+         **/
         template <class _T>
         void get_attr_value( const xercesc::DOMElement *_element, const char *_attr, _T *_data )
         {
@@ -93,7 +98,12 @@ namespace MiscCommon
             std::istringstream str( xmlTmpStr.ToString() );
             str >> *_data;
         }
-        /** @brief instantiation of get_attr_value with the bool type -- xml value: true or false*/
+        /**
+         * @brief specialization of get_attr_value with the bool type -- xml value: true or false
+         * @param _element - [in] XML node to process. Must not be NULL.
+         * @param _attr - [in] Name of the attribute to read. Must not be NULL.
+         * @param _data - [out] A buffer to keep a return value - value of the attribute. Must not be NULL.
+         **/
         template <>
         inline void get_attr_value<bool>( const xercesc::DOMElement *_element, const char *_attr, bool *_data )
         {
@@ -103,6 +113,12 @@ namespace MiscCommon
             MiscCommon::to_lower( str );
             *_data = !( str.empty() || ( "no" == str ) );
         }
+        /**
+         * @brief specialization of get_attr_value with the std::string type
+         * @param _element - [in] XML node to process. Must not be NULL.
+         * @param _attr - [in] Name of the attribute to read. Must not be NULL.
+         * @param _data - [out] A buffer to keep a return value - value of the attribute. Must not be NULL.
+         **/
         template <>
         inline void get_attr_value<std::string>( const xercesc::DOMElement *_element, const char *_attr, std::string *_data )
         {
@@ -110,11 +126,18 @@ namespace MiscCommon
             smart_XMLCh xmlTmpStr( _element->getAttribute( attr_name ) );
             *_data = xmlTmpStr.ToString();
         }
-
         // TODO: Simplify this template by implementing traits
+        /**
+         * @brief Returns a Node by the given name. (basic template without implementation)         
+         **/
         template <class _T>
         inline xercesc::DOMNode* GetSingleNodeByName( const _T *_Val, const std::string &_NodeName );
-
+        /**
+         * @brief Returns a Node by the given name. A xercesc::DOMDocument specialization
+         * @param ._Doc - [in] XML Document object. Must not be NULL.
+         * @param _NodeName - [in] Name of the child node to find.
+         * @return pointer to the found XML node or NULL in case of error 
+         **/
         template <>
         inline xercesc::DOMNode* GetSingleNodeByName( const xercesc::DOMDocument *_Doc, const std::string &_NodeName )
         {
@@ -127,7 +150,12 @@ namespace MiscCommon
                 return NULL;
             return list->item( 0 );
         }
-
+        /**
+         * @brief Returns a Node by the given name. A xercesc::DOMNode specialization.
+         * @param ._node - [in] XML Node. Must not be NULL.
+         * @param _NodeName - [in] Name of the child node to find.
+         * @return pointer to the found XML node or NULL in case of error 
+         **/
         template <>
         inline xercesc::DOMNode* GetSingleNodeByName( const xercesc::DOMNode *_node, const std::string &_NodeName )
         {
@@ -146,7 +174,13 @@ namespace MiscCommon
                 return NULL;
             return list->item( 0 );
         }
-
+        /**
+         * @brief A helper template function, which wraps GetSingleNodeByName template-functions.
+         * @param ._Node - [in] Could be a pointer to either XML Document or XML Node. Must not be NULL.
+         * @param _NodeName - [in] Name of the child node to find.         
+         * @exception std::runtime_error "can't find XML element [_NodeName]"
+         * @return pointer to the found XML node or an exception will be raised.
+         **/
         template < class _T>
         inline xercesc::DOMNode* GetSingleNodeByName_Ex( const _T *_Node, const std::string &_NodeName ) throw(std::exception)
         {

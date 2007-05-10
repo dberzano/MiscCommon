@@ -1,7 +1,7 @@
 /************************************************************************/
 /**
  * @file Log.h
- * @brief Log engine core
+ * @brief Log engine core.
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
  
@@ -34,10 +34,9 @@
 
 namespace MiscCommon
 {
-
-    /*! \typedef LOG_SEVERITY
-    \brief Log's severity's constants
-     */
+    /**
+     * @brief Log's severity's constants.
+     **/
     typedef enum ESeverity
     {
         LOG_SEVERITY_INFO = 0x1,
@@ -53,11 +52,12 @@ namespace MiscCommon
         e_WhiteSpace = 0x20
     };
 
-    /*! \class CLog
-    \brief A simple template class which represents the Log engine of library.
-    \brief Current Log schema:
-    \brief [DATE/TIME]  [SEVERITY]  [MODULE NAME]   [Message]
-     */
+    /**
+     * 
+     * @brief A simple template class which represents the Log engine of library.
+     * @brief Current Log schema:
+     * @brief [DATE/TIME]  [SEVERITY]  [MODULE NAME]   [Message]
+     **/
     template <typename _T>
     class CLog
     {
@@ -139,15 +139,15 @@ namespace MiscCommon
             _T *m_stream;
     };
 
-    /*! \typedef CSTDOutLog
-    \brief ostream specialization of CLog
-     */
+    /**
+     * @brief ostream specialization of CLog.
+     **/
     typedef CLog<std::ostream> CSTDOutLog;
 
-    /*! \class CFileLog
-    \brief Logging to a file.
-    \brief ofstream specialization of CLog
-     */
+    /** 
+     * @brief Logging to a file. 
+     * @brief ofstream specialization of CLog.
+     **/
     class CFileLog: public CLog<std::ofstream>
     {
         public:

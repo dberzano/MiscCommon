@@ -1,7 +1,7 @@
 /************************************************************************/
 /**
  * @file INet.h
- * @brief helpers for Socket and Network operations
+ * @brief helpers for Socket and Network operations.
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
  
@@ -35,9 +35,6 @@
 /// this macro indicates an invalid status of the socket
 #define INVALID_SOCKET -1
 
-/**
- *  @brief Miscellaneous functions and helpers are located here 
- **/
 namespace MiscCommon
 {
     /**
@@ -45,7 +42,6 @@ namespace MiscCommon
      **/
     namespace INet
     {
-
         /// A basic socket type
         typedef int Socket_t;
 

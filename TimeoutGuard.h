@@ -1,7 +1,7 @@
 /************************************************************************/
 /**
  * @file TimeoutGuard.h
- * @brief $$File comment$$
+ * @brief The header declares a CTimeoutGuard class. 
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
  
@@ -20,8 +20,9 @@
 
 namespace MiscCommon
 {
-
-    /// CTimeoutGuard - sends SEGTERM signal to the specified PID after timeout period is over
+    /**
+     * @brief The class, which watches the running time of the process and sends SEGTERM when defined time-out is reached.
+     **/
     class CTimeoutGuard
     {
             CTimeoutGuard():

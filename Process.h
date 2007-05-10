@@ -1,7 +1,7 @@
 /************************************************************************/
 /**
  * @file Process.h
- * @brief $$File comment$$
+ * @brief This header contains a subset of helpers for Process, Daemon and PID file operations.
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
  
@@ -28,13 +28,19 @@
 
 namespace MiscCommon
 {
-    /// Whether process can be found corresponding to _PID
+    /**
+     * @brief The function checks, whether the process which corresponds to the given \b _PID can be found.
+     * @param _PID - [in] process ID to look for.
+     * @return \b true when the process is found, otherwise return value is \b false.
+     **/
     inline bool IsProcessExist( pid_t _PID )
     {
         return !( ::kill( _PID, 0 ) == -1 && errno == ESRCH );
     }
 
-    /// pidfile helper
+    /**
+     * @brief A PID-file helper
+     **/
     class CPIDFile
     {
         public:

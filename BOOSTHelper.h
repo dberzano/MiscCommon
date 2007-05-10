@@ -1,7 +1,7 @@
 /************************************************************************/
 /**
  * @file BOOSTHelper.h
- * @brief $$File comment$$
+ * @brief Helpers for BOOST libraries
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
  
@@ -21,6 +21,9 @@
 
 namespace MiscCommon
 {
+    /**
+     * @brief A typedef wrapper for boost::thread pointer.
+     **/
     typedef boost::shared_ptr<boost::thread> Thread_PTR_t;
 };
 

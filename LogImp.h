@@ -1,7 +1,7 @@
 /************************************************************************/
 /**
  * @file LogImp.h
- * @brief Log engine core implementation
+ * @brief Log engine core implementation.
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
  
@@ -23,13 +23,15 @@
 
 namespace MiscCommon
 {
-
+/**
+ * @brief It is a supporting macro, which declares GetModuleName method. Needed by MiscCommon::CLogImp
+ **/
 #define REGISTER_LOG_MODULE(name)             std::string GetModuleName() const  {  return #name; }
 
-    /*! \class CLogSinglton
-    \brief It represents logbook as a singleton.
-    \brief ofstream specialization of CLog
-     */
+    /**
+     * @brief It represents logbook as a singleton.
+     * @brief ofstream specialization of CLog
+     **/
     class CLogSinglton
     {
             typedef std::auto_ptr<CFileLog> CFileLogPtr;
@@ -71,9 +73,20 @@ namespace MiscCommon
             CFileLogPtr m_log;
     };
 
-    /*! \class CLogImp
-    \brief Template class. High-end helper implementation of CLog, its ofstream specialization.
-     */ 
+    /**
+     * @brief Template class. High-end helper implementation of CLog, its ofstream specialization.
+     * @note: a REGISTER_LOG_MODULE(module name) must be be declared in a child class body.
+     * an example:
+     * @code
+     * class CFoo: public MiscCommon::CLogImp<CAgentServer>
+     * {
+     *   public:
+     *          CFoo();
+     *          ~CFoo();
+     *          REGISTER_LOG_MODULE( Foo );
+     * }; 
+     * @endcode
+     **/ 
     // TODO: Add comment to doxygen about REGISTER_LOG_MODULE(name), which must be declared in a child class
     template <typename _T>
     class CLogImp

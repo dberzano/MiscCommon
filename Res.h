@@ -1,7 +1,7 @@
 /************************************************************************/
 /**
  * @file Res.h
- * @brief The resources file
+ * @brief A resources file.
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
  

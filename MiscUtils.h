@@ -18,11 +18,14 @@
 #include <iostream>
 #include <algorithm>
 
-/** @namespace MiscCommon
+/**
  *  @brief Miscellaneous functions and helpers are located here
  **/
 namespace MiscCommon
 {
+    /**
+     * @brief Class which makes child to be non-copyable object. 
+     **/
     class NONCopyable
     {
         protected:
@@ -35,7 +38,9 @@ namespace MiscCommon
             const NONCopyable& operator=( const NONCopyable& );
     };
 
-    /** @brief A helper class. Helps to automatically track environment variables. */
+    /**
+     * @brief A helper class. Helps to automatically track environment variables.
+     **/
     class auto_setenv
     {
             auto_setenv()

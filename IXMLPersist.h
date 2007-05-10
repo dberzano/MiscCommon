@@ -1,7 +1,7 @@
 /************************************************************************/
 /**
  * @file IXMLPersist.h
- * @brief IXMLPersist is a persistence interface
+ * @brief IXMLPersist is a persistence interface.
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
  
@@ -23,11 +23,23 @@
 namespace MiscCommon
 {
 
-    /** @brief an XML persistence interface*/
+    /**
+     * @brief an XML persistence interface
+     **/
     class IXMLPersist
     {
         public:
+            /**
+             * @brief Read data from the selected xml node.
+             * @param _element - [in] xml node to read
+             * @return MiscCommon::erXMLNullNode if \b _element is NULL and MiscCommon::erOK on success.
+             **/
             virtual ERRORCODE Read( xercesc::DOMNode* _element ) = 0;
+            /**
+             * @brief Write data to the selected xml node.
+             * @param _element - [in] xml node to read
+             * @return MiscCommon::erXMLNullNode if \b _element is NULL, MiscCommon::erError in case of error and MiscCommon::erOK on success.
+             **/
             virtual ERRORCODE Write( xercesc::DOMNode* _element ) = 0;
     };
 

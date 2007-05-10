@@ -49,10 +49,10 @@ namespace MiscCommon
     ERRORCODE_C erXMLNullNode( BASE_FOR_XML_ERR + 3 );
 
     /**
-    * retrieves error string
-    * @param _msg - [out] an error message will be written to this buffer, must not be NULL.
-    * @return
-     */
+     * @brief Retrieves a string, which represent the last error.
+     * @param _msg - [out] an error message will be written to this buffer, must not be NULL.
+     * @return MiscCommon::erNULLArg if _msg is NULL and MiscCommon::erOK on success.
+     **/
     inline ERRORCODE errno2str( std::string *_msg )
     {
         if ( !_msg )
@@ -61,6 +61,10 @@ namespace MiscCommon
         *_msg = p;
         return erOK;
     }
+    /**
+     * @brief Retrieves a string, which represent the last error.     
+     * @return string, which represent the last error.
+     **/
  inline std::string errno2str()
     {
         char *p = strerror( errno );
