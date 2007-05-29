@@ -180,8 +180,10 @@ namespace MiscCommon
                         if ( 0 != regexec( &m_pThis->m_re, _sVal.c_str(), 3, PMatch, 0) )
                             return false;
                         const std::string sKey( _sVal.c_str() + PMatch[1].rm_so, PMatch[1].rm_eo - PMatch[1].rm_so );
-                        const std::string sValue( _sVal.c_str() + PMatch[2].rm_so, PMatch[2].rm_eo - PMatch[2].rm_so );
+                        std::string sValue( _sVal.c_str() + PMatch[2].rm_so, PMatch[2].rm_eo - PMatch[2].rm_so );
                         // TODO: make lowcase _KeyName
+                        trim<std::string>( &sValue, "\t" );
+                        trim<std::string>( &sValue, " " );
                         m_pThis->m_values.insert( std::make_pair(sKey, sValue) );
                         return true;
                     }
