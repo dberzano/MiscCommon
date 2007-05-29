@@ -19,9 +19,13 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <signal.h>
+#include <dirent.h>
 
 // STD
 #include <fstream>
+
+// POSIX regexp
+#include <regex.h>
 
 // OUR
 #include "def.h"
@@ -88,6 +92,141 @@ namespace MiscCommon
 
         private:
             std::string m_FileName;
+    };
+
+    /**
+     * @brief This class is used to quarry a list of currently running processes
+     * @note Usage: In the example container pids will be containing pids of currently running processes
+     * @code
+        CProcList::ProcContainer_t pids;
+        CProcList::GetProcList( &pids );
+     * @endcode
+     **/
+    class CProcList
+    {
+        public:
+            typedef set<pid_t> ProcContainer_t;
+
+        public:
+            static void GetProcList( ProcContainer_t *_Procs )
+            {
+                if ( !_Procs )
+                    throw invalid_argument("CProcList::GetProcList: Input container is NULL");
+
+                _Procs->clear();
+
+                struct dirent **namelist;
+                // scanning the "/proc" filesystem
+                int n = scandir("/proc", &namelist, CheckDigit, alphasort);
+
+                if ( -1 == n )
+                    throw runtime_error("CProcList::GetProcList: " + errno2str() );
+                if ( 0 == n )
+                    return ; // there were no files
+
+                for (int i = 0; i < n; ++i)
+                {
+                    stringstream ss( namelist[i]->d_name );
+                    pid_t pid;
+                    ss >> pid;
+                    _Procs->insert( pid );
+                    free(namelist[i]);
+                }
+
+                free(namelist);
+            }
+
+        private:
+            static int CheckDigit( const struct dirent* _d )
+            {
+                const string sName( _d->d_name );
+                // Checking whether file name has all digits
+                return ( sName.end() == find_if( sName.begin(), sName.end(), not1(IsDigit()) ) );
+            }
+    };
+
+    /**
+     * @brief This class helps to retrieve process's information from /proc/<pid>/status
+     * @note Usage:
+     * @code
+            CProcStatus p;
+            p.Open( 8007 );
+            cout << "Name" << p.GetValue( "Name" ) << endl;
+            cout << "PPid" << p.GetValue( "PPid" ) << endl;
+            p.Open( 1 );
+            cout << "Name" << p.GetValue( "Name" ) << endl;
+            cout << "PPid" << p.GetValue( "PPid" ) << endl;
+     * @endcode 
+     **/
+    class CProcStatus
+    {
+            typedef std::auto_ptr<std::ifstream> ifstream_ptr;
+            typedef std::map<std::tring, std::string> keyvalue_t;
+
+            struct SGetValues
+            {
+                    SGetValues( CProcStatus *_pThis ): m_pThis(_pThis)
+                    {}
+                    bool operator()( const std::string &_sVal )
+                    {
+                        regmatch_t PMatch[3];
+                        if ( 0 != regexec( &m_pThis->m_re, _sVal.c_str(), 3, PMatch, 0) )
+                            return false;
+                        const std::string sKey( _sVal.c_str() + PMatch[1].rm_so, PMatch[1].rm_eo - PMatch[1].rm_so );
+                        const std::string sValue( _sVal.c_str() + PMatch[2].rm_so, PMatch[2].rm_eo - PMatch[2].rm_so );
+                        // TODO: make lowcase _KeyName
+                        m_pThis->m_values.insert( make_pair(sKey, sValue) );
+                        return true;
+                    }
+               private:
+                    CProcStatus *m_pThis;
+            };
+
+        public:
+            CProcStatus()
+            {
+                // Preparing regular expression pattern
+                regcomp( &m_re, "(.*):(.*)", REG_EXTENDED );
+            }
+            ~CProcStatus()
+            {
+                regfree( &m_re );
+            }
+
+            void Open( pid_t _PId )
+            {
+                m_values.clear();
+                if ( m_f.get() )
+                    m_f->close();
+
+                stringstream ss;
+                ss
+                << "/proc/"
+                << _PId
+                << "/status";
+                m_f = ifstream_ptr( new ifstream( ss.str().c_str() ) );
+                // create reader objects
+
+                std::vector<std::string> vec;
+                std::copy(custom_istream_iterator<std::string>(*m_f),
+                          custom_istream_iterator<std::string>(),
+                          std::back_inserter(vec));
+
+                SGetValues val(this);
+                for_each( vec.begin(), vec.end(), val );
+            }
+
+            string GetValue( const string &_KeyName ) const
+            {
+                // TODO: make lowcase _KeyName
+                keyvalue_t::const_iterator iter = m_values.find(_KeyName);
+                return (m_values.end() == iter ? string() : iter->second);
+            }
+
+        private:
+            ifstream_ptr m_f;
+            regex_t m_re;
+            keyvalue_t m_values;
     };
 
 };
