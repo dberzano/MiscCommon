@@ -96,7 +96,7 @@ namespace MiscCommon
 
     // specialization for std::string
     template <>
-    void custom_istream_iterator < std::basic_string<char>, char,
+    inline void custom_istream_iterator < std::basic_string<char>, char,
     std::char_traits<char>, std::ptrdiff_t > ::getval()
     {
         if (m_istream != 0 && !(std::getline(*m_istream, m_val)))

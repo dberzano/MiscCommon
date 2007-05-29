@@ -23,12 +23,19 @@
 
 // STD
 #include <fstream>
+#include <set>
+#include <map>
+#include <sstream>
+#include <stdexcept>
 
 // POSIX regexp
 #include <regex.h>
 
 // OUR
 #include "def.h"
+#include "ErrorCode.h"
+#include "MiscUtils.h"
+#include "CustomIterator.h"
 
 namespace MiscCommon
 {
@@ -105,13 +112,13 @@ namespace MiscCommon
     class CProcList
     {
         public:
-            typedef set<pid_t> ProcContainer_t;
+            typedef std::set<pid_t> ProcContainer_t;
 
         public:
             static void GetProcList( ProcContainer_t *_Procs )
             {
                 if ( !_Procs )
-                    throw invalid_argument("CProcList::GetProcList: Input container is NULL");
+                    throw std::invalid_argument("CProcList::GetProcList: Input container is NULL");
 
                 _Procs->clear();
 
@@ -120,13 +127,13 @@ namespace MiscCommon
                 int n = scandir("/proc", &namelist, CheckDigit, alphasort);
 
                 if ( -1 == n )
-                    throw runtime_error("CProcList::GetProcList: " + errno2str() );
+                    throw std::runtime_error("CProcList::GetProcList: " + errno2str() );
                 if ( 0 == n )
                     return ; // there were no files
 
                 for (int i = 0; i < n; ++i)
                 {
-                    stringstream ss( namelist[i]->d_name );
+                    std::stringstream ss( namelist[i]->d_name );
                     pid_t pid;
                     ss >> pid;
                     _Procs->insert( pid );
@@ -139,9 +146,9 @@ namespace MiscCommon
         private:
             static int CheckDigit( const struct dirent* _d )
             {
-                const string sName( _d->d_name );
+                const std::string sName( _d->d_name );
                 // Checking whether file name has all digits
-                return ( sName.end() == find_if( sName.begin(), sName.end(), not1(IsDigit()) ) );
+                return ( sName.end() == std::find_if( sName.begin(), sName.end(), std::not1(IsDigit()) ) );
             }
     };
 
@@ -161,7 +168,7 @@ namespace MiscCommon
     class CProcStatus
     {
             typedef std::auto_ptr<std::ifstream> ifstream_ptr;
-            typedef std::map<std::tring, std::string> keyvalue_t;
+            typedef std::map<std::string, std::string> keyvalue_t;
 
             struct SGetValues
             {
@@ -175,7 +182,7 @@ namespace MiscCommon
                         const std::string sKey( _sVal.c_str() + PMatch[1].rm_so, PMatch[1].rm_eo - PMatch[1].rm_so );
                         const std::string sValue( _sVal.c_str() + PMatch[2].rm_so, PMatch[2].rm_eo - PMatch[2].rm_so );
                         // TODO: make lowcase _KeyName
-                        m_pThis->m_values.insert( make_pair(sKey, sValue) );
+                        m_pThis->m_values.insert( std::make_pair(sKey, sValue) );
                         return true;
                     }
                private:
@@ -199,12 +206,12 @@ namespace MiscCommon
                 if ( m_f.get() )
                     m_f->close();
 
-                stringstream ss;
+                std::stringstream ss;
                 ss
                 << "/proc/"
                 << _PId
                 << "/status";
-                m_f = ifstream_ptr( new ifstream( ss.str().c_str() ) );
+                m_f = ifstream_ptr( new std::ifstream( ss.str().c_str() ) );
                 // create reader objects
 
                 std::vector<std::string> vec;
@@ -216,11 +223,11 @@ namespace MiscCommon
                 for_each( vec.begin(), vec.end(), val );
             }
 
-            string GetValue( const string &_KeyName ) const
+            std::string GetValue( const std::string &_KeyName ) const
             {
                 // TODO: make lowcase _KeyName
                 keyvalue_t::const_iterator iter = m_values.find(_KeyName);
-                return (m_values.end() == iter ? string() : iter->second);
+                return( m_values.end() == iter? std::string() : iter->second );
             }
 
         private:
