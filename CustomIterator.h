@@ -91,7 +91,7 @@ namespace MiscCommon
             }
 
             istream_type* m_istream; // pointer to input stream
-            T m_val; // lookahead value (valid if my_istream is not null)
+            T m_val; // lookahead value (valid if m_istream is not null)
     };
 
     // specialization for std::string
@@ -103,8 +103,8 @@ namespace MiscCommon
             m_istream = 0;
     }
 
-    // my_istream_iterator template operators
-    // test for my_istream_iterator equality
+    // m_istream_iterator template operators
+    // test for m_istream_iterator equality
     template <class T, class Ch, class Tr, class Dist>
     inline bool operator==(const custom_istream_iterator<T, Ch, Tr, Dist>& lhs,
                            const custom_istream_iterator<T, Ch, Tr, Dist>& rhs)
