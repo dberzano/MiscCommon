@@ -180,6 +180,24 @@ namespace MiscCommon
             }
             return _Socket;
         }
+         /**
+         * @brief A helper function, which insures that whole buffer was send. 
+         **/
+        inline int sendall( int s, unsigned char *buf, int len, int flags )
+        { //TODO: sendall - Make this code safer!!!
+            int total = 0;
+            int n = 0;
+
+            while ( total < len )
+            {
+                n = ::send( s, buf + total, len - total, flags );
+                if ( n == -1 )
+                    break;
+                total += n;
+            }
+
+            return ( n == -1 ? -1 : total );
+        }
         /**
          * @brief This is a stream operator which helps to \b send data to the given socket.
          * @brief Generic declaration (no implementation). 
@@ -193,27 +211,10 @@ namespace MiscCommon
         template <>
         inline smart_socket& operator << ( smart_socket &_Socket, BYTEVector_t &_Buf )
         {
-            ::send( _Socket, &_Buf[ 0 ], _Buf.size(), 0 );
+            //::send( _Socket, &_Buf[ 0 ], _Buf.size(), 0 );
+            sendall( _Socket, &_Buf[ 0 ], _Buf.size(), 0 );
             return _Socket;
-        }
-        /**
-         * @brief A helper function, which insures that whole buffer was send. 
-         **/
-        inline int sendall( int s, char *buf, int len, int flags )
-        { //TODO: sendall - Make this code safer!!!
-            int total = 0;
-            int n;
-
-            while ( total < len )
-            {
-                n = send( s, buf + total, len - total, flags );
-                if ( n == -1 )
-                    break;
-                total += n;
-            }
-
-            return ( n == -1 ? -1 : total );
-        }
+        }       
         /**
          * @brief A helper function, which sends a string to the given socket.
          **/
