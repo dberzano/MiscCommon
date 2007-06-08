@@ -20,40 +20,40 @@
 
 namespace MiscCommon
 {
-	
-	/**
-	 * @brief This class helps to represent a given contaner's data as in a HEX viewer
-	 * 
-	 * @note Example:
-	 * @code
-	 * 
-	 * int main()
-		{
-    		BYTEVector_t vec;
-    		vec.push_back(125);
-    		vec.push_back(525);
-    		vec.push_back(325);
-    		vec.push_back(123);
-    		vec.push_back(154);
-    		vec.push_back(125);
-    		vec.push_back(125);
-    		..
-    		..
-    		vec.push_back(167);
-    
-    		cout << BYTEVectorHexView_t( vec ) << endl;
-		}
-		
-		Output:
-		
-		0x00000000 | 7D 0D 45 7B 9A 7D 7D 7D 7D 7D 7D 7D 7D 7D A7 7D  | }.E{.}}}}}}}}}.}
-		0x10000000 | 7D 7D 0D 45 7B 9A 7D 7D 7D 7D 7D 7D 7D 7D 7D A7  | }}.E{.}}}}}}}}}.
-		0x20000000 | 7D 7D 0D 45 7B 9A 7D 7D 7D 7D 7D 7D 7D 7D 7D A7  | }}.E{.}}}}}}}}}.
-		0x23000000 | 7D 7D A7
-	 * @endcode
-	 * 
-	 * 
-	 **/
+
+    /**
+     * @brief This class helps to represent a given contaner's data as in a HEX viewer
+     * 
+     * @note Example:
+     * @code
+     * 
+     * int main()
+     {
+         BYTEVector_t vec;
+         vec.push_back(125);
+         vec.push_back(525);
+         vec.push_back(325);
+         vec.push_back(123);
+         vec.push_back(154);
+         vec.push_back(125);
+         vec.push_back(125);
+         ..
+         ..
+         vec.push_back(167);
+       
+         cout << BYTEVectorHexView_t( vec ) << endl;
+     }
+     
+     Output:
+     
+     0x00000000 | 7D 0D 45 7B 9A 7D 7D 7D 7D 7D 7D 7D 7D 7D A7 7D  | }.E{.}}}}}}}}}.}
+     0x10000000 | 7D 7D 0D 45 7B 9A 7D 7D 7D 7D 7D 7D 7D 7D 7D A7  | }}.E{.}}}}}}}}}.
+     0x20000000 | 7D 7D 0D 45 7B 9A 7D 7D 7D 7D 7D 7D 7D 7D 7D A7  | }}.E{.}}}}}}}}}.
+     0x23000000 | 7D 7D A7
+     * @endcode
+     * 
+     * 
+     **/
     template < class _T >
     class CHexView
     {
@@ -92,8 +92,9 @@ namespace MiscCommon
         private:
             void Print( std::ostream &_ostream, const std::stringstream &_ssHex, const std::stringstream &_ssTxt, size_t _nCount ) const
             {
+                _nCount = (_nCount <= m_nElementsInRaw) ? 0 : _nCount - m_nElementsInRaw;
                 _ostream
-                << "0x" << std::setw(8) << std::setfill('0') << std::hex << std::uppercase << _nCount - m_nElementsInRaw
+                << "0x" << std::right << std::setw(8) << std::setfill('0') << std::hex << std::uppercase << _nCount
                 << " | " << std::left << std::setw( m_nElementsInRaw * 3 ) << std::setfill(' ') << _ssHex.str()
                 << " | " << std::left << std::setw( m_nElementsInRaw ) << _ssTxt.str()
                 << '\n';
