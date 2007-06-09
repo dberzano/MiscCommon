@@ -455,7 +455,7 @@ namespace MiscCommon
         inline int get_free_port( int _Min, int _Max )
         {
             CSocketServer serv;
-            for ( int i = _Min; i < _Max; ++i )
+            for ( int i = _Min; i <= _Max; ++i )
             {
                 try
                 {
