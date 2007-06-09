@@ -474,8 +474,8 @@ namespace MiscCommon
             CSocketServer serv;
             try
             {
-                serv.Bind( i );
-                return i;
+                serv.Bind( _Port );
+                return _Port;
             }
             catch (...)
             {}
