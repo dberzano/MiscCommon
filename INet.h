@@ -180,9 +180,9 @@ namespace MiscCommon
             }
             return _Socket;
         }
-         /**
-         * @brief A helper function, which insures that whole buffer was send. 
-         **/
+        /**
+        * @brief A helper function, which insures that whole buffer was send. 
+        **/
         inline int sendall( int s, unsigned char *buf, int len, int flags )
         { //TODO: sendall - Make this code safer!!!
             int total = 0;
@@ -214,7 +214,7 @@ namespace MiscCommon
             //::send( _Socket, &_Buf[ 0 ], _Buf.size(), 0 );
             sendall( _Socket, &_Buf[ 0 ], _Buf.size(), 0 );
             return _Socket;
-        }       
+        }
         /**
          * @brief A helper function, which sends a string to the given socket.
          **/
@@ -469,7 +469,18 @@ namespace MiscCommon
             }
             return 0;
         }
-
+        inline int get_free_port( int _Port )
+        {
+            CSocketServer serv;
+            try
+            {
+                serv.Bind( i );
+                return i;
+            }
+            catch (...)
+            {}
+            return 0;
+        }
     };
 };
 
