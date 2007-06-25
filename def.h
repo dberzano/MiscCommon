@@ -35,6 +35,7 @@ namespace MiscCommon
      * @brief It wraps \b wchar_t, when _GLIBCPP_USE_WCHAR_T and _UNICODE are defined and \b char otherwise.
      **/
     typedef std::basic_string<wchar_t> tstring;
+    typedef std::basic_stringstream<wchar_t> tstringstream;
     /**
      * @brief Enclose constant strings and literal characters in the _T macro to make
      * @brief them unicode constant strings when _GLIBCPP_USE_WCHAR_T and _UNICODE are defined.
@@ -56,6 +57,7 @@ namespace MiscCommon
      *  @brief It wraps \b wchar_t, when _GLIBCPP_USE_WCHAR_T and _UNICODE are defined and \b char otherwise.
      **/
     typedef std::basic_string<char> tstring;
+    typedef std::basic_stringstream<char> tstringstream;
     /**
      * @brief Use TCHAR instead of char or wchar_t. It will be appropriately translated
      * @brief if _GLIBCPP_USE_WCHAR_T and _UNICODE are correctly defined (or not).
