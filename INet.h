@@ -115,7 +115,7 @@ namespace MiscCommon
                         m_Socket = INVALID_SOCKET;
                     }
                 }
-                bool is_valid()
+                bool is_valid() const
                 {
                     return ( INVALID_SOCKET != m_Socket );
                 }
@@ -126,6 +126,8 @@ namespace MiscCommon
                 /// This function indicates that socket is ready to be read (for non-blocking sockets)
                 int is_read_ready( size_t m_SecTimeOut, size_t m_USecTimeOut = 0 ) throw (std::exception)
                 {
+                    if ( !is_valid() )
+                        throw std::runtime_error( "Socket is invalid" );
                     fd_set readset;
                     FD_ZERO( &readset );
                     FD_SET( m_Socket, &readset );
