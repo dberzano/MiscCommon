@@ -43,6 +43,20 @@ namespace MiscCommon
             virtual ERRORCODE Write( xercesc::DOMNode* _element ) = 0;
     };
 
+    template <class _T>
+    struct IXMLPersistImpl
+    { 
+        void Read( xercesc::DOMNode* _element )
+        {
+            _T *pThis = reinterpret_cast<_T*>( this );
+            ReadXmlCfg( _element );
+        }
+        void Write( xercesc::DOMNode* _element )
+        {
+            _T *pThis = reinterpret_cast<_T*>( this );
+            WriteXmlCfg( _element );
+        }
+    };
 };
 
 #endif
