@@ -23,6 +23,7 @@
 // STD headers
 #include <string>
 #include <sstream>
+#include <stdexcept>
 
 // Our
 #include "MiscUtils.h"

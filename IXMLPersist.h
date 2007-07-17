@@ -49,12 +49,12 @@ namespace MiscCommon
         void Read( xercesc::DOMNode* _element )
         {
             _T *pThis = reinterpret_cast<_T*>( this );
-            ReadXmlCfg( _element );
+            pThis->ReadXmlCfg( _element );
         }
         void Write( xercesc::DOMNode* _element )
         {
             _T *pThis = reinterpret_cast<_T*>( this );
-            WriteXmlCfg( _element );
+            pThis->WriteXmlCfg( _element );
         }
     };
 };
