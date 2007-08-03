@@ -254,7 +254,7 @@ private:
         }
     }
 
-    //TODO: DOcument me!
+    //TODO: Document me!
    inline void do_execv( const std::string &_Command, const StringVector_t &_Params, size_t _Delay ) throw (std::exception)
     {
         g_handled_sign = false;
