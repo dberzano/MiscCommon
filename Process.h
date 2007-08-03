@@ -253,9 +253,14 @@ private:
             ::wait( &g_child_status );
         }
     }
-
+    
+    inline bool is_status_ok(int status)
+    {
+        return WIFEXITED(status) && WEXITSTATUS(status) == 0;
+    }
+    
     //TODO: Document me!
-   inline void do_execv( const std::string &_Command, const StringVector_t &_Params, size_t _Delay ) throw (std::exception)
+    inline void do_execv( const std::string &_Command, const StringVector_t &_Params, size_t _Delay ) throw (std::exception)
     {
         g_handled_sign = false;
         g_child_status = 0;
@@ -287,7 +292,7 @@ private:
         {
             if ( !IsProcessExist(child_pid) )
             {
-                if ( g_handled_sign && g_child_status )
+                if ( g_handled_sign && !is_status_ok(g_child_status) )
                 {
                     std::stringstream ss;
                     ss << "do_execv: Can't execute \"" << _Command << "\" with parameters: ";
