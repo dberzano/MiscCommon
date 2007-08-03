@@ -4,12 +4,12 @@
  * @brief This header contains a subset of helpers for Process, Daemon and PID file operations.
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
- 
+
         version number:   $LastChangedRevision:769 $
         created by:          Anar Manafov
                                   2007-04-12
         last changed by:   $LastChangedBy$ $LastChangedDate$
- 
+
         Copyright (c) 2007 GSI GridTeam. All rights reserved.
 *************************************************************************/
 #ifndef PROCESS_H_
@@ -18,6 +18,7 @@
 // API
 #include <unistd.h>
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <signal.h>
 #include <dirent.h>
 
@@ -163,7 +164,7 @@ namespace MiscCommon
             p.Open( 1 );
             cout << "Name" << p.GetValue( "Name" ) << endl;
             cout << "PPid" << p.GetValue( "PPid" ) << endl;
-     * @endcode 
+     * @endcode
      **/
     class CProcStatus
     {
@@ -172,23 +173,23 @@ namespace MiscCommon
 
             struct SGetValues
             {
-                    SGetValues( CProcStatus *_pThis ): m_pThis(_pThis)
-                    {}
-                    bool operator()( const std::string &_sVal )
-                    {
-                        regmatch_t PMatch[3];
-                        if ( 0 != regexec( &m_pThis->m_re, _sVal.c_str(), 3, PMatch, 0) )
-                            return false;
-                        const std::string sKey( _sVal.c_str() + PMatch[1].rm_so, PMatch[1].rm_eo - PMatch[1].rm_so );
-                        std::string sValue( _sVal.c_str() + PMatch[2].rm_so, PMatch[2].rm_eo - PMatch[2].rm_so );
-                        // TODO: make lowcase _KeyName
-                        trim<std::string>( &sValue, "\t" );
-                        trim<std::string>( &sValue, " " );
-                        m_pThis->m_values.insert( std::make_pair(sKey, sValue) );
-                        return true;
-                    }
-               private:
-                    CProcStatus *m_pThis;
+                SGetValues( CProcStatus *_pThis ): m_pThis(_pThis)
+                {}
+                bool operator()( const std::string &_sVal )
+                {
+                    regmatch_t PMatch[3];
+                    if ( 0 != regexec( &m_pThis->m_re, _sVal.c_str(), 3, PMatch, 0) )
+                        return false;
+                    const std::string sKey( _sVal.c_str() + PMatch[1].rm_so, PMatch[1].rm_eo - PMatch[1].rm_so );
+                    std::string sValue( _sVal.c_str() + PMatch[2].rm_so, PMatch[2].rm_eo - PMatch[2].rm_so );
+                    // TODO: make lowcase _KeyName
+                    trim<std::string>( &sValue, "\t" );
+                    trim<std::string>( &sValue, " " );
+                    m_pThis->m_values.insert( std::make_pair(sKey, sValue) );
+                    return true;
+                }
+private:
+                CProcStatus *m_pThis;
             };
 
         public:
@@ -229,7 +230,7 @@ namespace MiscCommon
             {
                 // TODO: make lowcase _KeyName
                 keyvalue_t::const_iterator iter = m_values.find(_KeyName);
-                return( m_values.end() == iter? std::string() : iter->second );
+                return( m_values.end() == iter ? std::string() : iter->second );
             }
 
         private:
@@ -237,6 +238,73 @@ namespace MiscCommon
             regex_t m_re;
             keyvalue_t m_values;
     };
+
+    sig_atomic_t g_handled_sign = false;
+    sig_atomic_t g_child_status = 0;
+    /**
+    * handles the signal returned by the child of the process, sets handled_sign at true
+    * @int sign, the signal
+    */
+    static void childSignalHandler ( int sign )
+    {
+        if ( sign == SIGCHLD)
+        {
+            g_handled_sign = true;
+            ::wait( &g_child_status );
+        }
+    }
+
+    //TODO: DOcument me!
+   inline void do_execv( const std::string &_Command, const StringVector_t &_Params, size_t _Delay ) throw (std::exception)
+    {
+        g_handled_sign = false;
+        g_child_status = 0;
+        signal ( SIGCHLD, childSignalHandler);
+
+        pid_t child_pid;
+        std::vector<const char*> cargs; //careful with c_str()!!!
+        cargs.push_back( _Command.c_str() );
+        StringVector_t::const_iterator iter = _Params.begin();
+        StringVector_t::const_iterator iter_end = _Params.end();
+        for ( ; iter != iter_end; ++iter )
+            cargs.push_back( iter->c_str() );
+        cargs.push_back(0);
+
+        switch ( child_pid = fork() )
+        {
+            case - 1:
+                // Unable to fork
+                throw std::runtime_error( "do_execv: Unable to fork process" );
+
+            case 0:
+                // child: execute the required command, on success does not return
+                execv ( _Command.c_str(), const_cast<char **>(&cargs[0]) ); // TODO: duplicates the std.out and std.err of the command into two files and report content of streams in error msg.
+                ::exit( 1 );
+        }
+
+        //parent
+        for ( size_t i = 0; i < _Delay; ++i )
+        {
+            if ( !IsProcessExist(child_pid) )
+            {
+                if ( g_handled_sign && g_child_status )
+                {
+                    std::stringstream ss;
+                    ss << "do_execv: Can't execute \"" << _Command << "\" with parameters: ";
+                    StringVector_t::const_iterator iter = _Params.begin();
+                    StringVector_t::const_iterator iter_end = _Params.end();
+                    for ( ; iter != iter_end; ++iter )
+                        ss << "\"" << *iter << "\" ";
+                    throw std::runtime_error( ss.str() );
+                }
+                return;
+            }
+            sleep( 1 ); //TODO: Needs to be fixed! Implement time-function based timeout measurements instead
+        }
+        throw std::runtime_error("do_execv: Timeout has been reached, command execution will be terminated now." );
+        //kills the child
+        kill( child_pid, SIGKILL ) ;
+    }
 
 };
 
