@@ -121,7 +121,7 @@ namespace MiscCommon
                 }
                 int shutdown( int _How = SHUT_RDWR )
                 {
-                    return ::shutdown( m_Socket, m_Socket );
+                    return ::shutdown( m_Socket, _How );
                 }
                 /// This function indicates that socket is ready to be read (for non-blocking sockets)
                 int is_read_ready( size_t m_SecTimeOut, size_t m_USecTimeOut = 0 ) throw (std::exception)
@@ -311,7 +311,7 @@ namespace MiscCommon
                     else
                         inet_aton( _Addr->c_str(), &addr.sin_addr );
 
-                    if ( bind( m_Socket, ( struct sockaddr * ) & addr, sizeof( addr ) ) < 0 )
+                    if ( bind( m_Socket, reinterpret_cast<struct sockaddr *> (& addr), sizeof( addr ) ) < 0 )
                         throw std::runtime_error( socket_error_string( m_Socket, "Soket bind error..." ) );
                 }
 
