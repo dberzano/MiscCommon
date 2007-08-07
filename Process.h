@@ -239,8 +239,8 @@ namespace MiscCommon
             keyvalue_t m_values;
         };
 
-        sig_atomic_t g_handled_sign = false;
-        sig_atomic_t g_child_status = 0;
+        static sig_atomic_t g_handled_sign = false;
+        static sig_atomic_t g_child_status = 0;
         /**
          * handles the signal returned by the child of the process, sets handled_sign at true
          * @int sign, the signal
