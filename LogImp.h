@@ -26,7 +26,7 @@ namespace MiscCommon
     /**
      * @brief It is a supporting macro, which declares GetModuleName method. Needed by MiscCommon::CLogImp
      **/
-#define REGISTER_LOG_MODULE(name)             std::string GetModuleName() const  {  return #name; }
+#define REGISTER_LOG_MODULE(name)             std::string GetModuleName() const  {  return name; }
 
     /**
      * @brief It represents logbook as a singleton.

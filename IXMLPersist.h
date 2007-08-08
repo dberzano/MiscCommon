@@ -68,24 +68,24 @@ namespace MiscCommon
     // TODO: Document me!
     // #include "XMLHelper.h" needs to be added to the src. header (caller of BEGIN_READ_XML_CFG) 
     
-#define BEGIN_READ_XML_CFG \
+#define BEGIN_READ_XML_CFG(_T) \
     void ReadXmlCfg( xercesc::DOMNode* _element ) \
     {   \
         if ( !_element )    \
-            throw std::invalid_argument( "An internal error has been detected. Can't read configuration of JobManager manager, DOMNode is NULL." );  \
+            throw std::invalid_argument( "An internal error has been detected. Can't read configuration of _T manager, DOMNode is NULL." );  \
     MiscCommon::XMLHelper::smart_XMLCh ElementName( "config" );    \
         xercesc::DOMElement *config_element( dynamic_cast<xercesc::DOMElement* >( _element ) );   \
         if ( !config_element )  \
-            throw std::runtime_error( "An internal error has been detected. Can't read configuration of JobManager manager, element \"config\" is missing" );    \
+            throw std::runtime_error( "An internal error has been detected. Can't read configuration of _T manager, element \"config\" is missing" );    \
             xercesc::DOMNodeList *list( config_element->getElementsByTagName( ElementName ) );   \
             xercesc::DOMNode* node( list->item( 0 ) );   \
             xercesc::DOMElement* elementConfig( NULL );  \
         if ( xercesc::DOMNode::ELEMENT_NODE == node->getNodeType() ) \
             elementConfig = dynamic_cast< xercesc::DOMElement* >( node ) ;   \
         if ( !elementConfig )   \
-            throw std::runtime_error( "An internal error has been detected. Can't read configuration of JobManager manager, empty XML document" );
+            throw std::runtime_error( "An internal error has been detected. Can't read configuration of _T manager, empty XML document" );
     
-#define READ_ELEMENT( ELEMENT_NAME, VAR ) MiscCommon::XMLHelper::get_attr_value( elementConfig, #ELEMENT_NAME, &VAR );
+#define READ_ELEMENT( ELEMENT_NAME, VAR ) MiscCommon::XMLHelper::get_attr_value( elementConfig, ELEMENT_NAME, &VAR );
 
 #define END_READ_XML_CFG }
 
