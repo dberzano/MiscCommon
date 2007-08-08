@@ -29,6 +29,8 @@ namespace MiscCommon
     class IXMLPersist
     {
         public:
+            virtual ~IXMLPersist()
+            {}
             /**
              * @brief Read data from the selected xml node.
              * @param _element - [in] xml node to read
