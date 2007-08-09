@@ -15,10 +15,9 @@
 #ifndef IXMLPERSIST_H
 #define IXMLPERSIST_H
 
-// Xerces-C++ headers
-#include <xercesc/dom/DOMNode.hpp>
-// GAW
+// MiscCommon
 #include "ErrorCode.h"
+#include "XMLHelper.h"
 
 namespace MiscCommon
 {
@@ -66,28 +65,34 @@ namespace MiscCommon
     };
     
     // TODO: Document me!
-    // #include "XMLHelper.h" needs to be added to the src. header (caller of BEGIN_READ_XML_CFG) 
-    
 #define BEGIN_READ_XML_CFG(_T) \
     void ReadXmlCfg( xercesc::DOMNode* _element ) \
     {   \
+        const std::string str( "An internal error has been detected. Can't read configuration of "+ std::string(#_T) + " manager, " ); \
         if ( !_element )    \
-            throw std::invalid_argument( "An internal error has been detected. Can't read configuration of _T manager, DOMNode is NULL." );  \
-    MiscCommon::XMLHelper::smart_XMLCh ElementName( "config" );    \
+            throw std::invalid_argument( str + "DOMNode is NULL." );  \
+        MiscCommon::XMLHelper::smart_XMLCh ElementName( "config" );    \
         xercesc::DOMElement *config_element( dynamic_cast<xercesc::DOMElement* >( _element ) );   \
         if ( !config_element )  \
-            throw std::runtime_error( "An internal error has been detected. Can't read configuration of _T manager, element \"config\" is missing" );    \
-            xercesc::DOMNodeList *list( config_element->getElementsByTagName( ElementName ) );   \
-            xercesc::DOMNode* node( list->item( 0 ) );   \
-            xercesc::DOMElement* elementConfig( NULL );  \
+            throw std::runtime_error( str + "element \"config\" is missing" );    \
+        xercesc::DOMNodeList *list( config_element->getElementsByTagName( ElementName ) );   \
+        if( !list ) \
+            throw std::runtime_error( str + "element \"config\" is missing" );    \
+        xercesc::DOMNode* node( list->item( 0 ) );   \
+        if( !node ) \
+             throw std::runtime_error( str + "element \"config\" is missing" );    \
+        xercesc::DOMElement* elementConfig( NULL );  \
         if ( xercesc::DOMNode::ELEMENT_NODE == node->getNodeType() ) \
             elementConfig = dynamic_cast< xercesc::DOMElement* >( node ) ;   \
         if ( !elementConfig )   \
-            throw std::runtime_error( "An internal error has been detected. Can't read configuration of _T manager, empty XML document" );
+            throw std::runtime_error( str + "empty XML document" );
     
 #define READ_ELEMENT( ELEMENT_NAME, VAR ) MiscCommon::XMLHelper::get_attr_value( elementConfig, ELEMENT_NAME, &VAR );
 
 #define END_READ_XML_CFG }
+    
+#define BEGIN_WRITE_XML_CFG(_T) void WriteXmlCfg( xercesc::DOMNode* _element ) {
+#define END_WRITE_XML_CFG }
 
     
 };
