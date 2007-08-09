@@ -4,12 +4,12 @@
  * @brief Helps to represent data as in a HEX viewer
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
- 
+
         version number:    $LastChangedRevision$
         created by:        Anar Manafov
                            $$date$$
         last changed by:   $LastChangedBy$ $LastChangedDate$
- 
+
         Copyright (c) 2007 GSI GridTeam. All rights reserved.
 *************************************************************************/
 #ifndef HEXVIEW_H_
@@ -23,10 +23,10 @@ namespace MiscCommon
 
     /**
      * @brief This class helps to represent a given contaner's data as in a HEX viewer
-     * 
+     *
      * @note Example:
      * @code
-     * 
+     *
      * int main()
      {
          BYTEVector_t vec;
@@ -46,12 +46,12 @@ namespace MiscCommon
      
      Output:
      0x00000000 | 7D 0D 45 7B 9A 7D 7D 7D 7D 7D 7D 7D 7D 7D A7 7D  | }.E{.}}}}}}}}}.}
-	 0x00000010 | 7D 7D 0D 45 7B 9A 7D 7D 7D 7D 7D 7D 7D 7D 7D A7  | }}.E{.}}}}}}}}}.
-	 0x00000020 | 7D 7D 0D 45 7B 9A 7D 7D 7D 7D 7D 7D 7D 7D 7D A7  | }}.E{.}}}}}}}}}.
-     0x00000030 | 7D 7D A7                                         | }}.     
+    0x00000010 | 7D 7D 0D 45 7B 9A 7D 7D 7D 7D 7D 7D 7D 7D 7D A7  | }}.E{.}}}}}}}}}.
+    0x00000020 | 7D 7D 0D 45 7B 9A 7D 7D 7D 7D 7D 7D 7D 7D 7D A7  | }}.E{.}}}}}}}}}.
+     0x00000030 | 7D 7D A7                                         | }}.
      * @endcode
-     * 
-     * 
+     *
+     *
      **/
     template < class _T >
     class CHexView
@@ -92,8 +92,8 @@ namespace MiscCommon
             void Print( std::ostream &_ostream, const std::stringstream &_ssHex, const std::stringstream &_ssTxt, size_t _nCount ) const
             {
                 static size_t nRaw = 0;
-                if( _nCount <= m_nElementsInRaw )
-                	nRaw = 0;
+                if ( _nCount <= m_nElementsInRaw )
+                    nRaw = 0;
                 _ostream
                 << "0x" << std::right << std::setw(8) << std::setfill('0') << std::hex << std::uppercase << (nRaw * m_nElementsInRaw)
                 << " | " << std::left << std::setw( m_nElementsInRaw * 3 ) << std::setfill(' ') << _ssHex.str()
