@@ -4,12 +4,12 @@
  * @brief Custom extensions to STL
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
- 
-        version number:   $LastChangedRevision$
-        created by:          Anar Manafov
-                                  2007-05-28
-        last changed by:   $LastChangedBy$ $LastChangedDate$
- 
+
+        version number:     $LastChangedRevision$
+        created by:         Anar Manafov
+                            2007-05-28
+        last changed by:    $LastChangedBy$ $LastChangedDate$
+
         Copyright (c) 2007 GSI GridTeam. All rights reserved.
 *************************************************************************/
 #ifndef CUSTOMITERATOR_H_
@@ -17,7 +17,7 @@
 
 namespace MiscCommon
 {
-    
+
     /**
      * @brief This custom istream iterator helps to read imput without breaking lines after whitespace etc.
      * @note Usage:

@@ -4,12 +4,12 @@
  * @brief This file contains a number of helpers and wrappers of system calls.
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
- 
-        version number:   $LastChangedRevision$
-        created by:          Anar Manafov
-                                  2007-04-01
-        last changed by:   $LastChangedBy$ $LastChangedDate$
- 
+
+        version number:     $LastChangedRevision$
+        created by:         Anar Manafov
+                            2007-04-01
+        last changed by:    $LastChangedBy$ $LastChangedDate$
+
         Copyright (c) 2007 GSI GridTeam. All rights reserved.
 *************************************************************************/
 #ifndef SYSHELPER_H_
@@ -26,7 +26,7 @@
 #define HOST_NAME_MAX 64
 #endif
 
-// OUR
+// MiscCommon
 #include "def.h"
 #include "MiscUtils.h"
 
@@ -34,7 +34,7 @@ namespace MiscCommon
 {
     /**
      * @brief The function returns current user name.
-     * @param _RetVal - [out] A pinter to string buffer where user name will be stored. Must not be NULL.    
+     * @param _RetVal - [out] A pinter to string buffer where user name will be stored. Must not be NULL.
      **/
     inline void get_cuser_name( std::string *_RetVal )
     {
@@ -51,7 +51,7 @@ namespace MiscCommon
      * @brief The function returns home directory path of the given user.
      * @param _uid - [in] user id the home directory of which should be returned.
      * @param _RetVal - [out] A pointer to string buffer where path will be stored. Must not be NULL.
-     * @return In case of error, function returns an empty buffer.     
+     * @return In case of error, function returns an empty buffer.
      **/
     inline void get_homedir( uid_t _uid, std::string *_RetVal )
     {
@@ -64,7 +64,7 @@ namespace MiscCommon
     /**
      * @brief The function returns home directory path of the current user.
      * @param _RetVal - [out] A pointer to string buffer where path will be stored. Must not be NULL.
-     * @return In case of error, function returns an empty buffer. 
+     * @return In case of error, function returns an empty buffer.
      **/
     inline void get_cuser_homedir( std::string *_RetVal )
     {
@@ -133,7 +133,7 @@ namespace MiscCommon
      *          static std::auto_ptr<Singleton> theSingleInstance;
      *          static Mutex m;
      * };
-     * 
+     *
      * Singleton& Singleton::Instance()
      * {
      *      MutexLocker obtain_lock(m);
@@ -141,10 +141,10 @@ namespace MiscCommon
      *          theSingleInstance.reset(new Singleton);
      *      return *theSingleInstance;
      * }
-     * 
+     *
      * std::auto_ptr<Singleton> Singleton::theSingleInstance;
      * Mutex Singleton::m;
-     * 
+     *
      * #include <cstdio>
      * int main()
      * {

@@ -4,12 +4,12 @@
  * @brief Log engine core.
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
- 
-        version number:   $LastChangedRevision$
-        created by:          Anar Manafov
-                                  2006-05-07
-        last changed by:   $LastChangedBy$ $LastChangedDate$
- 
+
+        version number:     $LastChangedRevision$
+        created by:         Anar Manafov
+                            2006-05-07
+        last changed by:    $LastChangedBy$ $LastChangedDate$
+
         Copyright (c) 2006 GSI GridTeam. All rights reserved.
 ************************************************************************/
 #ifndef CLOG_H
@@ -27,7 +27,7 @@
 // STL
 #include <string>
 
-// gLite API Wrapper
+// MiscCommon
 #include "Res.h"
 #include "def.h"
 #include "SysHelper.h"
@@ -53,7 +53,7 @@ namespace MiscCommon
     };
 
     /**
-     * 
+     *
      * @brief A simple template class which represents the Log engine of library.
      * @brief Current Log schema:
      * @brief [DATE/TIME]  [SEVERITY]  [MODULE NAME]   [Message]
@@ -145,7 +145,7 @@ namespace MiscCommon
     typedef CLog<std::ostream> CSTDOutLog;
 
     /**
-     * @brief Logging to a file. 
+     * @brief Logging to a file.
      * @brief ofstream specialization of CLog.
      **/
     class CFileLog: public CLog<std::ofstream>
@@ -155,7 +155,7 @@ namespace MiscCommon
 
         public:
             CFileLog( const std::string &_LogFileName, bool _CreateNew = false ) : CLog<stream_type>( &m_log_file ),
-                m_log_file( _LogFileName.c_str(), ( _CreateNew ? std::ios::trunc : std::ios::app ) | std::ios::out )
+                    m_log_file( _LogFileName.c_str(), ( _CreateNew ? std::ios::trunc : std::ios::app ) | std::ios::out )
             {}
 
         private:

@@ -4,12 +4,12 @@
  * @brief helpers for Socket and Network operations.
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
- 
-        version number:   $LastChangedRevision$
-        created by:          Anar Manafov
-                                  2007-03-01
-        last changed by:   $LastChangedBy$ $LastChangedDate$
- 
+
+        version number:     $LastChangedRevision$
+        created by:         Anar Manafov
+                            2007-03-01
+        last changed by:    $LastChangedBy$ $LastChangedDate$
+
         Copyright (c) 2007 GSI GridTeam. All rights reserved.
 *************************************************************************/
 #ifndef INET_H
@@ -38,7 +38,7 @@
 namespace MiscCommon
 {
     /**
-     *  @brief INet declares helpers for Socket and Network operations     
+     *  @brief INet declares helpers for Socket and Network operations
      **/
     namespace INet
     {
@@ -54,7 +54,8 @@ namespace MiscCommon
          *  @brief A wrapper for a basic Socket
          **/
         class smart_socket: public NONCopyable
-        { // TODO: Implement reference count
+        {
+                // TODO: Implement reference count
             public:
                 smart_socket() :
                         m_Socket( INVALID_SOCKET )
@@ -150,7 +151,7 @@ namespace MiscCommon
 
         /**
          * @brief This is a stream operator which helps to \b receive data from the given socket.
-         * @brief Generic declaration (no implementation). 
+         * @brief Generic declaration (no implementation).
          **/
         template <typename _T>
         smart_socket& operator >> ( smart_socket &_Socket, _T *_Buf ) throw ( std::exception );
@@ -183,10 +184,11 @@ namespace MiscCommon
             return _Socket;
         }
         /**
-        * @brief A helper function, which insures that whole buffer was send. 
+        * @brief A helper function, which insures that whole buffer was send.
         **/
         inline int sendall( int s, unsigned char *buf, int len, int flags )
-        { //TODO: sendall - Make this code safer!!!
+        {
+            //TODO: sendall - Make this code safer!!!
             int total = 0;
             int n = 0;
 
@@ -202,13 +204,13 @@ namespace MiscCommon
         }
         /**
          * @brief This is a stream operator which helps to \b send data to the given socket.
-         * @brief Generic declaration (no implementation). 
+         * @brief Generic declaration (no implementation).
          **/
         template <typename _T>
         smart_socket& operator << ( smart_socket &_Socket, _T &_Buf );
         /**
          * @brief This is a stream operator which helps to \b send data to the given socket.
-         * @brief A template specialization for BYTEVector_t type. 
+         * @brief A template specialization for BYTEVector_t type.
          **/
         template <>
         inline smart_socket& operator << ( smart_socket &_Socket, BYTEVector_t &_Buf )
@@ -335,7 +337,7 @@ namespace MiscCommon
                 smart_socket m_Socket;
         };
         /**
-         * @brief CSocketClient implements a simple socket client. 
+         * @brief CSocketClient implements a simple socket client.
          **/
         class CSocketClient
         {
@@ -391,7 +393,7 @@ namespace MiscCommon
         };
         /**
          * @brief A template class, which makes a string representation of the socket.
-         * @brief In a form of [Host name]:[Port].         
+         * @brief In a form of [Host name]:[Port].
          **/
         template <class _Type>
         struct _socket2string
@@ -480,7 +482,7 @@ namespace MiscCommon
                 return _Port;
             }
             catch (...)
-            {}
+                {}
             return 0;
         }
     };

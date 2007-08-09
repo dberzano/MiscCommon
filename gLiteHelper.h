@@ -40,7 +40,7 @@ class CJobStatusObj
         {
             if ( !_Container )
                 throw std::invalid_argument( "CJobStatusObj:GetChildren: Argument is NULL." );
-                
+
             *_Container = m_status.getValStringList( glite::lb::JobStatus::CHILDREN );
         }
 

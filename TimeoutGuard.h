@@ -1,20 +1,21 @@
 /************************************************************************/
 /**
  * @file TimeoutGuard.h
- * @brief The header declares a CTimeoutGuard class. 
+ * @brief The header declares a CTimeoutGuard class.
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
- 
-        version number:   $LastChangedRevision$
-        created by:          Anar Manafov
-                                  2007-04-17
-        last changed by:   $LastChangedBy$ $LastChangedDate$
- 
+
+        version number:     $LastChangedRevision$
+        created by:         Anar Manafov
+                            2007-04-17
+        last changed by:    $LastChangedBy$ $LastChangedDate$
+
         Copyright (c) 2007 GSI GridTeam. All rights reserved.
 *************************************************************************/
 #ifndef TIMEOUTGUARD_H_
 #define TIMEOUTGUARD_H_
 
+// MiscCommon
 #include "Process.h"
 #include "BOOSTHelper.h"
 

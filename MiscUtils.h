@@ -4,12 +4,12 @@
  * @brief a set of general helpers
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
- 
-        version number:   $LastChangedRevision$
-        created by:          Anar Manafov
-                                  2006-03-28
-        last changed by:   $LastChangedBy$ $LastChangedDate$
- 
+
+        version number:     $LastChangedRevision$
+        created by:         Anar Manafov
+                            2006-03-28
+        last changed by:    $LastChangedBy$ $LastChangedDate$
+
         Copyright (c) 2006, 2007 GSI GridTeam. All rights reserved.
 ************************************************************************/
 #ifndef MISCUTILS_H
@@ -24,7 +24,7 @@
 namespace MiscCommon
 {
     /**
-     * @brief Class which makes child to be non-copyable object. 
+     * @brief Class which makes child to be non-copyable object.
      **/
     class NONCopyable
     {

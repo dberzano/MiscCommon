@@ -4,12 +4,12 @@
  * @brief XML Helper header
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
- 
-        version number:   $LastChangedRevision$
-        created by:          Anar Manafov
-                                  2006-07-15
-        last changed by:   $LastChangedBy$ $LastChangedDate$
- 
+
+        version number:     $LastChangedRevision$
+        created by:         Anar Manafov
+                            2006-07-15
+        last changed by:    $LastChangedBy$ $LastChangedDate$
+
         Copyright (c) 2006, 2007 GSI GridTeam. All rights reserved.
 ************************************************************************/
 #ifndef XMLHELPER_H
@@ -25,7 +25,7 @@
 #include <sstream>
 #include <stdexcept>
 
-// Our
+// MiscCommon
 #include "MiscUtils.h"
 
 namespace MiscCommon
@@ -129,7 +129,7 @@ namespace MiscCommon
         }
         // TODO: Simplify this template by implementing traits
         /**
-         * @brief Returns a Node by the given name. (basic template without implementation)         
+         * @brief Returns a Node by the given name. (basic template without implementation)
          **/
         template <class _T>
         inline xercesc::DOMNode* GetSingleNodeByName( const _T *_Val, const std::string &_NodeName );
@@ -137,7 +137,7 @@ namespace MiscCommon
          * @brief Returns a Node by the given name. A xercesc::DOMDocument specialization
          * @param ._Doc - [in] XML Document object. Must not be NULL.
          * @param _NodeName - [in] Name of the child node to find.
-         * @return pointer to the found XML node or NULL in case of error 
+         * @return pointer to the found XML node or NULL in case of error
          **/
         template <>
         inline xercesc::DOMNode* GetSingleNodeByName( const xercesc::DOMDocument *_Doc, const std::string &_NodeName )
@@ -155,7 +155,7 @@ namespace MiscCommon
          * @brief Returns a Node by the given name. A xercesc::DOMNode specialization.
          * @param ._node - [in] XML Node. Must not be NULL.
          * @param _NodeName - [in] Name of the child node to find.
-         * @return pointer to the found XML node or NULL in case of error 
+         * @return pointer to the found XML node or NULL in case of error
          **/
         template <>
         inline xercesc::DOMNode* GetSingleNodeByName( const xercesc::DOMNode *_node, const std::string &_NodeName )
@@ -178,7 +178,7 @@ namespace MiscCommon
         /**
          * @brief A helper template function, which wraps GetSingleNodeByName template-functions.
          * @param ._Node - [in] Could be a pointer to either XML Document or XML Node. Must not be NULL.
-         * @param _NodeName - [in] Name of the child node to find.         
+         * @param _NodeName - [in] Name of the child node to find.
          * @exception std::runtime_error "can't find XML element [_NodeName]"
          * @return pointer to the found XML node or an exception will be raised.
          **/

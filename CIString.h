@@ -4,12 +4,12 @@
  * @brief Case Insensitive String
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
- 
-        version number:   $LastChangedRevision$
-        created by:          Anar Manafov
-                                  2007-05-28
-        last changed by:   $LastChangedBy$ $LastChangedDate$
- 
+
+        version number:     $LastChangedRevision$
+        created by:         Anar Manafov
+                            2007-05-28
+        last changed by:    $LastChangedBy$ $LastChangedDate$
+
         Copyright (c) 2007 GSI GridTeam. All rights reserved.
 *************************************************************************/
 #ifndef CISTRING_H_
@@ -29,11 +29,13 @@ namespace MiscCommon
     {
         typedef char _Elem;
         static bool eq(const _Elem& _Left, const _Elem& _Right)
-        {   // test for element equality
+        {
+            // test for element equality
             return (::toupper(_Left) == ::toupper(_Right));
         }
         static bool lt(const _Elem& _Left, const _Elem& _Right)
-        {   // test if _Left precedes _Right
+        {
+            // test if _Left precedes _Right
             return (::toupper(_Left) < ::toupper(_Right));
         }
     };
@@ -42,11 +44,13 @@ namespace MiscCommon
     {
         typedef wchar_t _Elem;
         static bool eq(const _Elem& _Left, const _Elem& _Right)
-        {   // test for element equality
+        {
+            // test for element equality
             return (::towupper(_Left) == ::towupper(_Right));
         }
         static bool lt(const _Elem& _Left, const _Elem& _Right)
-        {   // test if _Left precedes _Right
+        {
+            // test if _Left precedes _Right
             return (::towupper(_Left) < ::towupper(_Right));
         }
     };
@@ -57,12 +61,14 @@ namespace MiscCommon
         typedef std::_Secure_char_traits_tag _Secure_char_traits;
 
         static int compare(const _Elem *_First1, const _Elem *_First2, size_t _Count)
-        {   // compare [_First1, _First1 + _Count) with [_First2, ...)
+        {
+            // compare [_First1, _First1 + _Count) with [_First2, ...)
             return (::_memicmp(_First1, _First2, _Count * sizeof(_Elem)));
         }
         static const _Elem *find(const _Elem *_First, size_t _Count,
                                  const _Elem& _Ch)
-        {   // look for _Ch in [_First, _First + _Count)
+        {
+            // look for _Ch in [_First, _First + _Count)
             for (; 0 < _Count; --_Count, ++_First)
                 if (eq(*_First, _Ch))
                     return (_First);

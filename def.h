@@ -4,13 +4,13 @@
  * @brief Helpers and definitions (typedefs)
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
- 
-        version number:   $LastChangedRevision$
-        created by:          Anar Manafov
-                                  2006-03-28
-        last changed by:   $LastChangedBy$ $LastChangedDate$
- 
-        Copyright (c) 2006, 2007 GSI GridTeam. All rights reserved.
+
+        version number:     $LastChangedRevision$
+        created by:         Anar Manafov
+                            2006-03-28
+        last changed by:    $LastChangedBy$ $LastChangedDate$
+
+        Copyright (c) 2006-2007 GSI GridTeam. All rights reserved.
 ************************************************************************/
 #ifndef DEF_H
 #define DEF_H
@@ -28,7 +28,7 @@ namespace MiscCommon
 
     /**
      * @brief Long Pointer to a Constant null-Terminated String.
-     * @brief It wraps \b wchar_t, when _GLIBCPP_USE_WCHAR_T and _UNICODE are defined and \b char otherwise. 
+     * @brief It wraps \b wchar_t, when _GLIBCPP_USE_WCHAR_T and _UNICODE are defined and \b char otherwise.
      **/
     typedef const wchar_t* LPCTSTR;
     /**
@@ -49,24 +49,24 @@ namespace MiscCommon
 
 #else
     /**
-     * @brief Long Pointer to a Constant null-Terminated String.
-     * @brief It wraps \b wchar_t, when _GLIBCPP_USE_WCHAR_T and _UNICODE are defined and \b char otherwise.
-     **/
+    * @brief Long Pointer to a Constant null-Terminated String.
+    * @brief It wraps \b wchar_t, when _GLIBCPP_USE_WCHAR_T and _UNICODE are defined and \b char otherwise.
+    **/
     typedef const char *LPCTSTR;
     /**
-     *  @brief It wraps \b wchar_t, when _GLIBCPP_USE_WCHAR_T and _UNICODE are defined and \b char otherwise.
-     **/
+    *  @brief It wraps \b wchar_t, when _GLIBCPP_USE_WCHAR_T and _UNICODE are defined and \b char otherwise.
+    **/
     typedef std::basic_string<char> tstring;
     typedef std::basic_stringstream<char> tstringstream;
     /**
-     * @brief Use TCHAR instead of char or wchar_t. It will be appropriately translated
-     * @brief if _GLIBCPP_USE_WCHAR_T and _UNICODE are correctly defined (or not).
-     **/
+    * @brief Use TCHAR instead of char or wchar_t. It will be appropriately translated
+    * @brief if _GLIBCPP_USE_WCHAR_T and _UNICODE are correctly defined (or not).
+    **/
 #define _T(s) s
     /**
-     * @brief Use TCHAR instead of char or wchar_t. It will be appropriately translated
-     * @brief if _GLIBCPP_USE_WCHAR_T and _UNICODE are correctly defined (or not).
-     **/
+    * @brief Use TCHAR instead of char or wchar_t. It will be appropriately translated
+    * @brief if _GLIBCPP_USE_WCHAR_T and _UNICODE are correctly defined (or not).
+    **/
     typedef char TCHAR;
 
 #endif
