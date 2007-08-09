@@ -7,7 +7,7 @@
 
         version number:    $LastChangedRevision$
         created by:        Anar Manafov
-                           $$date$$
+                           2007-05-05
         last changed by:   $LastChangedBy$ $LastChangedDate$
 
         Copyright (c) 2007 GSI GridTeam. All rights reserved.
