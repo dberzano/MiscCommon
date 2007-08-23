@@ -30,7 +30,7 @@ namespace MiscCommon
     /**
      * Removes '/' characters at the end of the of the input pathname
      */
-    std::string normalize_path( const std::string &_path )
+    inline std::string normalize_path( const std::string &_path )
     {
         std::string path( _path );
         MiscCommon::trim_right<std::string>( &path, "/" );

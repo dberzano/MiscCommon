@@ -15,6 +15,9 @@
 #ifndef GLITEHELPER_H_
 #define GLITEHELPER_H_
 
+// STD
+#include <stdexcept>
+
 // gLite
 #include "glite/lb/Job.h"
 #include "glite/wmsutils/jobid/JobId.h"
