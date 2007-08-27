@@ -20,6 +20,7 @@
 #include <set>
 #include <vector>
 #include <map>
+#include <sstream> 
 
 namespace MiscCommon
 {
