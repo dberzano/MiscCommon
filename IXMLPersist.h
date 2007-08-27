@@ -70,7 +70,7 @@ namespace MiscCommon
 #define BEGIN_READ_XML_CFG(_T) BEGIN_READ_XML_NODE( _T, "config" )
 #define END_READ_XML_CFG }
 
-#define BEGIN_WRITE_XML_CFG(_T) void WriteXmlCfg( xercesc::DOMNode* _element ) {
+#define BEGIN_WRITE_XML_CFG(_T) void WriteXmlCfg( xercesc::DOMNode* /*_element*/ ) {
 #define END_WRITE_XML_CFG }
 
 };
