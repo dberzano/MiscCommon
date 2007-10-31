@@ -180,15 +180,17 @@ namespace MiscCommon
                     regmatch_t PMatch[3];
                     if ( 0 != regexec( &m_pThis->m_re, _sVal.c_str(), 3, PMatch, 0) )
                         return false;
-                    const std::string sKey( _sVal.c_str() + PMatch[1].rm_so, PMatch[1].rm_eo - PMatch[1].rm_so );
+                    std::string sKey( _sVal.c_str() + PMatch[1].rm_so, PMatch[1].rm_eo - PMatch[1].rm_so );
                     std::string sValue( _sVal.c_str() + PMatch[2].rm_so, PMatch[2].rm_eo - PMatch[2].rm_so );
-                    // TODO: make lowcase _KeyName
+                    // We want to be case insensitive
+                    to_lower( sKey );
+                    
                     trim<std::string>( &sValue, "\t" );
                     trim<std::string>( &sValue, " " );
                     m_pThis->m_values.insert( std::make_pair(sKey, sValue) );
                     return true;
                 }
-               private:
+private:
                 CProcStatus *m_pThis;
             };
 
@@ -216,11 +218,8 @@ namespace MiscCommon
                 << "/status";
                 m_f = ifstream_ptr( new std::ifstream( ss.str().c_str() ) );
                 // create reader objects
-
-                std::vector<std::string> vec;
-                std::copy(custom_istream_iterator<std::string>(*m_f),
-                          custom_istream_iterator<std::string>(),
-                          std::back_inserter(vec));
+                StringVector_t vec( custom_istream_iterator<std::string>(*m_f),
+                                              (custom_istream_iterator<std::string>()) );
 
                 SGetValues val(this);
                 for_each( vec.begin(), vec.end(), val );
@@ -228,8 +227,11 @@ namespace MiscCommon
 
             std::string GetValue( const std::string &_KeyName ) const
             {
-                // TODO: make lowcase _KeyName
-                keyvalue_t::const_iterator iter = m_values.find(_KeyName);
+                // We want to be case insensitive
+                std::string sKey( _KeyName );
+                to_lower( sKey );
+                
+                keyvalue_t::const_iterator iter = m_values.find(sKey);
                 return( m_values.end() == iter ? std::string() : iter->second );
             }
 
