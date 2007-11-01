@@ -218,8 +218,20 @@ private:
                 << "/status";
                 m_f = ifstream_ptr( new std::ifstream( ss.str().c_str() ) );
                 // create reader objects
-                StringVector_t vec( custom_istream_iterator<std::string>(*m_f),
-                                              (custom_istream_iterator<std::string>()) );
+		// HACK: the extra set of parenthesis (the last argument of vector's ctor) is required (for gcc 4.1+)
+		//      StringVector_t vec( custom_istream_iterator<std::string>(*m_f), (custom_istream_iterator<std::string>()) );
+		// or 
+		//	custom_istream_iterator<std::string> in_begin(*m_f);
+		//      custom_istream_iterator<std::string> in_end;
+                //      StringVector_t vec( in_begin, in_end );
+		// the last method for gcc 3.2+
+		// , because
+		// the compiler is very aggressive in identifying function declarations and will identify the
+		// definition of vec as forward declaration of a function accepting two istream_iterator parameters
+		// and returning a vector of integers
+		custom_istream_iterator<std::string> in_begin(*m_f);
+		custom_istream_iterator<std::string> in_end;
+                StringVector_t vec( in_begin, in_end );
 
                 SGetValues val(this);
                 for_each( vec.begin(), vec.end(), val );
