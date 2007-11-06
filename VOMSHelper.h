@@ -29,6 +29,9 @@
 #endif
 #include "glite/security/voms/voms_api.h"
 
+// MiscCommon
+#include "def.h"
+
 namespace MiscCommon
 {
     namespace gLite
@@ -77,9 +80,8 @@ namespace MiscCommon
             // checking VIRTUAL_ORGANISATION
             if ( !ad.hasAttribute(glite::jdl::JDL::VIRTUAL_ORGANISATION) )
                 return;
-
-            std::string voname( ad.getString (glite::jdl::JDL::VIRTUAL_ORGANISATION) );
-            _RetVal->swap( voname );
+            
+            *_RetVal = ad.getString (glite::jdl::JDL::VIRTUAL_ORGANISATION);
         }
 
     };
