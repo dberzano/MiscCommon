@@ -71,9 +71,38 @@ namespace MiscCommon
         get_homedir( getuid(), _RetVal );
     }
     /**
+     * @brief The function extends any environmnent variable found in the give path
+     * @brief to its value.
+     * @brief When, for example, there is a variable $GLITE_LOCATE = /opt/glite and the given path
+     * @brief is "$GLITE_LOCATION/etc/test.xml", the return value will be a path "/opt/glite/etc/test.xml"
+     * @param _Path - [in, out] A pointer to a string buffer which represents a path to extend. Must not be NULL.
+     **/
+    inline void smart_path( std::string *_Path, std::string::size_type _pos = 0 )
+    {
+        const std::string::size_type p_begin = _Path->find("$", _pos);
+        if ( std::string::npos == p_begin )
+            return;
+
+        std::string::size_type p_end = _Path->find("/", p_begin);
+        if ( std::string::npos == p_end )
+            p_end = _Path->size();
+
+        const std::string env_var( _Path->substr(p_begin, p_end - p_begin) );
+        const char * szvar( getenv(env_var.c_str()) );
+        if ( !szvar )
+            return;
+        const std::string var_val( szvar );
+        if ( var_val.empty() )
+            return;
+
+        replace( _Path, env_var, var_val );
+
+        smart_path( _Path, p_end );
+    }
+    /**
      * @brief The function extends \b ~/ and \b $HOME/ to
      * @brief a real user's home directory path.
-     * @param _Path - [in, out] A pointer to string buffer which represents a path to extend. Must not be NULL.
+     * @param _Path - [in, out] A pointer to a string buffer which represents a path to extend. Must not be NULL.
      **/
     inline void smart_homedir_append( std::string *_Path )
     {
@@ -85,11 +114,11 @@ namespace MiscCommon
         smart_append( &sHome, '/');
 
         replace<std::string>( _Path, "~/", sHome );
-        replace<std::string>( _Path, "$HOME/", sHome );
+        smart_path( _Path );
     }
     /**
      * @brief The function is used to access the host name (with FCDN) of the current processor.
-     * @param _RetVal - [out] The return buffer string. Must not be NULL.
+     * @param _RetVal - [out] The returned buffer string. Must not be NULL.
      **/
     inline void get_hostname( std::string *_RetVal )
     {

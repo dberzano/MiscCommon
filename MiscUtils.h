@@ -43,42 +43,65 @@ namespace MiscCommon
      **/
     class auto_setenv
     {
-            auto_setenv()
-            {}
-            ~auto_setenv()
-            {
-                unset();
-            }
         public:
-            static auto_setenv& Instance()
+            auto_setenv(): m_unset(false)
             {
-                static auto_setenv env;
-                return env;
             }
-            void Init( const std::string &_VarName, const std::string &_NewValue )
+            auto_setenv( const std::string &_VarName, const std::string &_NewValue ): m_unset(false)
             {
-                // unsetting variable in case if called second of more times
-                unset();
-
                 m_sVarName = _VarName;
                 m_sNewValue = _NewValue;
 
                 char *chTmp = getenv( m_sVarName.c_str() );
                 if ( chTmp )
                     m_sOldValue = chTmp;
+                else
+                    m_unset = true;
+                // TODO: check error code
+                setenv( m_sVarName.c_str(), m_sNewValue.c_str(), 1 );
+            }
+            ~auto_setenv()
+            {
+                unset();
+            }
+
+        public:
+            void set( const std::string &_VarName, const std::string &_NewValue )
+            {
+                unset();
+                
+                m_sVarName = _VarName;
+                m_sNewValue = _NewValue;
+
+                char *chTmp = getenv( m_sVarName.c_str() );
+                if ( chTmp )
+                    m_sOldValue = chTmp;
+                else
+                    m_unset = true;
                 // TODO: check error code
                 setenv( m_sVarName.c_str(), m_sNewValue.c_str(), 1 );
             }
             void unset()
             {
-                if ( !m_sOldValue.empty() )
+                if ( m_unset )
+                {
+                    m_unset = false;
+                    unsetenv( m_sVarName.c_str() );                    
+                    return;
+                }
+
+                if ( !m_sVarName.empty() )
+                {
+                    m_sVarName.clear();
                     setenv( m_sVarName.c_str(), m_sOldValue.c_str(), 1 );
+                }
             }
 
         private:
             std::string m_sVarName;
             std::string m_sNewValue;
             std::string m_sOldValue;
+            bool m_unset;
     };
 
     /** @fn _T* smart_append( _T* _pString, const typename  _T::value_type _ItemToAdd )
