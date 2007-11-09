@@ -184,7 +184,7 @@ namespace MiscCommon
                     std::string sValue( _sVal.c_str() + PMatch[2].rm_so, PMatch[2].rm_eo - PMatch[2].rm_so );
                     // We want to be case insensitive
                     to_lower( sKey );
-                    
+
                     trim<std::string>( &sValue, "\t" );
                     trim<std::string>( &sValue, " " );
                     m_pThis->m_values.insert( std::make_pair(sKey, sValue) );
@@ -218,19 +218,19 @@ private:
                 << "/status";
                 m_f = ifstream_ptr( new std::ifstream( ss.str().c_str() ) );
                 // create reader objects
-		// HACK: the extra set of parenthesis (the last argument of vector's ctor) is required (for gcc 4.1+)
-		//      StringVector_t vec( custom_istream_iterator<std::string>(*m_f), (custom_istream_iterator<std::string>()) );
-		// or 
-		//	custom_istream_iterator<std::string> in_begin(*m_f);
-		//      custom_istream_iterator<std::string> in_end;
+                // HACK: the extra set of parenthesis (the last argument of vector's ctor) is required (for gcc 4.1+)
+                //      StringVector_t vec( custom_istream_iterator<std::string>(*m_f), (custom_istream_iterator<std::string>()) );
+                // or
+                // custom_istream_iterator<std::string> in_begin(*m_f);
+                //      custom_istream_iterator<std::string> in_end;
                 //      StringVector_t vec( in_begin, in_end );
-		// the last method for gcc 3.2+
-		// , because
-		// the compiler is very aggressive in identifying function declarations and will identify the
-		// definition of vec as forward declaration of a function accepting two istream_iterator parameters
-		// and returning a vector of integers
-		custom_istream_iterator<std::string> in_begin(*m_f);
-		custom_istream_iterator<std::string> in_end;
+                // the last method for gcc 3.2+
+                // , because
+                // the compiler is very aggressive in identifying function declarations and will identify the
+                // definition of vec as forward declaration of a function accepting two istream_iterator parameters
+                // and returning a vector of integers
+                custom_istream_iterator<std::string> in_begin(*m_f);
+                custom_istream_iterator<std::string> in_end;
                 StringVector_t vec( in_begin, in_end );
 
                 SGetValues val(this);
@@ -242,7 +242,7 @@ private:
                 // We want to be case insensitive
                 std::string sKey( _KeyName );
                 to_lower( sKey );
-                
+
                 keyvalue_t::const_iterator iter = m_values.find(sKey);
                 return( m_values.end() == iter ? std::string() : iter->second );
             }
