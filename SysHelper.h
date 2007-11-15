@@ -77,27 +77,29 @@ namespace MiscCommon
      * @brief is "$GLITE_LOCATION/etc/test.xml", the return value will be a path "/opt/glite/etc/test.xml"
      * @param _Path - [in, out] A pointer to a string buffer which represents a path to extend. Must not be NULL.
      **/
-    inline void smart_path( std::string *_Path, std::string::size_type _pos = 0 )
+    inline void smart_path( std::string *_Path )
     {
-        const std::string::size_type p_begin = _Path->find("$", _pos);
+        std::string::size_type p_begin = _Path->find( "$" );
         if ( std::string::npos == p_begin )
             return;
+        
+        ++p_begin; // ecluding '$' from the name
 
         std::string::size_type p_end = _Path->find("/", p_begin);
         if ( std::string::npos == p_end )
             p_end = _Path->size();
 
-        const std::string env_var( _Path->substr(p_begin, p_end - p_begin) );
+        const std::string env_var( _Path->substr(p_begin, p_end - p_begin) );         
         const char * szvar( getenv(env_var.c_str()) );
         if ( !szvar )
             return;
         const std::string var_val( szvar );
         if ( var_val.empty() )
             return;
+        
+        replace( _Path, "$"+env_var, var_val );
 
-        replace( _Path, env_var, var_val );
-
-        smart_path( _Path, p_end );
+        smart_path( _Path );
     }
     /**
      * @brief The function extends \b ~/ and \b $HOME/ to
