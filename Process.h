@@ -185,8 +185,8 @@ namespace MiscCommon
                     // We want to be case insensitive
                     to_lower( sKey );
 
-                    trim<std::string>( &sValue, "\t" );
-                    trim<std::string>( &sValue, " " );
+                    trim<std::string>( &sValue, '\t' );
+                    trim<std::string>( &sValue, ' ' );
                     m_pThis->m_values.insert( std::make_pair(sKey, sValue) );
                     return true;
                 }

@@ -122,40 +122,40 @@ namespace MiscCommon
         return _pString;
     }
 
-    /** @fn _T& trim(_T* _pString, const _T& _strWhat)
+    /** @fn _T& trim(_T* _pString, const _T::value_type& _chWhat)
      *  @brief trims trailing and leading characters from the string.
      *  @param _pString - [in] The string to be trimmed.
-     *  @param _strWhat - [in] The target characters to be trimmed.
+     *  @param _chWhat - [in] The target character to be trimmed.
      *  @return A reference to the string object from which the elements have been trimmed.
      */
     template <typename _T>
-    _T& trim( _T* _pString, const _T& _strWhat )
+    _T& trim( _T* _pString, const typename _T::value_type& _chWhat )
     {
-        return trim_right( &trim_left( _pString, _strWhat ), _strWhat );
+        return trim_right( &trim_left( _pString, _chWhat ), _chWhat );
     }
 
-    /** @fn _T& trim_right(_T* _pString, const _T& _strWhat)
+    /** @fn _T& trim_right(_T* _pString, const _T::value_type& _chWhat)
      *  @brief trims trailing characters from the string.
      *  @param _pString - [in] The string to be trimmed.
-     *  @param _strWhat - [in] The target characters to be trimmed.
+     *  @param _chWhat - [in] The target character to be trimmed.
      *  @return A reference to the string object from which the elements have been trimmed.
      */
     template <typename _T>
-    _T& trim_right( _T* _pString, const _T& _strWhat )
+    _T& trim_right( _T* _pString, const typename _T::value_type& _chWhat )
     {
-        return _pString->erase( _pString->find_last_not_of( _strWhat ) + 1 );
+        return _pString->erase( _pString->find_last_not_of( _chWhat ) + 1 );
     }
 
-    /** @fn _T& trim_left(_T* _pString, const _T& _strWhat)
+    /** @fn _T& trim_left(_T* _pString, const _T::value_type& _chWhat)
      *  @brief trims leading characters from the string.
      *  @param _pString - [in] The string to be trimmed.
-     *  @param _strWhat - [in] The target characters to be trimmed.
+     *  @param _chWhat - [in] The target character to be trimmed.
      *  @return A reference to the string object from which the elements have been trimmed.
      */
     template <typename _T>
-    _T& trim_left( _T* _pString, const _T& _strWhat )
+    _T& trim_left( _T* _pString, const typename _T::value_type& _chWhat )
     {
-        return _pString->erase( 0, _pString->find_first_not_of( _strWhat ) );
+        return _pString->erase( 0, _pString->find_first_not_of( _chWhat ) );
     }
 
     /** @fn _T& replace(_T* _pString, const _T& _what, const _T& _with)

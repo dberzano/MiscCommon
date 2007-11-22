@@ -33,7 +33,7 @@ namespace MiscCommon
     inline std::string normalize_path( const std::string &_path )
     {
         std::string path( _path );
-        MiscCommon::trim_right<std::string>( &path, "/" );
+        MiscCommon::trim_right<std::string>( &path, '/' );
         return path;
     }
 
