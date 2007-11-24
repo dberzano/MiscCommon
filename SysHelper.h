@@ -72,7 +72,8 @@ namespace MiscCommon
     }
     /**
      * @brief The function extends any environmnent variable found in the give path
-     * @brief to its value.
+     * @brief to its value.\b
+     * @brief This function also extends "~/" to a real user's home directory path.
      * @brief When, for example, there is a variable $GLITE_LOCATE = /opt/glite and the given path
      * @brief is "$GLITE_LOCATION/etc/test.xml", the return value will be a path "/opt/glite/etc/test.xml"
      * @param _Path - [in, out] A pointer to a string buffer which represents a path to extend. Must not be NULL.
@@ -80,6 +81,22 @@ namespace MiscCommon
     template<class _T>
     inline void smart_path( _T *_Path )
     {
+        // Checking for "~/"
+        std::string path( *_Path );
+        MiscCommon::trim_left( &path, ' ');
+        if ( '~' == path[0] && '/' == path[1] )
+        {
+            std::string path( *_Path );
+            std::string sHome;
+            get_cuser_homedir( &sHome );
+            smart_append( &sHome, '/');
+
+            path.erase( path.begin(), path.begin() + 2 );
+            sHome += path;
+            path.swap(sHome);
+            _Path->swap(path);
+        }
+
         typename _T::size_type p_begin = _Path->find( _T("$") );
         if ( _T::npos == p_begin )
             return;
@@ -102,34 +119,6 @@ namespace MiscCommon
         replace( _Path, _T("$") + env_var, var_val );
 
         smart_path( _Path );
-    }
-    /**
-     * @brief The function extends \b ~/ and \b $HOME/ to
-     * @brief a real user's home directory path.
-     * @param _Path - [in, out] A pointer to a string buffer which represents a path to extend. Must not be NULL.
-     **/
-    inline void smart_homedir_append( std::string *_Path )
-    {
-        if ( !_Path )
-            return ;
-        
-        std::string path( *_Path );
-
-        std::string sHome;
-        get_cuser_homedir( &sHome );
-        smart_append( &sHome, '/');
-
-        MiscCommon::trim_left( &path, ' ');
-
-        if ( '~' == path[0] && '/' == path[1] )
-        {
-            path.erase( path.begin(), path.begin() + 2 );            
-            sHome += path;
-            path.swap(sHome);
-        }
-
-        smart_path( &path );        
-        _Path->swap( path );
     }
     /**
      * @brief The function is used to access the host name (with FCDN) of the current processor.
