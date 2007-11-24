@@ -77,27 +77,29 @@ namespace MiscCommon
      * @brief is "$GLITE_LOCATION/etc/test.xml", the return value will be a path "/opt/glite/etc/test.xml"
      * @param _Path - [in, out] A pointer to a string buffer which represents a path to extend. Must not be NULL.
      **/
-    inline void smart_path( std::string *_Path )
+    template<class _T>
+    inline void smart_path( _T *_Path )
     {
-        std::string::size_type p_begin = _Path->find( "$" );
-        if ( std::string::npos == p_begin )
+        typename _T::size_type p_begin = _Path->find( _T("$") );
+        if ( _T::npos == p_begin )
             return;
-        
+
         ++p_begin; // ecluding '$' from the name
 
-        std::string::size_type p_end = _Path->find("/", p_begin);
-        if ( std::string::npos == p_end )
+        typename _T::size_type p_end = _Path->find( _T("/"), p_begin );
+        if ( _T::npos == p_end )
             p_end = _Path->size();
 
-        const std::string env_var( _Path->substr(p_begin, p_end - p_begin) );         
-        const char * szvar( getenv(env_var.c_str()) );
+        const _T env_var( _Path->substr(p_begin, p_end - p_begin) );
+        // TODO: needs to be fixed to wide char: getenv
+        LPCTSTR szvar( getenv(env_var.c_str()) );
         if ( !szvar )
             return;
-        const std::string var_val( szvar );
+        const _T var_val( szvar );
         if ( var_val.empty() )
             return;
-        
-        replace( _Path, "$"+env_var, var_val );
+
+        replace( _Path, _T("$") + env_var, var_val );
 
         smart_path( _Path );
     }
@@ -110,13 +112,24 @@ namespace MiscCommon
     {
         if ( !_Path )
             return ;
+        
+        std::string path( *_Path );
 
         std::string sHome;
         get_cuser_homedir( &sHome );
         smart_append( &sHome, '/');
 
-        replace<std::string>( _Path, "~/", sHome );
-        smart_path( _Path );
+        MiscCommon::trim_left( &path, ' ');
+
+        if ( '~' == path[0] && '/' == path[1] )
+        {
+            path.erase( path.begin(), path.begin() + 2 );            
+            sHome += path;
+            path.swap(sHome);
+        }
+
+        smart_path( &path );        
+        _Path->swap( path );
     }
     /**
      * @brief The function is used to access the host name (with FCDN) of the current processor.
