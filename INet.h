@@ -376,7 +376,7 @@ namespace MiscCommon
         {
             bool operator() ( Socket_t _socket, sockaddr_in *_addr ) const
             {
-                size_t size = sizeof( sockaddr );
+                socklen_t size = sizeof( sockaddr );
                 return ( getsockname( _socket, reinterpret_cast<sockaddr *>( _addr ), &size ) == -1 ) ? false : true;
             }
         };
@@ -387,7 +387,7 @@ namespace MiscCommon
         {
             bool operator() ( Socket_t _socket, sockaddr_in *_addr ) const
             {
-                size_t size = sizeof( sockaddr );
+                socklen_t size = sizeof( sockaddr );
                 return ( getpeername( _socket, reinterpret_cast<sockaddr *>( _addr ), &size ) == -1 ) ? false : true;
             }
         };
