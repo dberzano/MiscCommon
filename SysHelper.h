@@ -16,7 +16,6 @@
 #define SYSHELPER_H_
 
 // API
-#include <unistd.h>
 #include <pwd.h>
 #include <netdb.h>
 #include <sys/syscall.h>
@@ -40,12 +39,9 @@ namespace MiscCommon
     {
         if ( !_RetVal )
             return ;
-
-        CHARVector_t Buf(L_cuserid);
-
-        cuserid( &Buf[0] );
-
-        *_RetVal = std::string( &Buf[0] );
+        
+        passwd *pwd( getpwuid(geteuid()) );
+        *_RetVal = pwd ? std::string(pwd->pw_name): "";
     }
     /**
      * @brief The function returns home directory path of the given user.
