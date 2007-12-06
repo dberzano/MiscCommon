@@ -17,12 +17,6 @@
 
 // STD
 #include <stdexcept>
-//gLite
-#include "glite/wmsutils/jobid/JobId.h"
-// gLite jdl
-#include "glite/jdl/JobAd.h"
-#include "glite/jdl/jdl_attributes.h"
-#include "glite/jdl/JDLAttributes.h"
 // VOMS
 #ifdef IOV_MAX
 #undef IOV_MAX
@@ -69,21 +63,7 @@ namespace MiscCommon
 
             std::transform( data.data.begin(), data.data.end(), std::back_inserter(*_RetVal), SGetName() );
         }
-
-        inline void get_voname_from_jdl( std::string *_RetVal, const std::string &_JDL ) throw (std::exception)
-        {
-            if ( !_RetVal )
-                throw std::invalid_argument("Return parameter must not be a NULL value.");
-
-            glite::jdl::JobAd ad;
-            ad.fromFile( _JDL );
-            // checking VIRTUAL_ORGANISATION
-            if ( !ad.hasAttribute(glite::jdl::JDL::VIRTUAL_ORGANISATION) )
-                return;
-            
-            *_RetVal = ad.getString (glite::jdl::JDL::VIRTUAL_ORGANISATION);
-        }
-
+        
     };
 };
 
