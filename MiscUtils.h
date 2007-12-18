@@ -37,6 +37,8 @@ namespace MiscCommon
             NONCopyable( const NONCopyable& );
             const NONCopyable& operator=( const NONCopyable& );
     };
+    
+    class NullType {};
 
     /**
      * @brief A helper class. Helps to automatically track environment variables.

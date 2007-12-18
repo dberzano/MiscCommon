@@ -221,6 +221,24 @@ namespace MiscCommon
         private:
             CMutex& m;
     };
+    
+    /**
+     * @brief demangling C++ symbols.
+     * @code
+     * cout << demangle(typeid(*this)) << endl;
+     * cout << demangle(typeid(int)) << endl;
+     * 
+     * @endcode
+     **/
+    extern "C" char *__cxa_demangle(const char *mangled, char *buf, size_t *len, int *status);
+    inline std::string demangle(const std::type_info& ti)
+    {
+        char* s=__cxa_demangle(ti.name(),0,0,0);
+        std::string ret(s);
+        free(s);
+        return ret;
+    }
+
 
 };
 #endif /*SYSHELPER_H_*/

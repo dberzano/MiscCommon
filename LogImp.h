@@ -100,11 +100,15 @@ namespace MiscCommon
             ~CLogImp()
             {
                 CLogSinglton::Instance().push( LOG_SEVERITY_INFO, 0, g_cszMODULENAME_CORE, "Shutting down >>> " + GetModuleName() + " <<<" );
+            }                        
+            CFileLog::stream_type &InfoLog( const std::string &_Message )
+            {
+                return CLogSinglton::Instance().push( LOG_SEVERITY_INFO, 0, GetModuleName(), _Message );
             }
             CFileLog::stream_type &InfoLog( unsigned long _ErrorCode, const std::string &_Message )
             {
                 return CLogSinglton::Instance().push( LOG_SEVERITY_INFO, _ErrorCode, GetModuleName(), _Message );
-            }
+            }            
             CFileLog::stream_type &WarningLog( unsigned long _ErrorCode, const std::string &_Message )
             {
                 return CLogSinglton::Instance().push( LOG_SEVERITY_WARNING, _ErrorCode, GetModuleName(), _Message );
