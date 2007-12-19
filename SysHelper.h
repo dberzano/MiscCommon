@@ -238,7 +238,16 @@ namespace MiscCommon
         free(s);
         return ret;
     }
-
+    
+    inline void get_env( const std::string &_EnvVarName, std::string *_RetVal )
+    {
+      if( !_RetVal )
+        return;
+      
+      char *szBuf( getenv( _EnvVarName.c_str() ) );
+      if( szBuf )
+        _RetVal->assign( szBuf );      
+    }
 
 };
 #endif /*SYSHELPER_H_*/
