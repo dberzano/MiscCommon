@@ -124,7 +124,7 @@ namespace MiscCommon
         return _pString;
     }
 
-    /** @fn _T& trim(_T* _pString, const _T::value_type& _chWhat)
+    /** @fn _T& trim(_T* _pString, const typename _T::value_type& _chWhat)
      *  @brief trims trailing and leading characters from the string.
      *  @param _pString - [in] The string to be trimmed.
      *  @param _chWhat - [in] The target character to be trimmed.
@@ -136,7 +136,7 @@ namespace MiscCommon
         return trim_right( &trim_left( _pString, _chWhat ), _chWhat );
     }
 
-    /** @fn _T& trim_right(_T* _pString, const _T::value_type& _chWhat)
+    /** @fn _T& trim_right(_T* _pString, const typename _T::value_type& _chWhat)
      *  @brief trims trailing characters from the string.
      *  @param _pString - [in] The string to be trimmed.
      *  @param _chWhat - [in] The target character to be trimmed.
@@ -148,7 +148,7 @@ namespace MiscCommon
         return _pString->erase( _pString->find_last_not_of( _chWhat ) + 1 );
     }
 
-    /** @fn _T& trim_left(_T* _pString, const _T::value_type& _chWhat)
+    /** @fn _T& trim_left(_T* _pString, const typename _T::value_type& _chWhat)
      *  @brief trims leading characters from the string.
      *  @param _pString - [in] The string to be trimmed.
      *  @param _chWhat - [in] The target character to be trimmed.

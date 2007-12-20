@@ -28,6 +28,7 @@
 
 namespace MiscCommon
 {
+    /// A gLite helpers workspace
     namespace gLite
     {
 
@@ -63,7 +64,7 @@ namespace MiscCommon
 
             std::transform( data.data.begin(), data.data.end(), std::back_inserter(*_RetVal), SGetName() );
         }
-        
+
     };
 };
 

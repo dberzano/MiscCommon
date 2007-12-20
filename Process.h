@@ -154,7 +154,7 @@ namespace MiscCommon
     };
 
     /**
-     * @brief This class helps to retrieve process's information from /proc/<pid>/status
+     * @brief This class helps to retrieve process's information from /proc/\<pid\>/status
      * @note Usage:
      * @code
      CProcStatus p;
