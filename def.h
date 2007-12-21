@@ -1,4 +1,4 @@
-/************************************************************************/
+﻿/************************************************************************/
 /**
  * @file def.h
  * @brief Helpers and definitions (typedefs)
@@ -39,7 +39,7 @@ namespace MiscCommon
     typedef std::basic_stringstream<wchar_t> tstringstream;
     /**
      * @brief Enclose constant strings and literal characters in the _T macro to make
-     * @brief them unicode constant strings when _GLIBCPP_USE_WCHAR_T and _UNICODE are defined.
+     * @brief them Unicode constant strings when _GLIBCPP_USE_WCHAR_T and _UNICODE are defined.
      **/
 #define _T(s) L##s
     /**

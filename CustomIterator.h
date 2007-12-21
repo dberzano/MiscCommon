@@ -1,4 +1,4 @@
-/************************************************************************/
+﻿/************************************************************************/
 /**
  * @file CustomIterator.h
  * @brief Custom extensions to STL
@@ -19,7 +19,7 @@ namespace MiscCommon
 {
 
     /**
-     * @brief This custom istream iterator helps to read imput without breaking lines after whitespace etc.
+     * @brief This custom istream iterator helps to read input without breaking lines after whitespace etc.
      * @note Usage:
      * @code
         ifstream f("test.txt");

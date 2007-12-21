@@ -1,4 +1,4 @@
-/************************************************************************/
+﻿/************************************************************************/
 /**
  * @file SysHelper.h
  * @brief This file contains a number of helpers and wrappers of system calls.
@@ -67,7 +67,7 @@ namespace MiscCommon
         get_homedir( getuid(), _RetVal );
     }
     /**
-     * @brief The function extends any environmnent variable found in the give path
+     * @brief The function extends any environment variable found in the give path
      * @brief to its value.\b
      * @brief This function also extends "~/" to a real user's home directory path.
      * @brief When, for example, there is a variable $GLITE_LOCATE = /opt/glite and the given path

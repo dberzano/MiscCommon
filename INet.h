@@ -1,4 +1,4 @@
-/************************************************************************/
+﻿/************************************************************************/
 /**
  * @file INet.h
  * @brief helpers for Socket and Network operations.
@@ -234,7 +234,7 @@ namespace MiscCommon
         inline void receive_string( smart_socket &_Socket, std::string *_Str2Receive, size_t _BufSize )
         {
             if ( !_Str2Receive )
-                throw std::invalid_argument( "smart_socket::receive_string: Parametr is NULL" );
+                throw std::invalid_argument( "smart_socket::receive_string: Parameter is NULL" );
 
             BYTEVector_t buf(_BufSize);
             _Socket >> &buf;
@@ -314,7 +314,7 @@ namespace MiscCommon
                         inet_aton( _Addr->c_str(), &addr.sin_addr );
 
                     if ( bind( m_Socket, reinterpret_cast<struct sockaddr *> (& addr), sizeof( addr ) ) < 0 )
-                        throw std::runtime_error( socket_error_string( m_Socket, "Soket bind error..." ) );
+                        throw std::runtime_error( socket_error_string( m_Socket, "Socket bind error..." ) );
                 }
 
                 void Listen( int _Backlog ) throw ( std::exception )

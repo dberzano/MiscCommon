@@ -1,4 +1,4 @@
-/************************************************************************/
+﻿/************************************************************************/
 /**
  * @file HexView.h
  * @brief Helps to represent data as in a HEX viewer
@@ -22,7 +22,7 @@ namespace MiscCommon
 {
 
     /**
-     * @brief This class helps to represent a given contaner's data as in a HEX viewer
+     * @brief This class helps to represent a given container's data as in a HEX viewer
      *
      * @note Example:
      * @code
