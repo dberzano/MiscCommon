@@ -1,7 +1,7 @@
 /************************************************************************/
 /**
  * @file BOOST_FILESYSTEM.h
- * @brief BOOST filesystem lib. helper
+ * @brief BOOST filesystem library helper
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
 
@@ -26,9 +26,12 @@ namespace fs = boost::filesystem ;
 
 namespace MiscCommon
 {
-
     /**
-     * Removes '/' characters at the end of the of the input pathname
+     *
+     * @brief The normalize_path() function removes '/' characters at the end of the of the input pathname
+     * @param[in] _path - path to process.
+     * @return a string, which holds a normalized path.
+     *
      */
     inline std::string normalize_path( const std::string &_path )
     {
@@ -36,7 +39,6 @@ namespace MiscCommon
         MiscCommon::trim_right<std::string>( &path, '/' );
         return path;
     }
-
     /*
     * Checks whether the pathname represents a file
     */
@@ -70,6 +72,5 @@ namespace MiscCommon
 
         return is_valid;
     }
-
 };
 #endif /*BOOST_FILESYSTEM_H_*/
