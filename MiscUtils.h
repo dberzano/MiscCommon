@@ -19,13 +19,17 @@
 #include <algorithm>
 
 /**
+ * 
  *  @brief Miscellaneous functions and helpers are located here
- **/
+ * 
+ */
 namespace MiscCommon
 {
     /**
+     * 
      * @brief Class which makes child to be non-copyable object.
-     **/
+     * 
+     */
     class NONCopyable
     {
         protected:
@@ -39,10 +43,11 @@ namespace MiscCommon
     };
     
     class NullType {};
-
     /**
+     * 
      * @brief A helper class. Helps to automatically track environment variables.
-     **/
+     * 
+     */
     class auto_setenv
     {
         public:
@@ -106,12 +111,14 @@ namespace MiscCommon
             bool m_unset;
     };
 
-    /** @fn _T* smart_append( _T* _pString, const typename  _T::value_type _ItemToAdd )
+    /**
+     * 
      *  @brief appends character _ItemToAdd to the string _pString if there is no such suffix on the end of _pString.
-     *  @param _pString - [in] The string to be processed.
-     *  @param _ItemToAdd - [in] The target characters to be checked and added.
+     *  @param[in] _pString - The string to be processed.
+     *  @param[in] _ItemToAdd - The target characters to be checked and added.
      *  @return A pointer to the processed string object.
-     **/
+     * 
+     */
     template <typename _T>
     _T* smart_append( _T* _pString, const typename _T::value_type _ItemToAdd )
     {
@@ -124,11 +131,13 @@ namespace MiscCommon
         return _pString;
     }
 
-    /** @fn _T& trim(_T* _pString, const typename _T::value_type& _chWhat)
+    /**
+     * 
      *  @brief trims trailing and leading characters from the string.
-     *  @param _pString - [in] The string to be trimmed.
-     *  @param _chWhat - [in] The target character to be trimmed.
+     *  @param[in] _pString - The string to be trimmed.
+     *  @param[in] _chWhat - The target character to be trimmed.
      *  @return A reference to the string object from which the elements have been trimmed.
+     * 
      */
     template <typename _T>
     _T& trim( _T* _pString, const typename _T::value_type& _chWhat )
@@ -136,11 +145,13 @@ namespace MiscCommon
         return trim_right( &trim_left( _pString, _chWhat ), _chWhat );
     }
 
-    /** @fn _T& trim_right(_T* _pString, const typename _T::value_type& _chWhat)
+    /**
+     * 
      *  @brief trims trailing characters from the string.
-     *  @param _pString - [in] The string to be trimmed.
-     *  @param _chWhat - [in] The target character to be trimmed.
+     *  @param[in] _pString - The string to be trimmed.
+     *  @param[in] _chWhat - The target character to be trimmed.
      *  @return A reference to the string object from which the elements have been trimmed.
+     * 
      */
     template <typename _T>
     _T& trim_right( _T* _pString, const typename _T::value_type& _chWhat )
@@ -148,11 +159,13 @@ namespace MiscCommon
         return _pString->erase( _pString->find_last_not_of( _chWhat ) + 1 );
     }
 
-    /** @fn _T& trim_left(_T* _pString, const typename _T::value_type& _chWhat)
+    /**
+     * 
      *  @brief trims leading characters from the string.
-     *  @param _pString - [in] The string to be trimmed.
-     *  @param _chWhat - [in] The target character to be trimmed.
+     *  @param[in] _pString - The string to be trimmed.
+     *  @param[in] _chWhat - The target character to be trimmed.
      *  @return A reference to the string object from which the elements have been trimmed.
+     * 
      */
     template <typename _T>
     _T& trim_left( _T* _pString, const typename _T::value_type& _chWhat )
@@ -160,12 +173,14 @@ namespace MiscCommon
         return _pString->erase( 0, _pString->find_first_not_of( _chWhat ) );
     }
 
-    /** @fn _T& replace(_T* _pString, const _T& _what, const _T& _with)
+    /**
+     * 
      *  @brief finds elements in a string match a specified string and replaces it.
-     *  @param _pString - [in,out] The string to be processed.
-     *  @param _what - [in,out] String to be replaced.
-     *  @param _with - [in] Replacing string.
+     *  @param[in,out] _pString - The string to be processed.
+     *  @param[in,out] _what - String to be replaced.
+     *  @param[in] _with - Replacing string.
      *  @return A reference to the string object from which the elements have been replaced.
+     * 
      */
     template <typename _T>
     _T& replace( _T* _pString, const _T& _what, const _T& _with )
@@ -205,10 +220,12 @@ namespace MiscCommon
         }
     };
 
-    /** @fn  _T& to_upper(_T& _str)
+    /**
+     * 
      *  @brief convert string to upper case.
-     *  @param _str - [in] Sting to convert.
+     *  @param[in] _str - Sting to convert.
      *  @return Converted string.
+     * 
      */
     template <typename _T>
     _T& to_upper( _T& _str )
@@ -217,10 +234,12 @@ namespace MiscCommon
         return _str;
     }
 
-    /** @fn _T& to_lower(_T& _str)
+    /**
+     * 
      *  @brief convert string to lower case.
-     *  @param _str - [in] Sting to convert.
+     *  @param[in] _str - Sting to convert.
      *  @return Converted string.
+     * 
      */
     template <typename _T>
     _T& to_lower( _T& _str )
