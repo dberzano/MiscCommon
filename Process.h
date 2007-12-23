@@ -256,12 +256,13 @@ private:
     static sig_atomic_t g_handled_sign = false;
     static sig_atomic_t g_child_status = 0;
     /**
-     * handles the signal returned by the child of the process, sets handled_sign at true
-     * @int sign, the signal
+     * 
+     * @brief handles the signal returned by the child of the process, sets handled_sign at true
+     * @param[in] _sign - the signal
      */
-    static void childSignalHandler ( int sign )
+    static void childSignalHandler ( int _sign )
     {
-        if ( sign == SIGCHLD)
+        if ( _sign == SIGCHLD)
         {
             g_handled_sign = true;
             ::wait( &g_child_status );

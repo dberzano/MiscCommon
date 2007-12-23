@@ -68,7 +68,7 @@ namespace MiscCommon
             const std::string globurlcp( "globus-url-copy" );
             if ( getenv("GLOBUS_LOCATION") )
                 return ( std::string(getenv("GLOBUS_LOCATION")) + "/bin/" + globurlcp );
-            else if ( is_directory ("/opt/globus/bin") )
+            else if ( BOOSTHelper::is_directory ("/opt/globus/bin") )
                 return ( "/opt/globus/bin/" + globurlcp );
             else
                 throw std::runtime_error("Unable to find globus-url-copy executable");
