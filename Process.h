@@ -128,7 +128,7 @@ namespace MiscCommon
                 int n = scandir("/proc", &namelist, CheckDigit, alphasort);
 
                 if ( -1 == n )
-                    throw std::runtime_error("CProcList::GetProcList: " + errno2str() );
+                    throw system_error( "CProcList::GetProcList exception" );
                 if ( 0 == n )
                     return; // there were no files
 

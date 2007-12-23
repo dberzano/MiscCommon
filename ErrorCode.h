@@ -18,7 +18,6 @@
 // API
 #include <errno.h>
 #include <stdlib.h>
-
 // STD
 #include <string>
 
@@ -49,27 +48,33 @@ namespace MiscCommon
     ERRORCODE_C erXMLNullNode( BASE_FOR_XML_ERR + 3 );
 
     /**
-     * @brief Retrieves a string, which represent the last error.
-     * @param _msg - [out] an error message will be written to this buffer, must not be NULL.
-     * @return MiscCommon::erNULLArg if _msg is NULL and MiscCommon::erOK on success.
+     * 
+     * @brief The system_error exception class retrieves a string, which represent the last error 
+     * @brief and can be thrown when any of system (or functions which support "errno") functions fails.
+     * 
      **/
-    inline ERRORCODE errno2str( std::string *_msg )
+    class system_error: public std::exception
     {
-        if ( !_msg )
-            return erNULLArg;
-        char *p = strerror( errno );
-        *_msg = p;
-        return erOK;
-    }
-    /**
-     * @brief Retrieves a string, which represent the last error.
-     * @return string, which represent the last error.
-     **/
-    inline std::string errno2str()
-    {
-        char *p = strerror( errno );
-        return std::string(p);
-    }
+        public:
+            explicit system_error( const std::string &_ErrorPrefix)
+            {
+                const char * const szError = strerror( errno );
+                std::stringstream ss;
+                if ( !_ErrorPrefix.empty() )
+                    ss << _ErrorPrefix << ". ";
+                ss <<  "System error description [" << errno << "]: " << szError;
+                m_Msg = ss.str();
+            }
+            virtual ~system_error() throw()
+            {}
+            virtual const char* what() const throw()
+            {
+                return m_Msg.c_str();
+            }
+
+        private:
+            std::string m_Msg;
+    };
 
 };
 
