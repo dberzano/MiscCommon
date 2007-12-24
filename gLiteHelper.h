@@ -1,7 +1,7 @@
 /************************************************************************/
 /**
  * @file gLiteHelper.h
- * @brief
+ * @brief The gLiteHelper.h header holds a number of helper for gLite API.
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
 
@@ -15,35 +15,55 @@
 #ifndef GLITEHELPER_H_
 #define GLITEHELPER_H_
 
-// STD
-#include <stdexcept>
 // gLite
 #include "glite/lb/Job.h"
-
 // MiscCommon
-#include "def.h"
-#include "BOOST_FILESYSTEM.h"
+#include "FindCfgFile.h"
 
 namespace MiscCommon
 {
     namespace gLite
     {
-
+        /**
+         *
+         * @brief The CJobStatusObj class helps to work with gLite job statuses - Status object.
+         *
+         */
         class CJobStatusObj
         {
             public:
-                CJobStatusObj( const std::string &_gLiteJobID, int _Flag = glite::lb::Job::STAT_CLASSADS |  glite::lb::Job::STAT_CHILDSTAT | glite::lb::Job::STAT_CHILDREN )
+                /**
+                 *
+                 * @brief A constructor of the CJobStatusObj class.
+                 * @param[in] _gLiteJobID - an ID of job, which status information you want to get.
+                 * @param[in] _Flag - flag (see: glite/lb/Job.h) [default: STAT_CLASSADS | STAT_CHILDSTAT | STAT_CHILDREN].
+                 *
+                 */
+                CJobStatusObj( const std::string &_gLiteJobID,
+                               int _Flag = glite::lb::Job::STAT_CLASSADS | glite::lb::Job::STAT_CHILDSTAT | glite::lb::Job::STAT_CHILDREN )
                 {
                     glite::wmsutils::jobid::JobId jobid( _gLiteJobID );
                     glite::lb::Job job( jobid );
                     m_status = job.status( _Flag );
                 }
-
+                /**
+                 *
+                 * @brief getting the status object.
+                 * @return a reference to the status object.
+                 *
+                 */
                 glite::lb::JobStatus &Get()
                 {
                     return m_status;
                 }
-
+                /**
+                 *
+                 * @brief The GetChildren() method gets values string list of children.
+                 * @param[in,out] _Container - the given container to fill with children values.
+                 * @exception std::invalid_argument - thrown if _Container is a NULL value
+                 * @return no return value
+                 *
+                 */
                 void GetChildren( MiscCommon::StringVector_t *_Container ) const throw (std::exception)
                 {
                     if ( !_Container )
@@ -55,23 +75,29 @@ namespace MiscCommon
             private:
                 glite::lb::JobStatus m_status;
         };
-
+        /**
+         *
+         * @brief The get_globus_url_copy_exe() function gets full path of globus-url-copy executable.
+         * @exception std::runtime_error - thrown if algorithm is unable to find globus-url-copy executable.
+         * @return of full path to globus-url-copy executable.
+         * @note Defining the path to the globus-url-copy executable in the following order
+         *  - 1. $GLOBUS_LOCAT/bin/globus-url-copy
+         *  - 2. /opt/globus/bin/globus-url-copy
+         *
+         */
         inline std::string get_globus_url_copy_exe() throw(std::exception)
         {
-            // Defining the path to the globus-url-copy executable
-            // 1. Trying $GLOBUS_LOCATION
-            // 1.1. using  $GLOBUS_LOCAT/bin/globus-url-copy
-            // OR
-            // 2. if exists using /opt/globus/bin/globus-url-copy
-            // OR
-            // runtime_error("Unable to find globus-url-copy executable");
-            const std::string globurlcp( "globus-url-copy" );
-            if ( getenv("GLOBUS_LOCATION") )
-                return ( std::string(getenv("GLOBUS_LOCATION")) + "/bin/" + globurlcp );
-            else if ( BOOSTHelper::is_directory ("/opt/globus/bin") )
-                return ( "/opt/globus/bin/" + globurlcp );
-            else
+            CFindCfgFile<std::string> globurlcp;
+
+            globurlcp.SetOrder
+            ("$GLOBUS_LOCAT/bin/globus-url-copy")
+            ("/opt/globus/bin/globus-url-copy");
+
+            std::string val;
+            globurlcp.GetCfg( &val );
+            if ( val.empty() )
                 throw std::runtime_error("Unable to find globus-url-copy executable");
+            return val;
         }
 
     };
