@@ -20,7 +20,6 @@
 
 namespace MiscCommon
 {
-
     /**
      * @brief This class helps to represent a given container's data as in a HEX viewer
      *
@@ -51,8 +50,7 @@ namespace MiscCommon
      0x00000030 | 7D 7D A7                                         | }}.
      * @endcode
      *
-     *
-     **/
+     */
     template < class _T >
     class CHexView
     {

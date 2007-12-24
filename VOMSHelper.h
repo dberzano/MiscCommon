@@ -1,7 +1,7 @@
 /************************************************************************/
 /**
  * @file VOMSHelper.h
- * @brief
+ * @brief VOMS operations helpers
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
 

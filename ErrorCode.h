@@ -52,7 +52,7 @@ namespace MiscCommon
      * @brief The system_error exception class retrieves a string, which represent the last error 
      * @brief and can be thrown when any of system (or functions which support "errno") functions fails.
      * 
-     **/
+     */
     class system_error: public std::exception
     {
         public:

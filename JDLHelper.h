@@ -1,7 +1,7 @@
 /************************************************************************/
 /**
  * @file JDLHelper.h
- * @brief
+ * @brief The JDLHelper.h header holds a number of helper for JDL operations.
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
 

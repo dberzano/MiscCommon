@@ -17,9 +17,9 @@
 
 namespace MiscCommon
 {
-
     /**
-     * @brief This custom istream iterator helps to read input without breaking lines after whitespace etc.
+     *
+     * @brief This custom istream iterator helps to read input line by line without breaking lines after whitespace etc.
      * @note Usage:
      * @code
         ifstream f("test.txt");
@@ -28,7 +28,8 @@ namespace MiscCommon
                       custom_istream_iterator<std::string>(),
                       std::back_inserter(vec));
      * @endcode
-     **/
+     *
+     */
     template < class T, class Ch = char, class Tr = std::char_traits<Ch>, class Dist = std::ptrdiff_t >
     class custom_istream_iterator:
                 public std::iterator < std::input_iterator_tag, T, Dist, const T*, const T& >

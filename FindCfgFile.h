@@ -1,7 +1,7 @@
 /************************************************************************/
 /**
  * @file FindCfgFile.h
- * @brief
+ * @brief The FindCfgFile.h header holds the CFindCfgFile class.
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
 
@@ -16,18 +16,20 @@
 #define FINDCFGFILE_H_
 
 // STD
-#include <vector>
 #include <iterator>
-#include <iostream>
 // BOOST
 #include "boost/bind.hpp"
 // MiscCommon
 #include "SysHelper.h"
 #include "BOOST_FILESYSTEM.h"
 
-
 namespace MiscCommon
 {
+    /**
+     *
+     * @brief The SFileExists functor helps to check whether the file by a given full path exists or not.
+     *
+     */
     template <class _T>
     struct SFileExists
     {
@@ -38,15 +40,15 @@ namespace MiscCommon
             return ( MiscCommon::BOOSTHelper::is_file( path ) );
         }
     };
-    
     /**
+     *
      * @brief This class helps to find a cfg location with the best match from the given order.
      *
      * @note Example:
      * The example shows how to look for the basch cfg. file in the following order:
      * "/etc/rtt", "/etc/bashrc", "testtesttest", "$HOME/.bashrc", "/test/test/bashrc"
      * The first found cfg file will be returned by GetCfg method.
-     * All environment variables in the paths will be extended. 
+     * All environment variables in the paths will be extended.
      * @code
      *
      * int main()
@@ -63,8 +65,7 @@ namespace MiscCommon
      }
      * @endcode
      *
-     *
-     **/
+     */
     template <class _T>
     class CFindCfgFile
     {
@@ -111,7 +112,6 @@ namespace MiscCommon
         private:
             container_type m_Paths;
     };
-
 };
 
 #endif /*FINDCFGFILE_H_*/
