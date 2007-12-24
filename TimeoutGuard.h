@@ -43,8 +43,8 @@ namespace MiscCommon
                 m_pid = _pid;
                 m_secTimeOut = _timeout;
                 m_IsInit = true;
-                m_Thread = Thread_PTR_t( new boost::thread(
-                                             boost::bind( &CTimeoutGuard::ThreadWorker, this ) ) );
+                m_Thread = MiscCommon::BOOSTHelper::Thread_PTR_t( new boost::thread(
+                               boost::bind( &CTimeoutGuard::ThreadWorker, this ) ) );
             }
             static CTimeoutGuard& Instance()
             {
@@ -65,7 +65,7 @@ namespace MiscCommon
             bool m_IsInit;
             pid_t m_pid;
             size_t m_secTimeOut;
-            Thread_PTR_t m_Thread;
+            MiscCommon::BOOSTHelper::Thread_PTR_t m_Thread;
     };
 
 };

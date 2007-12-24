@@ -177,15 +177,9 @@ namespace MiscCommon
             else
             {
                 if ( 0 == bytes_read ) // The  return value will be 0 when the peer has performed an orderly shutdown
-                {
                     _Socket.close();
-                }
                 else
-                {
-                    std::string sErr;
-                    MiscCommon::errno2str( &sErr );
-                    throw std::runtime_error( sErr.c_str() );
-                }
+                    throw system_error("");
             }
             return _Socket;
         }
@@ -494,9 +488,9 @@ namespace MiscCommon
             return ss.str();
         }
         /**
-         * 
+         *
          * @brief The function checks and returns a free port from the given range of the ports.
-         * 
+         *
          */
         inline int get_free_port( int _Min, int _Max )
         {
@@ -516,9 +510,9 @@ namespace MiscCommon
             return 0;
         }
         /**
-         * 
+         *
          * @brief The function checks whether the given port is free or not.
-         * 
+         *
          */
         inline int get_free_port( int _Port )
         {

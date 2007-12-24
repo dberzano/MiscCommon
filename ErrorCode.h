@@ -20,6 +20,7 @@
 #include <stdlib.h>
 // STD
 #include <string>
+#include <sstream>
 
 namespace MiscCommon
 {
@@ -48,10 +49,36 @@ namespace MiscCommon
     ERRORCODE_C erXMLNullNode( BASE_FOR_XML_ERR + 3 );
 
     /**
-     * 
-     * @brief The system_error exception class retrieves a string, which represent the last error 
+     *
+     * @brief Retrieves a string, which represent the last error.
+     * @param[in,out] _msg - an error message will be written to this buffer, must not be NULL.
+     * @return errno - system error code.
+     *
+     */
+    inline int errno2str( std::string *_msg )
+    {
+        if ( !_msg )
+            return erNULLArg;
+        char *p = strerror( errno );
+        *_msg = p;
+        return errno;
+    }
+    /**
+     *
+     * @brief Retrieves a string, which represent the last error.
+     * @return string, which represent the last error.
+     *
+     */
+    inline std::string errno2str()
+    {
+        char *p = strerror( errno );
+        return std::string(p);
+    }
+    /**
+     *
+     * @brief The system_error exception class retrieves a string, which represent the last error
      * @brief and can be thrown when any of system (or functions which support "errno") functions fails.
-     * 
+     *
      */
     class system_error: public std::exception
     {
