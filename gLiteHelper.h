@@ -90,7 +90,7 @@ namespace MiscCommon
             CFindCfgFile<std::string> globurlcp;
 
             globurlcp.SetOrder
-            ("$GLOBUS_LOCAT/bin/globus-url-copy")
+            ("$GLOBUS_LOCATION/bin/globus-url-copy")
             ("/opt/globus/bin/globus-url-copy");
 
             std::string val;
