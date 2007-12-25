@@ -97,6 +97,7 @@ namespace MiscCommon
             globurlcp.GetCfg( &val );
             if ( val.empty() )
                 throw std::runtime_error("Unable to find globus-url-copy executable");
+            MiscCommon::smart_path( &val );
             return val;
         }
 
