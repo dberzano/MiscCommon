@@ -20,6 +20,11 @@
 #include <netdb.h>
 #include <sys/syscall.h>
 
+//#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+//#include <unistd.h>
+
 // HACK: On the SLC3 HOST_NAME_MAX is undefined
 #ifndef HOST_NAME_MAX
 #define HOST_NAME_MAX 64
@@ -28,6 +33,7 @@
 // MiscCommon
 #include "def.h"
 #include "MiscUtils.h"
+#include "ErrorCode.h"
 
 namespace MiscCommon
 {
@@ -39,9 +45,9 @@ namespace MiscCommon
     {
         if ( !_RetVal )
             return ;
-        
+
         passwd *pwd( getpwuid(geteuid()) );
-        *_RetVal = pwd ? std::string(pwd->pw_name): "";
+        *_RetVal = pwd ? std::string(pwd->pw_name) : "";
     }
     /**
      * @brief The function returns home directory path of the given user.
@@ -221,32 +227,54 @@ namespace MiscCommon
         private:
             CMutex& m;
     };
-    
+
     /**
      * @brief demangling C++ symbols.
      * @code
      * cout << demangle(typeid(*this)) << endl;
      * cout << demangle(typeid(int)) << endl;
-     * 
+     *
      * @endcode
      **/
     extern "C" char *__cxa_demangle(const char *mangled, char *buf, size_t *len, int *status);
     inline std::string demangle(const std::type_info& ti)
     {
-        char* s=__cxa_demangle(ti.name(),0,0,0);
+        char* s = __cxa_demangle(ti.name(), 0, 0, 0);
         std::string ret(s);
         free(s);
         return ret;
     }
-    
+
     inline void get_env( const std::string &_EnvVarName, std::string *_RetVal )
     {
-      if( !_RetVal )
-        return;
-      
-      char *szBuf( getenv( _EnvVarName.c_str() ) );
-      if( szBuf )
-        _RetVal->assign( szBuf );      
+        if ( !_RetVal )
+            return;
+
+        char *szBuf( getenv( _EnvVarName.c_str() ) );
+        if ( szBuf )
+            _RetVal->assign( szBuf );
+    }
+    /**
+     *
+     * @brief The function file_size() retrieves file size of a given file.
+     * @param[in] _FileName - full file name.
+     * @exception system_error - thrown if error occurs.
+     *
+     */
+    inline off_t file_size( const std::string &_FileName )
+    {
+        const int fd( ::open( _FileName.c_str(), O_RDONLY ) );
+        if ( -1 == fd )
+            throw system_error( "Can't get file size of \"" + _FileName + "\"" );
+
+        struct stat fs;
+        const int ret ( ::fstat(fd, &fs) );
+        close (fd);
+
+        if ( -1 == ret )
+            throw system_error( "Can't get file size of \"" + _FileName + "\"" );
+
+        return fs.st_size;
     }
 
 };
