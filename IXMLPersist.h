@@ -22,14 +22,27 @@ namespace MiscCommon
 {
     /**
      *
-     * @brief
+     * @brief Declares XML Presist Interface for user's class
+     * @param[in] _T - name of the parent class.
+     * @note Example
+     * @code
+     *
+     class CMyClass : public MiscCommon::IXMLPersistImpl<CMyClass>
+     {
+     ...
+       public:
+           DECLARE_XMLPERSIST_IMPL(CMyClass);
+     ...
+     };
+      
+     * @endcode
      *
      */
 #define DECLARE_XMLPERSIST_IMPL(_T) \
     friend class MiscCommon::IXMLPersistImpl<_T>;
     /**
      *
-     * @brief
+     * @brief The IXMLPersistImpl interface is a class of the XML persistance.
      *
      */
     template <class _T>
@@ -48,7 +61,9 @@ namespace MiscCommon
     };
     /**
      *
-     * @brief
+     * @brief The ::BEGIN_READ_XML_NODE macro precedes the sequence of ::READ_ELEMENT.
+     * @param[in] _T - Name of the parent class.
+     * @param[in] _ELEMENT_NAME - Name of the XML element to read.
      *
      */
 #define BEGIN_READ_XML_NODE(_T, _ELEMENT_NAME)                                                                                          \
@@ -74,28 +89,53 @@ namespace MiscCommon
             throw std::runtime_error( str + "empty XML document" );
     /**
      *
-     * @brief
+     * @brief Reads element from XML file.
+     * @param[in] ELEMENT_NAME - Name of the XML element to read.
+     * @param[in,out] VAR - A buffer where value of the XML elements should be stored in.
      *
      */
 #define READ_ELEMENT( ELEMENT_NAME, VAR ) \
     MiscCommon::XMLHelper::get_attr_value( elementConfig, ELEMENT_NAME, &VAR );
     /**
      *
-     * @brief
+     * @brief Closes the sequence of ::READ_ELEMENT.
      *
      */
 #define END_READ_XML_NODE }
     /**
      *
-     * @brief
+     * @brief The BEGIN_READ_XML_CFG(_T) macro precedes the sequence of ::READ_ELEMENT.
+     * @param[in] _T - Name of the parent class.
+     * @note Example
+     * @code
+     *
+     class CMyClass : public MiscCommon::IXMLPersistImpl<CMyClass>
+     {
+     ...
+       public:
+           DECLARE_XMLPERSIST_IMPL(CMyClass);
+        
+       private:
+           // IXMLPersist implementation
+           BEGIN_READ_XML_CFG(CCatalogManager)
+           READ_ELEMENT( "lfc_host", m_Data.m_sLFCHost )
+           READ_ELEMENT( "lfc_wrkdir", m_Data.m_sWrkDir )
+           READ_ELEMENT( "lfc_session_comment", m_Data.m_sLFCSessionComment )
+           END_READ_XML_CFG
+     ...
+     };
+      
+     * @endcode
      *
      */
 #define BEGIN_READ_XML_CFG(_T) BEGIN_READ_XML_NODE( _T, "config" )
     /**
      *
-     * @brief
+     * @brief Closes the sequence of ::READ_ELEMENT.
+     * @Note see the example of BEGIN_READ_XML_CFG(_T)
      *
      */
+
 #define END_READ_XML_CFG }
     /**
      *
