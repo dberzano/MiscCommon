@@ -19,11 +19,8 @@
 #include <pwd.h>
 #include <netdb.h>
 #include <sys/syscall.h>
-
-//#include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-//#include <unistd.h>
 
 // HACK: On the SLC3 HOST_NAME_MAX is undefined
 #ifndef HOST_NAME_MAX
