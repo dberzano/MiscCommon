@@ -5,10 +5,10 @@
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
 
-        version number:     $LastChangedRevision$
+        version number:     $LastChangedRevision:1599 $
         created by:         Anar Manafov
                             2006-05-07
-        last changed by:    $LastChangedBy$ $LastChangedDate$
+        last changed by:    $LastChangedBy:manafov $ $LastChangedDate:2008-01-02 15:12:05 +0100 (Wed, 02 Jan 2008) $
 
         Copyright (c) 2006 GSI GridTeam. All rights reserved.
 ************************************************************************/
@@ -17,16 +17,13 @@
 
 // API
 #include <sys/time.h>
-
 // STD
 #include <ctime>
 #include <iostream>
 #include <fstream>
 #include <sstream>
-
 // STL
 #include <string>
-
 // MiscCommon
 #include "Res.h"
 #include "def.h"
@@ -35,8 +32,10 @@
 namespace MiscCommon
 {
     /**
+     *
      * @brief Log's severity's constants.
-     **/
+     *
+     */
     typedef enum ESeverity
     {
         LOG_SEVERITY_INFO = 0x1,
@@ -45,19 +44,18 @@ namespace MiscCommon
         LOG_SEVERITY_CRITICAL_ERROR = 0x8,
         LOG_SEVERITY_DEBUG = 0x10
     }LOG_SEVERITY;
-
     enum
     {
         e_FieldSeparator = 0x20,
         e_WhiteSpace = 0x20
     };
-
     /**
      *
      * @brief A simple template class which represents the Log engine of library.
      * @brief Current Log schema:
      * @brief [DATE/TIME]  [SEVERITY]  [MODULE NAME]   [Message]
-     **/
+     *
+     */
     template <typename _T>
     class CLog
     {
@@ -78,6 +76,8 @@ namespace MiscCommon
                 << GetErrorCode( _ErrorCode ) << char( e_FieldSeparator )
                 << "[" << _Module << ":thread-" << tid << "]" << char( e_FieldSeparator )
                 << _Message;
+
+                smart_mutex m( m_mutex );
                 if ( m_stream && m_stream->good() )
                 {
                     *m_stream << strMsg.str() << std::endl;
@@ -112,20 +112,19 @@ namespace MiscCommon
 
             const std::string GetSeverityString( LOG_SEVERITY _Severity ) const
             {
-                std::string RetVal;
-                //TODO: Because of the bug in gcc 3.2.3 (Bug#16625), here we can't use switch-case... Change with other versions of gcc
-                if ( LOG_SEVERITY_INFO == _Severity )
-                    RetVal = g_cszLOG_SEVERITY_INFO;
-                else if ( LOG_SEVERITY_WARNING == _Severity )
-                    RetVal = g_cszLOG_SEVERITY_WARNING;
-                else if ( LOG_SEVERITY_FAULT == _Severity )
-                    RetVal = g_cszLOG_SEVERITY_FAULT;
-                else if ( LOG_SEVERITY_CRITICAL_ERROR == _Severity )
-                    RetVal = g_cszLOG_SEVERITY_CRITICAL_ERROR;
-                else
-                    RetVal = g_cszLOG_SEVERITY_DEBUG;
-
-                return RetVal;
+                switch ( _Severity )
+                {
+                    case LOG_SEVERITY_INFO:
+                        return g_cszLOG_SEVERITY_INFO;
+                    case LOG_SEVERITY_WARNING:
+                        return g_cszLOG_SEVERITY_WARNING;
+                    case LOG_SEVERITY_FAULT:
+                        return g_cszLOG_SEVERITY_FAULT;
+                    case LOG_SEVERITY_CRITICAL_ERROR:
+                        return g_cszLOG_SEVERITY_CRITICAL_ERROR;
+                    default:
+                        return g_cszLOG_SEVERITY_DEBUG;
+                }
             }
 
             std::string GetErrorCode( unsigned long _ErrorCode ) const
@@ -137,17 +136,20 @@ namespace MiscCommon
 
         private:
             _T *m_stream;
+            CMutex m_mutex;
     };
-
     /**
+     *
      * @brief ostream specialization of CLog.
-     **/
+     *
+     */
     typedef CLog<std::ostream> CSTDOutLog;
-
     /**
+     *
      * @brief Logging to a file.
      * @brief ofstream specialization of CLog.
-     **/
+     *
+     */
     class CFileLog: public CLog<std::ofstream>
     {
         public:

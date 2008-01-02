@@ -210,10 +210,10 @@ namespace MiscCommon
      * @brief A smart CMutex helper.
      * @brief It locks the mutex on the construction and unlocks it when destructor is called.
      **/
-    class smart_mutex
+    class smart_mutex: public NONCopyable
     {
         public:
-            smart_mutex( CMutex& _pm ): m(_pm)
+            smart_mutex( CMutex &_mutex): m(_mutex)
             {
                 m.Lock();
             }
@@ -222,7 +222,7 @@ namespace MiscCommon
                 m.Unlock();
             }
         private:
-            CMutex& m;
+            CMutex &m;
     };
 
     /**
