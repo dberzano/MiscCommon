@@ -253,7 +253,7 @@ namespace MiscCommon
      * 
      */
     template <class _Pair>
-    struct select1st : public unary_function<_Pair, typename _Pair::first_type>
+    struct select1st : public std::unary_function<_Pair, typename _Pair::first_type>
     {
         typename _Pair::first_type& operator()(_Pair& __x) const
         {
@@ -270,7 +270,7 @@ namespace MiscCommon
      * 
      */
     template <class _Pair>
-    struct select2nd : public unary_function<_Pair, typename _Pair::second_type>
+    struct select2nd : public std::unary_function<_Pair, typename _Pair::second_type>
     {
         typename _Pair::second_type& operator()(_Pair& __x) const
         {
