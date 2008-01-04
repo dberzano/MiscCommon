@@ -8,7 +8,7 @@
         version number:     $LastChangedRevision$
         created by:         Anar Manafov
                             2007-08-02
-        last changed by:    $LastChangedBy:manafov $ $LastChangedDate:2008-01-02 15:12:05 +0100 (Wed, 02 Jan 2008) $
+        last changed by:    $LastChangedBy$ $LastChangedDate$
 
         Copyright (c) 2007 GSI GridTeam. All rights reserved.
 ************************************************************************/
