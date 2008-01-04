@@ -1,3 +1,17 @@
+/************************************************************************/
+/**
+ * @file stlx.h
+ * @brief STL extensions
+ * @author Anar Manafov A.Manafov@gsi.de
+ *//*
+
+        version number:     $LastChangedRevision$
+        created by:         Anar Manafov
+                            2008-01-04
+        last changed by:    $LastChangedBy$ $LastChangedDate$
+
+        Copyright (c) 2008 GSI GridTeam. All rights reserved.
+*************************************************************************/
 #ifndef STLX_H_
 #define STLX_H_
 
