@@ -5,10 +5,10 @@
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
 
-        version number:     $LastChangedRevision$
+        version number:     $LastChangedRevision:1599 $
         created by:         Anar Manafov
                             2006-05-10
-        last changed by:    $LastChangedBy$ $LastChangedDate$
+        last changed by:    $LastChangedBy:manafov $ $LastChangedDate:2008-01-02 15:12:05 +0100 (Wed, 02 Jan 2008) $
 
         Copyright (c) 2006 GSI GridTeam. All rights reserved.
 ************************************************************************/
@@ -17,25 +17,29 @@
 
 // STD
 #include <stdexcept>
-
-// OUR
+// MiscCommon
 #include "Log.h"
 
 namespace MiscCommon
 {
     /**
-     * @brief It is a supporting macro, which declares GetModuleName method. Needed by MiscCommon::CLogImp
-     **/
+     *
+     * @brief It is a supporting macro, which declares GetModuleName method. Needed by MiscCommon::CLogImp.
+     * @brief Must be declared in a child class of MiscCommon::CLogImp.
+     *
+     */
 #define REGISTER_LOG_MODULE(name)       \
-  std::string GetModuleName() const     \
-  {                                     \
-      return name;                      \
-  }
+    std::string GetModuleName() const     \
+    {                                     \
+        return name;                      \
+    }
 
     /**
+     *
      * @brief It represents logbook as a singleton.
      * @brief ofstream specialization of CLog
-     **/
+     *
+     */
     class CLogSinglton
     {
             typedef std::auto_ptr<CFileLog> CFileLogPtr;
@@ -78,6 +82,7 @@ namespace MiscCommon
     };
 
     /**
+     *
      * @brief Template class. High-end helper implementation of CLog, its ofstream specialization.
      * @note: a REGISTER_LOG_MODULE(module name) must be be declared in a child class body.
      * an example:
@@ -90,8 +95,8 @@ namespace MiscCommon
      *          REGISTER_LOG_MODULE( Foo );
      * };
      * @endcode
-     **/
-    // TODO: Add comment to doxygen about REGISTER_LOG_MODULE(name), which must be declared in a child class
+     *
+     */
     template <typename _T>
     class CLogImp
     {
@@ -104,7 +109,7 @@ namespace MiscCommon
             ~CLogImp()
             {
                 CLogSinglton::Instance().push( LOG_SEVERITY_INFO, 0, g_cszMODULENAME_CORE, "Shutting down >>> " + GetModuleName() + " <<<" );
-            }                        
+            }
             CFileLog::stream_type &InfoLog( const std::string &_Message )
             {
                 return CLogSinglton::Instance().push( LOG_SEVERITY_INFO, 0, GetModuleName(), _Message );
@@ -112,7 +117,7 @@ namespace MiscCommon
             CFileLog::stream_type &InfoLog( unsigned long _ErrorCode, const std::string &_Message )
             {
                 return CLogSinglton::Instance().push( LOG_SEVERITY_INFO, _ErrorCode, GetModuleName(), _Message );
-            }            
+            }
             CFileLog::stream_type &WarningLog( unsigned long _ErrorCode, const std::string &_Message )
             {
                 return CLogSinglton::Instance().push( LOG_SEVERITY_WARNING, _ErrorCode, GetModuleName(), _Message );

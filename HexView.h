@@ -5,17 +5,17 @@
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
 
-        version number:    $LastChangedRevision$
+        version number:    $LastChangedRevision:1599 $
         created by:        Anar Manafov
                            2007-05-05
-        last changed by:   $LastChangedBy$ $LastChangedDate$
+        last changed by:   $LastChangedBy:manafov $ $LastChangedDate:2008-01-02 15:12:05 +0100 (Wed, 02 Jan 2008) $
 
         Copyright (c) 2007 GSI GridTeam. All rights reserved.
 *************************************************************************/
 #ifndef HEXVIEW_H_
 #define HEXVIEW_H_
 
-// OUR
+// MiscCommon
 #include "def.h"
 
 namespace MiscCommon

@@ -8,7 +8,7 @@
         version number:     $LastChangedRevision:769 $
         created by:         Anar Manafov
                             2007-04-12
-        last changed by:    $LastChangedBy$ $LastChangedDate$
+        last changed by:    $LastChangedBy:manafov $ $LastChangedDate:2008-01-02 15:12:05 +0100 (Wed, 02 Jan 2008) $
 
         Copyright (c) 2007 GSI GridTeam. All rights reserved.
 *************************************************************************/
@@ -21,38 +21,39 @@
 #include <sys/wait.h>
 #include <signal.h>
 #include <dirent.h>
-
 // STD
 #include <fstream>
 #include <set>
 #include <map>
 #include <sstream>
 #include <stdexcept>
-
 // POSIX regexp
 #include <regex.h>
-
-// OUR
+// MiscCommon
 #include "def.h"
 #include "ErrorCode.h"
 #include "MiscUtils.h"
 #include "CustomIterator.h"
+#include "stlx.h"
 
 namespace MiscCommon
 {
     /**
+     *
      * @brief The function checks, whether the process which corresponds to the given \b _PID can be found.
      * @param _PID - [in] process ID to look for.
      * @return \b true when the process is found, otherwise return value is \b false.
-     **/
+     *
+     */
     inline bool IsProcessExist(pid_t _PID)
     {
         return !(::kill( _PID, 0 ) == -1 && errno == ESRCH );
     }
-
     /**
+     *
      * @brief A PID-file helper
-     **/
+     *
+     */
     class CPIDFile
     {
         public:
@@ -101,15 +102,16 @@ namespace MiscCommon
         private:
             std::string m_FileName;
     };
-
     /**
+     *
      * @brief This class is used to quarry a list of currently running processes
      * @note Usage: In the example container pids will be containing pids of currently running processes
      * @code
      CProcList::ProcContainer_t pids;
      CProcList::GetProcList( &pids );
      * @endcode
-     **/
+     *
+     */
     class CProcList
     {
         public:
@@ -152,8 +154,8 @@ namespace MiscCommon
                 return ( sName.end() == std::find_if( sName.begin(), sName.end(), std::not1(IsDigit()) ) );
             }
     };
-
     /**
+     *
      * @brief This class helps to retrieve process's information from /proc/\<pid\>/status
      * @note Usage:
      * @code
@@ -165,35 +167,12 @@ namespace MiscCommon
      cout << "Name" << p.GetValue( "Name" ) << endl;
      cout << "PPid" << p.GetValue( "PPid" ) << endl;
      * @endcode
-     **/
+     *
+     */
     class CProcStatus
     {
             typedef std::auto_ptr<std::ifstream> ifstream_ptr;
             typedef std::map<std::string, std::string> keyvalue_t;
-
-            struct SGetValues
-            {
-                SGetValues( CProcStatus *_pThis ): m_pThis(_pThis)
-                {}
-                bool operator()( const std::string &_sVal )
-                {
-                    regmatch_t PMatch[3];
-                    if ( 0 != regexec( &m_pThis->m_re, _sVal.c_str(), 3, PMatch, 0) )
-                        return false;
-                    std::string sKey( _sVal.c_str() + PMatch[1].rm_so, PMatch[1].rm_eo - PMatch[1].rm_so );
-                    std::string sValue( _sVal.c_str() + PMatch[2].rm_so, PMatch[2].rm_eo - PMatch[2].rm_so );
-                    // We want to be case insensitive
-                    to_lower( sKey );
-
-                    trim<std::string>( &sValue, '\t' );
-                    trim<std::string>( &sValue, ' ' );
-                    m_pThis->m_values.insert( std::make_pair(sKey, sValue) );
-                    return true;
-                }
-private:
-                CProcStatus *m_pThis;
-            };
-
         public:
             CProcStatus()
             {
@@ -204,7 +183,6 @@ private:
             {
                 regfree( &m_re );
             }
-
             void Open( pid_t _PId )
             {
                 m_values.clear();
@@ -233,10 +211,10 @@ private:
                 custom_istream_iterator<std::string> in_end;
                 StringVector_t vec( in_begin, in_end );
 
-                SGetValues val(this);
-                for_each( vec.begin(), vec.end(), val );
+                for_each( vec.begin(), vec.end(),
+                          std::bind1st( MiscCommon::stlx::mem_fun(&CProcStatus::_Parser), this ) 
+                );
             }
-
             std::string GetValue( const std::string &_KeyName ) const
             {
                 // We want to be case insensitive
@@ -245,6 +223,24 @@ private:
 
                 keyvalue_t::const_iterator iter = m_values.find(sKey);
                 return( m_values.end() == iter ? std::string() : iter->second );
+            }
+            
+        private:
+            bool _Parser( const std::string &_sVal )
+            {
+                regmatch_t PMatch[3];
+                if ( 0 != regexec( &m_re, _sVal.c_str(), 3, PMatch, 0) )
+                    return false;
+                std::string sKey( _sVal.c_str() + PMatch[1].rm_so, PMatch[1].rm_eo - PMatch[1].rm_so );
+                std::string sValue( _sVal.c_str() + PMatch[2].rm_so, PMatch[2].rm_eo - PMatch[2].rm_so );
+                // We want to be case insensitive
+                to_lower( sKey );
+
+                trim<std::string>( &sValue, '\t' );
+                trim<std::string>( &sValue, ' ' );
+                // insert key-value if found
+                m_values.insert( std::make_pair(sKey, sValue) );
+                return true;
             }
 
         private:
@@ -256,9 +252,10 @@ private:
     static sig_atomic_t g_handled_sign = false;
     static sig_atomic_t g_child_status = 0;
     /**
-     * 
+     *
      * @brief handles the signal returned by the child of the process, sets handled_sign at true
      * @param[in] _sign - the signal
+     *
      */
     static void childSignalHandler ( int _sign )
     {

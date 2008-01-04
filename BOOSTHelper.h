@@ -5,10 +5,10 @@
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
 
-        version number:     $LastChangedRevision$
+        version number:     $LastChangedRevision:1599 $
         created by:         Anar Manafov
                             2007-04-20
-        last changed by:    $LastChangedBy$ $LastChangedDate$
+        last changed by:    $LastChangedBy:manafov $ $LastChangedDate:2008-01-02 15:12:05 +0100 (Wed, 02 Jan 2008) $
 
         Copyright (c) 2007 GSI GridTeam. All rights reserved.
 *************************************************************************/
@@ -19,16 +19,15 @@
 #include <boost/thread/thread.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/program_options/variables_map.hpp>
-
 // MiscCommon
 #include "MiscUtils.h"
 
 namespace MiscCommon
 {
     /**
-     * 
+     *
      * @brief a BOOST helpers namespace
-     * 
+     *
      */
     namespace BOOSTHelper
     {

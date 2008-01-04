@@ -5,20 +5,20 @@
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
 
-        version number:     $LastChangedRevision$
+        version number:     $LastChangedRevision:1599 $
         created by:         Anar Manafov
                             2007-08-02
-        last changed by:    $LastChangedBy$ $LastChangedDate$
+        last changed by:    $LastChangedBy:manafov $ $LastChangedDate:2008-01-02 15:12:05 +0100 (Wed, 02 Jan 2008) $
 
         Copyright (c) 2007 GSI GridTeam. All rights reserved.
 ************************************************************************/
 #ifndef BOOST_FILESYSTEM_H_
 #define BOOST_FILESYSTEM_H_
+
 // BOOST
 #include "boost/filesystem/operations.hpp"
 #include "boost/filesystem/path.hpp"
 #include "boost/filesystem/exception.hpp"
-
 // MiscCommon
 #include "MiscUtils.h"
 
@@ -67,6 +67,7 @@ namespace MiscCommon
          * @brief the is_directory() function checks whether the pathname represents a directory or not
          * @param[in] _pathname - a path name.
          * @return <b>true</b> if the given path represents a directory and <b>false</b> otherwise.
+         *
          */
         inline bool is_directory (const std::string &_pathname)
         {

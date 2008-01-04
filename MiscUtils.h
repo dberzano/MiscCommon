@@ -15,6 +15,7 @@
 #ifndef MISCUTILS_H
 #define MISCUTILS_H
 
+// STD
 #include <iostream>
 #include <algorithm>
 
@@ -247,40 +248,5 @@ namespace MiscCommon
         std::transform( _str.begin(), _str.end(), _str.begin(), ToLower() );
         return _str;
     }
-    /*
-     * 
-     * @brief select1st is a function object that takes a single argument, a pair, and returns the pair's first element.
-     * 
-     */
-    template <class _Pair>
-    struct select1st : public std::unary_function<_Pair, typename _Pair::first_type>
-    {
-        typename _Pair::first_type& operator()(_Pair& __x) const
-        {
-            return __x.first;
-        }
-        const typename _Pair::first_type& operator()(const _Pair& __x) const
-        {
-            return __x.first;
-        }
-    };
-    /**
-     * 
-     * @brief select2nd is a function object that takes a single argument, a pair, and returns the pair's second element.
-     * 
-     */
-    template <class _Pair>
-    struct select2nd : public std::unary_function<_Pair, typename _Pair::second_type>
-    {
-        typename _Pair::second_type& operator()(_Pair& __x) const
-        {
-            return __x.second;
-        }
-        const typename _Pair::second_type& operator()(const _Pair& __x) const
-        {
-            return __x.second;
-        }
-    };
-
 };
 #endif

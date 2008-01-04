@@ -69,12 +69,12 @@ namespace MiscCommon
 
             if ( !ad.hasAttribute(_attr) )
                 return;
-            
-            ad.delAttribute( _attr );            
+
+            ad.delAttribute( _attr );
             ad.addAttribute( _attr, _Value );
             ad.toFile( _JDL );
         }
-        
+
     };
 };
 #endif /*JDLHELPER_H_*/
