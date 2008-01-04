@@ -47,7 +47,7 @@ namespace MiscCommon
      */
     inline bool IsProcessExist(pid_t _PID)
     {
-        return !(::kill( _PID, 0 ) == -1 && errno == ESRCH );
+        return !( ::kill( _PID, 0 ) == -1 && errno == ESRCH );
     }
     /**
      *
@@ -212,8 +212,8 @@ namespace MiscCommon
                 StringVector_t vec( in_begin, in_end );
 
                 for_each( vec.begin(), vec.end(),
-                          std::bind1st( MiscCommon::stlx::mem_fun(&CProcStatus::_Parser), this ) 
-                );
+                          std::bind1st( MiscCommon::stlx::mem_fun(&CProcStatus::_Parser), this )
+                        );
             }
             std::string GetValue( const std::string &_KeyName ) const
             {
@@ -224,7 +224,7 @@ namespace MiscCommon
                 keyvalue_t::const_iterator iter = m_values.find(sKey);
                 return( m_values.end() == iter ? std::string() : iter->second );
             }
-            
+
         private:
             bool _Parser( const std::string &_sVal )
             {
