@@ -10,7 +10,7 @@
                             2006-07-15
         last changed by:    $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2006 GSI GridTeam. All rights reserved.
+        Copyright (c) 2006-2008 GSI GridTeam. All rights reserved.
 ************************************************************************/
 #ifndef IXMLPERSIST_H
 #define IXMLPERSIST_H

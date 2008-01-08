@@ -10,7 +10,7 @@
                             2006-07-15
         last changed by:    $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2006, 2007 GSI GridTeam. All rights reserved.
+        Copyright (c) 2006-2008 GSI GridTeam. All rights reserved.
 ************************************************************************/
 #ifndef XMLHELPER_H
 #define XMLHELPER_H
@@ -109,10 +109,10 @@ namespace MiscCommon
         }
         /**
          * 
-         * @brief A specialization of get_attr_value with the bool type -- xml value: true or false
+         * @brief A specialization of the get_attr_value template function with the bool type -- xml value: true or false
          * @param[in] _element - XML node to process. Must not be a NULL value.
          * @param[in] _attr - Name of the attribute to read. Must not be a NULL value.
-         * @param[in,out] _data - A buffer to keep a return value - value of the attribute. Must not be a NULL value.
+         * @param[in,out] _data - A buffer to keep a retrieved value of the attribute. Must not be a NULL value.
          * 
          */
         template <>
@@ -215,10 +215,10 @@ namespace MiscCommon
         }
         /**
          * 
-         * @brief A specialization of get_node_value with the bool type -- xml value: true or false
+         * @brief A specialization of the get_node_value template function with the bool type -- xml value: true or false
          * @param[in] _element - XML parent node to process. Must not be a NULL value.
          * @param[in] _attr - Name of the node which value shoiuld be retrieved. Must not be a NULL value.
-         * @param[in,out] _data - A buffer to keep a return value - value of the attribute. Must not be a NULL value.
+         * @param[in,out] _data - A buffer to keep a retreived node value. Must not be a NULL value.
          * 
          */
         template <>
