@@ -67,7 +67,7 @@ namespace MiscCommon
         }
         /*
          *
-         * @brief select1st is a function object that takes a single argument, a pair, and returns the pair's first element.
+         * @brief The select1st function object takes a single argument, a pair, and returns the pair's first element.
          *
          */
         template <class _Pair>
@@ -84,7 +84,7 @@ namespace MiscCommon
         };
         /**
          *
-         * @brief select2nd is a function object that takes a single argument, a pair, and returns the pair's second element.
+         * @brief The select2nd function object takes a single argument, a pair, and returns the pair's second element.
          *
          */
         template <class _Pair>
