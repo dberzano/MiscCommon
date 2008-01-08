@@ -89,13 +89,21 @@ namespace MiscCommon
             throw std::runtime_error( str + "empty XML document" );
     /**
      *
-     * @brief Reads element from XML file.
+     * @brief Reads atrtributes of the node from XML file.
      * @param[in] ELEMENT_NAME - Name of the XML element to read.
      * @param[in,out] VAR - A buffer where value of the XML elements should be stored in.
      *
      */
-#define READ_ELEMENT( ELEMENT_NAME, VAR ) \
+#define READ_NODE_ATTR( ELEMENT_NAME, VAR ) \
     MiscCommon::XMLHelper::get_attr_value( elementConfig, ELEMENT_NAME, &VAR );
+    /**
+     * 
+     * @brief
+     * 
+     */
+#define READ_NODE_VALUE( NODE_NAME, VAR ) \
+    MiscCommon::XMLHelper::get_node_value( elementConfig, NODE_NAME, &VAR );
+    
     /**
      *
      * @brief Closes the sequence of ::READ_ELEMENT.
