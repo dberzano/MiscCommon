@@ -273,6 +273,22 @@ namespace MiscCommon
 
         return fs.st_size;
     }
-
+    /**
+     *
+     * @brief
+     *
+     */
+    inline bool is_file_exists( const std::string &_FileName )
+    {
+        try
+        {
+            file_size( _FileName );
+            return true;
+        }
+        catch (...)
+        {
+            return false;
+        }
+    }
 };
 #endif /*SYSHELPER_H_*/

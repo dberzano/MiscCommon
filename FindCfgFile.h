@@ -17,11 +17,8 @@
 
 // STD
 #include <iterator>
-// BOOST
-#include "boost/bind.hpp"
 // MiscCommon
 #include "SysHelper.h"
-#include "BOOST_FILESYSTEM.h"
 
 namespace MiscCommon
 {
@@ -37,7 +34,7 @@ namespace MiscCommon
         {
             _T path(_Path);
             MiscCommon::smart_path( &path );
-            return ( MiscCommon::BOOSTHelper::is_file( path ) );
+            return ( is_file_exists( path ) );
         }
     };
     /**
