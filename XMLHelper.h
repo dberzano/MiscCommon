@@ -70,7 +70,7 @@ namespace MiscCommon
                     return m_xmlString;
                 }
 
-                std::string ToString()
+                std::string ToString() const
                 {
                     char * szTmp = xercesc::XMLString::transcode( m_xmlString );
                     if ( !szTmp )
@@ -91,6 +91,10 @@ namespace MiscCommon
                         xercesc::XMLString::release( &m_xmlString );
                 }
         };
+        inline bool operator==( const std::string &_Val1, const smart_XMLCh &_Val2 )
+        {
+            return ( _Val1 == _Val2.ToString() );
+        }
         /**
          *
          * @brief A template function, which helps to retrieve different types of attributes from an XML file.
