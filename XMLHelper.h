@@ -134,6 +134,35 @@ namespace MiscCommon
         inline xercesc::DOMNode* GetSingleNodeByName( const _T *_Val, const std::string &_NodeName );
         /**
          *
+         * @brief
+         *
+         */
+        template <class _T>
+        inline xercesc::DOMNodeList* GetNodesByName( const _T *_Val, const std::string &_NodeName );
+        /**
+         *
+         * @brief
+         *
+         */
+        template <>
+        inline xercesc::DOMNodeList* GetNodesByName( const xercesc::DOMNode *_ParentNode, const std::string &_NodeName )
+        {
+            if ( !_ParentNode )
+                return NULL;
+            const smart_XMLCh ElementName( _NodeName.c_str() );
+
+            const xercesc::DOMElement* element( NULL );
+            if ( xercesc::DOMNode::ELEMENT_NODE == _ParentNode->getNodeType() )
+
+                if ( xercesc::DOMNode::ELEMENT_NODE == _ParentNode->getNodeType() )
+                    element = dynamic_cast< const xercesc::DOMElement* >( _ParentNode ) ;
+                else
+                    return NULL;
+
+            return( element->getElementsByTagName( ElementName ) );
+        }
+        /**
+         *
          * @brief Returns a Node by the given name. A xercesc::DOMDocument specialization
          * @param[in] _Doc - XML Document object. Must not be a NULL value.
          * @param[in] _NodeName - Name of the child node to find.
@@ -163,19 +192,7 @@ namespace MiscCommon
         template <>
         inline xercesc::DOMNode* GetSingleNodeByName( const xercesc::DOMNode *_node, const std::string &_NodeName )
         {
-            if ( !_node )
-                return NULL;
-            const smart_XMLCh ElementName( _NodeName.c_str() );
-
-            const xercesc::DOMElement* element( NULL );
-            if ( xercesc::DOMNode::ELEMENT_NODE == _node->getNodeType() )
-
-                if ( xercesc::DOMNode::ELEMENT_NODE == _node->getNodeType() )
-                    element = dynamic_cast< const xercesc::DOMElement* >( _node ) ;
-                else
-                    return NULL;
-
-            const xercesc::DOMNodeList *list = element->getElementsByTagName( ElementName );
+            const xercesc::DOMNodeList *list = GetNodesByName( _node, _NodeName );
             if ( !list )
                 return NULL;
             return list->item( 0 );
