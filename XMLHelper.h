@@ -42,7 +42,7 @@ namespace MiscCommon
          * @brief smart-wrapper around XMLCh class
          *
          */
-        class smart_XMLCh: public NONCopyable
+        class smart_XMLCh
         {
             public:
                 XMLCh *m_xmlString;
