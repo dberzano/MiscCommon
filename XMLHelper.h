@@ -42,7 +42,7 @@ namespace MiscCommon
          * @brief smart-wrapper around XMLCh class
          *
          */
-        class smart_XMLCh
+        class smart_XMLCh: public NONCopyable
         {
             public:
                 XMLCh *m_xmlString;
@@ -78,6 +78,11 @@ namespace MiscCommon
                     std::string strRetVal( szTmp );
                     xercesc::XMLString::release( &szTmp );
                     return strRetVal;
+                }
+                
+                bool operator==( const std::string &_Val )
+                {
+                    return ( _Val == this->ToString() );
                 }
 
                 XMLCh* operator&()
