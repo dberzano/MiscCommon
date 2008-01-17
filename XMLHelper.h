@@ -57,7 +57,8 @@ namespace MiscCommon
 
                 smart_XMLCh( const XMLCh * const _XMLCh )
                 {
-                    m_xmlString = xercesc::XMLString::replicate( _XMLCh );
+                    if ( _XMLCh )
+                        m_xmlString = xercesc::XMLString::replicate( _XMLCh );
                 }
 
                 ~smart_XMLCh()
@@ -72,6 +73,8 @@ namespace MiscCommon
 
                 std::string ToString() const
                 {
+                    if ( !m_xmlString )
+                        return std::string();
                     char * szTmp = xercesc::XMLString::transcode( m_xmlString );
                     if ( !szTmp )
                         return std::string();
@@ -79,7 +82,7 @@ namespace MiscCommon
                     xercesc::XMLString::release( &szTmp );
                     return strRetVal;
                 }
-                
+
                 bool operator==( const std::string &_Val )
                 {
                     return ( _Val == this->ToString() );
@@ -237,7 +240,10 @@ namespace MiscCommon
             xercesc::DOMNode *node( GetSingleNodeByName(_parent_node, _node_name) );
             if ( !node )
                 return;
-            smart_XMLCh xmlTmpStr( node->getFirstChild()->getNodeValue() );
+            xercesc::DOMNode *child( node->getFirstChild() );
+            if ( !child )
+                return;
+            smart_XMLCh xmlTmpStr( child->getNodeValue() );
             std::istringstream ss( xmlTmpStr.ToString() );
             ss >> *_data;
         }
@@ -255,7 +261,10 @@ namespace MiscCommon
             xercesc::DOMNode *node( GetSingleNodeByName(_parent_node, _node_name) );
             if ( !node )
                 return;
-            smart_XMLCh xmlTmpStr( node->getFirstChild()->getNodeValue() );
+            xercesc::DOMNode *child( node->getFirstChild() );
+            if ( !child )
+                return;
+            smart_XMLCh xmlTmpStr( child->getNodeValue() );
             std::string str( xmlTmpStr.ToString() );
             MiscCommon::to_lower( str );
             *_data = !( str.empty() || ( "false" == str ) );
