@@ -10,11 +10,13 @@
                             2007-08-06
         last changed by:    $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2007 GSI GridTeam. All rights reserved.
+        Copyright (c) 2007-2008 GSI GridTeam. All rights reserved.
 *************************************************************************/
 #ifndef GLITEHELPER_H_
 #define GLITEHELPER_H_
 
+// STD
+#include <stdexcept>
 // gLite
 #include "glite/lb/Job.h"
 // MiscCommon
