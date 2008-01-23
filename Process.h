@@ -41,7 +41,7 @@ namespace MiscCommon
     /**
      *
      * @brief The function checks, whether the process which corresponds to the given \b _PID can be found.
-     * @param _PID - [in] process ID to look for.
+     * @param[in] _PID - a process ID to look for.
      * @return \b true when the process is found, otherwise return value is \b false.
      *
      */
