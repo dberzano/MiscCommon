@@ -36,7 +36,7 @@ namespace MiscCommon
 {
     /**
      * @brief The function returns current user name.
-     * @param _RetVal - [out] A pinter to string buffer where user name will be stored. Must not be NULL.
+     * @param[out] _RetVal - A pinter to string buffer where user name will be stored. Must not be NULL.
      **/
     inline void get_cuser_name( std::string *_RetVal )
     {
@@ -48,8 +48,8 @@ namespace MiscCommon
     }
     /**
      * @brief The function returns home directory path of the given user.
-     * @param _uid - [in] user id the home directory of which should be returned.
-     * @param _RetVal - [out] A pointer to string buffer where path will be stored. Must not be NULL.
+     * @param[in] _uid - user id the home directory of which should be returned.
+     * @param[out] _RetVal - A pointer to string buffer where path will be stored. Must not be NULL.
      * @return In case of error, function returns an empty buffer.
      **/
     inline void get_homedir( uid_t _uid, std::string *_RetVal )
@@ -62,7 +62,7 @@ namespace MiscCommon
     }
     /**
      * @brief The function returns home directory path of the current user.
-     * @param _RetVal - [out] A pointer to string buffer where path will be stored. Must not be NULL.
+     * @param[out] _RetVal - A pointer to string buffer where path will be stored. Must not be NULL.
      * @return In case of error, function returns an empty buffer.
      **/
     inline void get_cuser_homedir( std::string *_RetVal )
@@ -70,12 +70,11 @@ namespace MiscCommon
         get_homedir( getuid(), _RetVal );
     }
     /**
-     * @brief The function extends any environment variable found in the give path
-     * @brief to its value.\b
+     * @brief The function extends any environment variable found in the give path to its value.
      * @brief This function also extends "~/" to a real user's home directory path.
      * @brief When, for example, there is a variable $GLITE_LOCATE = /opt/glite and the given path
      * @brief is "$GLITE_LOCATION/etc/test.xml", the return value will be a path "/opt/glite/etc/test.xml"
-     * @param _Path - [in, out] A pointer to a string buffer which represents a path to extend. Must not be NULL.
+     * @param[in,out] _Path - A pointer to a string buffer which represents a path to extend. Must not be NULL.
      **/
     template<class _T>
     inline void smart_path( _T *_Path )
@@ -121,7 +120,7 @@ namespace MiscCommon
     }
     /**
      * @brief The function is used to access the host name (with FCDN) of the current processor.
-     * @param _RetVal - [out] The returned buffer string. Must not be NULL.
+     * @param[out] _RetVal - The returned buffer string. Must not be NULL.
      **/
     inline void get_hostname( std::string *_RetVal )
     {
