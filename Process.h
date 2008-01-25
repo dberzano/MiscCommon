@@ -10,7 +10,7 @@
                             2007-04-12
         last changed by:    $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2007 GSI GridTeam. All rights reserved.
+        Copyright (c) 2007,2008 GSI GridTeam. All rights reserved.
 *************************************************************************/
 #ifndef PROCESS_H_
 #define PROCESS_H_
@@ -23,9 +23,6 @@
 #include <dirent.h>
 // STD
 #include <fstream>
-#include <set>
-#include <map>
-#include <sstream>
 #include <stdexcept>
 // POSIX regexp
 #include <regex.h>
@@ -272,7 +269,7 @@ namespace MiscCommon
     }
 
     //TODO: Document me!
-    inline void do_execv( const std::string &_Command, const StringVector_t &_Params, size_t _Delay ) throw (std::exception)
+    inline void do_execv( const std::string &_Command, const StringVector_t &_Params, size_t _Delay, bool _ShowLog = false ) throw (std::exception)
     {
         g_handled_sign = false;
         g_child_status = 0;
@@ -287,6 +284,14 @@ namespace MiscCommon
             cargs.push_back( iter->c_str() );
         cargs.push_back(0);
 
+        int fdpipe[2];
+        if ( _ShowLog )
+        {
+            if ( pipe( fdpipe ) == -1 )
+                _ShowLog = false;
+        }
+
+
         switch ( child_pid = fork() )
         {
             case - 1:
@@ -294,12 +299,29 @@ namespace MiscCommon
                 throw std::runtime_error( "do_execv: Unable to fork process" );
 
             case 0:
+                if ( _ShowLog )
+                {
+                    close( fdpipe[0] );
+                    dup2( STDOUT_FILENO, fdpipe[1] );
+                    dup2( STDOUT_FILENO, fdpipe[1] );
+                }
+                else
+                {
+                    // Close std streams
+                    close(STDOUT_FILENO);
+                    close(STDERR_FILENO);
+                }
                 // child: execute the required command, on success does not return
                 execv ( _Command.c_str(), const_cast<char **>(&cargs[0]) ); // TODO: duplicates the std.out and std.err of the command into two files and report content of streams in error msg.
-                ::exit( 1 );
+                ::exit( 0 );
         }
 
         //parent
+        if ( _ShowLog )
+        {
+            close( fdpipe[1] );
+        }
+
         for ( size_t i = 0; i < _Delay; ++i )
         {
             if ( !IsProcessExist(child_pid) )
@@ -316,7 +338,20 @@ namespace MiscCommon
                 }
                 return;
             }
-            sleep( 1 ); //TODO: Needs to be fixed! Implement time-function based timeout measurements instead
+            if ( _ShowLog )
+            {
+                const int size = 256;
+                CHARVector_t buf(size);
+                int bytes;
+                while ( (bytes = read(fdpipe[0], &buf[0], buf.capacity() )) > 0 )
+                {
+                    std::cout << std::string( &buf[0] );
+                    buf.clear();
+                    buf.resize(size);
+                }
+            }
+            //TODO: Needs to be fixed! Implement time-function based timeout measurements instead
+            sleep( 1 );
         }
         throw std::runtime_error("do_execv: Timeout has been reached, command execution will be terminated now." );
         //kills the child
