@@ -236,7 +236,7 @@ namespace MiscCommon
                 trim<std::string>( &sValue, '\t' );
                 trim<std::string>( &sValue, ' ' );
                 // insert key-value if found
-                m_values.insert( std::make_pair(sKey, sValue) );
+                m_values.insert( keyvalue_t::value_type(sKey, sValue) );
                 return true;
             }
 
