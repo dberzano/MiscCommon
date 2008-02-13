@@ -291,7 +291,6 @@ namespace MiscCommon
                 _ShowLog = false;
         }
 
-
         switch ( child_pid = fork() )
         {
             case - 1:
