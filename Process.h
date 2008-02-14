@@ -285,39 +285,36 @@ namespace MiscCommon
         cargs.push_back(0);
 
         int fdpipe[2];
-        if ( _ShowLog )
+        if ( !_ShowLog )
         {
             if ( pipe( fdpipe ) == -1 )
-                _ShowLog = false;
+                _ShowLog = true;
         }
 
         switch ( child_pid = fork() )
         {
             case - 1:
+                close( fdpipe[0] );
+                close( fdpipe[1] );
                 // Unable to fork
                 throw std::runtime_error( "do_execv: Unable to fork process" );
 
             case 0:
-                if ( _ShowLog )
+                if ( !_ShowLog )
                 {
-                    close( fdpipe[0] );
-                    dup2( STDOUT_FILENO, fdpipe[1] );
-                    dup2( STDOUT_FILENO, fdpipe[1] );
+                    dup2( fdpipe[0], STDOUT_FILENO );
+                    dup2( fdpipe[1], STDERR_FILENO );
                 }
-                else
-                {
-                    // Close std streams
-                    close(STDOUT_FILENO);
-                    close(STDERR_FILENO);
-                }
+
                 // child: execute the required command, on success does not return
                 execv ( _Command.c_str(), const_cast<char **>(&cargs[0]) ); // TODO: duplicates the std.out and std.err of the command into two files and report content of streams in error msg.
                 ::exit( 0 );
         }
 
         //parent
-        if ( _ShowLog )
+        if ( !_ShowLog )
         {
+            close( fdpipe[0] );
             close( fdpipe[1] );
         }
 
@@ -336,18 +333,6 @@ namespace MiscCommon
                     throw std::runtime_error( ss.str() );
                 }
                 return;
-            }
-            if ( _ShowLog )
-            {
-                const int size = 256;
-                CHARVector_t buf(size);
-                int bytes;
-                while ( (bytes = read(fdpipe[0], &buf[0], buf.capacity() )) > 0 )
-                {
-                    std::cout << std::string( &buf[0] );
-                    buf.clear();
-                    buf.resize(size);
-                }
             }
             //TODO: Needs to be fixed! Implement time-function based timeout measurements instead
             sleep( 1 );
