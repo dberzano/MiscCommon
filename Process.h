@@ -10,7 +10,7 @@
                             2007-04-12
         last changed by:    $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2007,2008 GSI GridTeam. All rights reserved.
+        Copyright (c) 2007-2008 GSI GridTeam. All rights reserved.
 *************************************************************************/
 #ifndef PROCESS_H_
 #define PROCESS_H_
@@ -307,7 +307,7 @@ namespace MiscCommon
                 }
 
                 // child: execute the required command, on success does not return
-                execv ( _Command.c_str(), const_cast<char **>(&cargs[0]) ); // TODO: duplicates the std.out and std.err of the command into two files and report content of streams in error msg.
+                execv ( _Command.c_str(), const_cast<char **>(&cargs[0]) );
                 ::exit( 0 );
         }
 
@@ -322,14 +322,11 @@ namespace MiscCommon
         {
             if ( !IsProcessExist(child_pid) )
             {
-                if ( g_handled_sign && !is_status_ok(g_child_status) )
+              //  if ( g_handled_sign && !is_status_ok(g_child_status) )
                 {
                     std::stringstream ss;
                     ss << "do_execv: Can't execute \"" << _Command << "\" with parameters: ";
-                    StringVector_t::const_iterator iter = _Params.begin();
-                    StringVector_t::const_iterator iter_end = _Params.end();
-                    for (; iter != iter_end; ++iter )
-                        ss << "\"" << *iter << "\" ";
+                    std::copy( _Params.begin(), _Params.end(), std::ostream_iterator<std::string>(ss, " ") );                    
                     throw std::runtime_error( ss.str() );
                 }
                 return;
