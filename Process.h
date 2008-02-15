@@ -308,7 +308,7 @@ namespace MiscCommon
 
                 // child: execute the required command, on success does not return
                 execv ( _Command.c_str(), const_cast<char **>(&cargs[0]) );
-                ::exit( 0 );
+                ::exit( 1 );
         }
 
         //parent
@@ -322,11 +322,11 @@ namespace MiscCommon
         {
             if ( !IsProcessExist(child_pid) )
             {
-              //  if ( g_handled_sign && !is_status_ok(g_child_status) )
+                if ( g_handled_sign && !is_status_ok(g_child_status) )
                 {
                     std::stringstream ss;
                     ss << "do_execv: Can't execute \"" << _Command << "\" with parameters: ";
-                    std::copy( _Params.begin(), _Params.end(), std::ostream_iterator<std::string>(ss, " ") );                    
+                    std::copy( _Params.begin(), _Params.end(), std::ostream_iterator<std::string>(ss, " ") );
                     throw std::runtime_error( ss.str() );
                 }
                 return;
