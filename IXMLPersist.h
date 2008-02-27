@@ -140,7 +140,7 @@ namespace MiscCommon
     /**
      *
      * @brief Closes the sequence of ::READ_ELEMENT.
-     * @Note see the example of BEGIN_READ_XML_CFG(_T)
+     * @note see the example of BEGIN_READ_XML_CFG(_T)
      *
      */
 
