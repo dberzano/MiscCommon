@@ -17,6 +17,7 @@
 
 // STD
 #include <stdexcept>
+#include <algorithm>
 // VOMS
 #ifdef IOV_MAX
 #undef IOV_MAX

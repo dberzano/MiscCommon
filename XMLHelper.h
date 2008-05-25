@@ -165,11 +165,12 @@ namespace MiscCommon
 
             const xercesc::DOMElement* element( NULL );
             if ( xercesc::DOMNode::ELEMENT_NODE == _ParentNode->getNodeType() )
-
+	       {
                 if ( xercesc::DOMNode::ELEMENT_NODE == _ParentNode->getNodeType() )
                     element = dynamic_cast< const xercesc::DOMElement* >( _ParentNode ) ;
                 else
                     return NULL;
+	       }
 
             return( element->getElementsByTagName( ElementName ) );
         }

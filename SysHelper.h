@@ -21,6 +21,8 @@
 #include <sys/syscall.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+// STD
+#include <typeinfo>
 
 // HACK: On the SLC3 HOST_NAME_MAX is undefined
 #ifndef HOST_NAME_MAX

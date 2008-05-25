@@ -18,6 +18,7 @@
 // API
 #include <errno.h>
 #include <stdlib.h>
+#include <string.h>
 // STD
 #include <string>
 #include <sstream>
