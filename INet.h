@@ -49,7 +49,7 @@ namespace MiscCommon
         typedef int Socket_t;
 
         // Forward declaration
-        inline std::string socket_error_string( Socket_t _socket, char *_strMsg = NULL );
+        inline std::string socket_error_string( Socket_t _socket, const char *_strMsg = NULL );
 
         /**
          *
@@ -321,7 +321,7 @@ namespace MiscCommon
                 void Bind( unsigned short _nPort, const std::string *_Addr = NULL ) throw ( std::exception )
                 {
                     if ( m_Socket < 0 )
-                        throw std::runtime_error( socket_error_string( m_Socket, "NULL socket has been given to Bind" ) );
+		      throw std::runtime_error( socket_error_string( m_Socket, "NULL socket has been given to Bind" ) );
 
                     sockaddr_in addr;
                     addr.sin_family = AF_INET;
@@ -461,7 +461,7 @@ namespace MiscCommon
          * @brief The function returns socket's error string.
          *
          */
-        inline std::string socket_error_string( Socket_t _socket, char *_strMsg )
+        inline std::string socket_error_string( Socket_t _socket, const char *_strMsg )
         {
             std::string strSocket;
             socket2string( _socket, &strSocket );
@@ -470,7 +470,7 @@ namespace MiscCommon
             std::string sErr;
             MiscCommon::errno2str( &sErr );
 
-            std::stringstream ss;
+            std::ostringstream ss;
             if ( _strMsg )
             {
                 ss << _strMsg << "\n";

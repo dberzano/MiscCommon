@@ -17,6 +17,7 @@
 
 // STD
 #include <stdexcept>
+#include <memory>
 // MiscCommon
 #include "Log.h"
 
