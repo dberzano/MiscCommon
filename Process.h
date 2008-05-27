@@ -25,6 +25,7 @@
 #include <fstream>
 #include <stdexcept>
 #include <iterator>
+#include <memory>
 // POSIX regexp
 #include <regex.h>
 // MiscCommon
