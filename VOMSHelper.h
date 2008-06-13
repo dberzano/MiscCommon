@@ -79,7 +79,7 @@ namespace MiscCommon
             data.RetrieveFromProxy( RECURSE_CHAIN );
 
             if ( data.data.empty() )
-                throw std::runtime_error("User proxy doesn't have a valid VOMS extension.");
+                throw std::runtime_error("User's proxy doesn't have a valid VOMS extension.");
 
             std::transform( data.data.begin(), data.data.end(), std::back_inserter(*_RetVal), SGetName() );
         }
