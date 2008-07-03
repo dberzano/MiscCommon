@@ -231,7 +231,7 @@ namespace MiscCommon
          *
          * @brief A template function, which helps to retrieve a value of xml node.
          * @param[in] _element - XML parent node to process. Must not be a NULL value.
-         * @paramp[in] _attr - Name of the node which value shoiuld be retrieved. Must not be a NULL value.
+         * @paramp[in] _attr - Name of the node which value should be retrieved. Must not be a NULL value.
          * @param[in,out] _data - A buffer to keep a return value. Must not be a NULL value.
          *
          */
@@ -252,8 +252,8 @@ namespace MiscCommon
          *
          * @brief A specialization of the get_node_value template function with the bool type -- xml value: true or false
          * @param[in] _element - XML parent node to process. Must not be a NULL value.
-         * @param[in] _attr - Name of the node which value shoiuld be retrieved. Must not be a NULL value.
-         * @param[in,out] _data - A buffer to keep a retreived node value. Must not be a NULL value.
+         * @param[in] _attr - Name of the node which value should be retrieved. Must not be a NULL value.
+         * @param[in,out] _data - A buffer to keep a retrieved node value. Must not be a NULL value.
          *
          */
         template <>

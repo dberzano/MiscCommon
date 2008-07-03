@@ -56,8 +56,8 @@ namespace MiscCommon
         };
         /**
          *
-         * @brief The mem_fun() tempalte is a custom mem_fun adapter, which exteds std::mem_fun
-         * @brief in order to acept function with const reference as an argument.
+         * @brief The mem_fun() template is a custom mem_fun adapter, which extends std::mem_fun
+         * @brief in order to accept function with const reference as an argument.
          *
          */
         template <typename _Result, typename _Class, typename _Argument>

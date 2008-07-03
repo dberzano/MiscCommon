@@ -19,7 +19,7 @@ namespace MiscCommon
 {
     /**
      *
-     * @brief The char_traits_ci_base class is the default character traits class used for case insensetive strings.\n
+     * @brief The char_traits_ci_base class is the default character traits class used for case insensitive strings.\n
      * @brief The char_traits_ci_base class is of no use by itself. It is used as a template parent class of other classes, such as the char_traits_ci_t template.
      * @note charT is either char or wchar_t.
      *
@@ -73,7 +73,7 @@ namespace MiscCommon
     };
     /**
      *
-     * @brief The char_traits_ci_t class is the default character traits class used for case insensetive strings.\n
+     * @brief The char_traits_ci_t class is the default character traits class used for case insensitive strings.\n
      * @brief The char_traits_ci_t class is of no use by itself. It is used as a template parameter of other classes, such as the basic_string template.
      * @note charT is either char or wchar_t.
      *

@@ -42,7 +42,7 @@ namespace MiscCommon
          * @brief The conflicting_options function used to check that 'opt1' and 'opt2' are not specified at the same time.
          * @param[in] _vm - a BOOST program options variable map.
          * @param[in] _opt1 - the first option to check.
-         * @param[in] _opt2 - the seconde option to check.
+         * @param[in] _opt2 - the second option to check.
          * @exception std::runtime_error - thrown if the 'opt1' and 'opt2' are specified at the same time.
          * @return no return value.
          *
@@ -63,7 +63,7 @@ namespace MiscCommon
          * @brief The option_dependency function used to check that if 'for_what' is specified, then 'required_option' is specified too.
          * @param[in] _vm - a BOOST program options variable map.
          * @param[in] _for_what - option to check.
-         * @param[in] _required_option - requared option.
+         * @param[in] _required_option - required option.
          * @exception std::runtime_error - thrown if 'for_what' is specified but there is no 'required_option' found.
          * @return no return value.
          *

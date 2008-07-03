@@ -22,7 +22,7 @@ namespace MiscCommon
 {
     /**
      *
-     * @brief Declares XML Presist Interface for user's class
+     * @brief Declares an XML Persist Interface for user's class
      * @param[in] _T - name of the parent class.
      * @note Example
      * @code
@@ -34,7 +34,7 @@ namespace MiscCommon
            DECLARE_XMLPERSIST_IMPL(CMyClass);
      ...
      };
-      
+
      * @endcode
      *
      */
@@ -89,7 +89,7 @@ namespace MiscCommon
             throw std::runtime_error( str + "empty XML document" );
     /**
      *
-     * @brief Reads atrtributes of the node from XML file.
+     * @brief Reads attributes of the node from XML file.
      * @param[in] ELEMENT_NAME - Name of the XML element to read.
      * @param[in,out] VAR - A buffer where value of the XML elements should be stored in.
      *
@@ -97,13 +97,13 @@ namespace MiscCommon
 #define READ_NODE_ATTR( ELEMENT_NAME, VAR ) \
     MiscCommon::XMLHelper::get_attr_value( elementConfig, ELEMENT_NAME, &VAR );
     /**
-     * 
+     *
      * @brief
-     * 
+     *
      */
 #define READ_NODE_VALUE( NODE_NAME, VAR ) \
     MiscCommon::XMLHelper::get_node_value( elementConfig, NODE_NAME, &VAR );
-    
+
     /**
      *
      * @brief Closes the sequence of ::READ_ELEMENT.
@@ -122,7 +122,7 @@ namespace MiscCommon
      ...
        public:
            DECLARE_XMLPERSIST_IMPL(CMyClass);
-        
+
        private:
            // IXMLPersist implementation
            BEGIN_READ_XML_CFG(CCatalogManager)
@@ -132,7 +132,7 @@ namespace MiscCommon
            END_READ_XML_CFG
      ...
      };
-      
+
      * @endcode
      *
      */
