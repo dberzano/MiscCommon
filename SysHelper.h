@@ -10,7 +10,7 @@
                             2007-04-01
         last changed by:    $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2007 GSI GridTeam. All rights reserved.
+        Copyright (c) 2007-2008 GSI GridTeam. All rights reserved.
 *************************************************************************/
 #ifndef SYSHELPER_H_
 #define SYSHELPER_H_
