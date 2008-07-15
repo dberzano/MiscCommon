@@ -45,8 +45,8 @@ namespace MiscCommon
         if ( !_RetVal )
             return ;
 
-        passwd *pwd( getpwuid(geteuid()) );
-        *_RetVal = pwd ? std::string(pwd->pw_name) : "";
+        passwd *pwd( getpwuid( geteuid() ) );
+        *_RetVal = pwd ? std::string( pwd->pw_name ) : "";
     }
     /**
      * @brief The function returns home directory path of the given user.
@@ -60,7 +60,21 @@ namespace MiscCommon
             return ;
 
         passwd *pwd = getpwuid( _uid );
-        *_RetVal = pwd ? std::string( pwd->pw_dir) : "";
+        *_RetVal = pwd ? std::string( pwd->pw_dir ) : "";
+    }
+    /**
+     * @brief The function returns home directory path of the given user.
+     * @param[in] _UName - a name of the user the home directory of which should be returned.
+     * @param[out] _RetVal - A pointer to string buffer where path will be stored. Must not be NULL.
+     * @return In case of error, function returns an empty buffer.
+     **/
+    inline void get_homedir( const char *_UName, std::string *_RetVal )
+    {
+        if ( !_RetVal )
+            return ;
+
+        passwd *pwd = getpwnam( _UName );
+        *_RetVal = pwd ? std::string( pwd->pw_dir ) : "";
     }
     /**
      * @brief The function returns home directory path of the current user.
@@ -73,7 +87,7 @@ namespace MiscCommon
     }
     /**
      * @brief The function extends any environment variable found in the give path to its value.
-     * @brief This function also extends "~/" to a real user's home directory path.
+     * @brief This function also extends "~/" or "~user_name/" to a real user's home directory path.
      * @brief When, for example, there is a variable $GLITE_LOCATE = /opt/glite and the given path
      * @brief is "$GLITE_LOCATION/etc/test.xml", the return value will be a path "/opt/glite/etc/test.xml"
      * @param[in,out] _Path - A pointer to a string buffer which represents a path to extend. Must not be NULL.
@@ -83,40 +97,57 @@ namespace MiscCommon
     {
         // Checking for "~/"
         std::string path( *_Path );
-        MiscCommon::trim_left( &path, ' ');
-        if ( '~' == path[0] && '/' == path[1] )
+        MiscCommon::trim_left( &path, ' ' );
+        if ( '~' == path[0] )
         {
             std::string path( *_Path );
-            std::string sHome;
-            get_cuser_homedir( &sHome );
-            smart_append( &sHome, '/');
+            // ~/.../.../
+            if ( '/' == path[1] )
+            {
+                std::string sHome;
+                get_cuser_homedir( &sHome );
+                smart_append( &sHome, '/' );
 
-            path.erase( path.begin(), path.begin() + 2 );
-            sHome += path;
-            path.swap(sHome);
-            _Path->swap(path);
+                path.erase( path.begin(), path.begin() + 2 );
+                sHome += path;
+                path.swap( sHome );
+                _Path->swap( path );
+            }
+            else // ~user/.../.../
+            {
+                typename _T::size_type p = path.find( _T( "/" ) );
+                if ( _T::npos != p )
+                {
+                    const std::string uname = path.substr( 1, p - 1 );
+                    std::string home_dir;
+                    get_homedir( uname.c_str(), &home_dir );
+                    path.erase( path.begin(), path.begin() + p );
+                    path = home_dir + path;
+                    _Path->swap( path );
+                }
+            }
         }
 
-        typename _T::size_type p_begin = _Path->find( _T("$") );
+        typename _T::size_type p_begin = _Path->find( _T( "$" ) );
         if ( _T::npos == p_begin )
             return;
 
         ++p_begin; // ecluding '$' from the name
 
-        typename _T::size_type p_end = _Path->find( _T("/"), p_begin );
+        typename _T::size_type p_end = _Path->find( _T( "/" ), p_begin );
         if ( _T::npos == p_end )
             p_end = _Path->size();
 
-        const _T env_var( _Path->substr(p_begin, p_end - p_begin) );
+        const _T env_var( _Path->substr( p_begin, p_end - p_begin ) );
         // TODO: needs to be fixed to wide char: getenv
-        LPCTSTR szvar( getenv(env_var.c_str()) );
+        LPCTSTR szvar( getenv( env_var.c_str() ) );
         if ( !szvar )
             return;
         const _T var_val( szvar );
         if ( var_val.empty() )
             return;
 
-        replace( _Path, _T("$") + env_var, var_val );
+        replace( _Path, _T( "$" ) + env_var, var_val );
 
         smart_path( _Path );
     }
@@ -134,7 +165,7 @@ namespace MiscCommon
         gethostname( &Buf[0], Buf.capacity() );
 
         // getting host name with FCDN
-        hostent *h = gethostbyname( std::string(&Buf[0]).c_str() );
+        hostent *h = gethostbyname( std::string( &Buf[0] ).c_str() );
         if ( !h )
             return ;
 
@@ -147,7 +178,7 @@ namespace MiscCommon
      **/
     inline pid_t gettid()
     {
-        return syscall(__NR_gettid);
+        return syscall( __NR_gettid );
     }
 
     /**
@@ -191,17 +222,17 @@ namespace MiscCommon
         public:
             CMutex()
             {
-                pthread_mutex_init(&m, 0);
+                pthread_mutex_init( &m, 0 );
             }
 
             void Lock()
             {
-                pthread_mutex_lock(&m);
+                pthread_mutex_lock( &m );
             }
 
             void Unlock()
             {
-                pthread_mutex_unlock(&m);
+                pthread_mutex_unlock( &m );
             }
 
         private:
@@ -214,7 +245,7 @@ namespace MiscCommon
     class smart_mutex: public NONCopyable
     {
         public:
-            smart_mutex( CMutex &_mutex): m(_mutex)
+            smart_mutex( CMutex &_mutex ): m( _mutex )
             {
                 m.Lock();
             }
@@ -234,12 +265,12 @@ namespace MiscCommon
      *
      * @endcode
      **/
-    extern "C" char *__cxa_demangle(const char *mangled, char *buf, size_t *len, int *status);
-    inline std::string demangle(const std::type_info& ti)
+    extern "C" char *__cxa_demangle( const char *mangled, char *buf, size_t *len, int *status );
+    inline std::string demangle( const std::type_info& ti )
     {
-        char* s = __cxa_demangle(ti.name(), 0, 0, 0);
-        std::string ret(s);
-        free(s);
+        char* s = __cxa_demangle( ti.name(), 0, 0, 0 );
+        std::string ret( s );
+        free( s );
         return ret;
     }
 
@@ -266,8 +297,8 @@ namespace MiscCommon
             throw system_error( "Can't get file size of \"" + _FileName + "\"" );
 
         struct stat fs;
-        const int ret ( ::fstat(fd, &fs) );
-        close (fd);
+        const int ret( ::fstat( fd, &fs ) );
+        close( fd );
 
         if ( -1 == ret )
             throw system_error( "Can't get file size of \"" + _FileName + "\"" );
@@ -286,7 +317,7 @@ namespace MiscCommon
             file_size( _FileName );
             return true;
         }
-        catch (...)
+        catch ( ... )
         {
             return false;
         }
