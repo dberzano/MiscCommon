@@ -44,7 +44,7 @@ namespace MiscCommon
      * @return \b true when the process is found, otherwise return value is \b false.
      *
      */
-    inline bool IsProcessExist(pid_t _PID)
+    inline bool IsProcessExist( pid_t _PID )
     {
         return !( ::kill( _PID, 0 ) == -1 && errno == ESRCH );
     }
@@ -56,17 +56,17 @@ namespace MiscCommon
     class CPIDFile
     {
         public:
-            CPIDFile( const std::string &_FileName, pid_t _PID ): m_FileName(_FileName)
+            CPIDFile( const std::string &_FileName, pid_t _PID ): m_FileName( _FileName )
             {
                 if ( !_FileName.empty() && _PID > 0 )
                 {
                     // Preventing to start a second "instance" if the pidfile references to the running process
-                    const pid_t pid = GetPIDFromFile(m_FileName);
+                    const pid_t pid = GetPIDFromFile( m_FileName );
                     if ( pid > 0 && IsProcessExist( pid ) )
                     {
                         // We don't want to unlink this file
                         m_FileName.clear();
-                        throw std::runtime_error("Error creating pidfile. The process corresponding to pidfile \"" + _FileName + "\" is still running");
+                        throw std::runtime_error( "Error creating pidfile. The process corresponding to pidfile \"" + _FileName + "\" is still running" );
                     }
 
                     // Wrtiting new pidfile
@@ -120,29 +120,29 @@ namespace MiscCommon
             static void GetProcList( ProcContainer_t *_Procs )
             {
                 if ( !_Procs )
-                    throw std::invalid_argument("CProcList::GetProcList: Input container is NULL");
+                    throw std::invalid_argument( "CProcList::GetProcList: Input container is NULL" );
 
                 _Procs->clear();
 
                 struct dirent **namelist;
                 // scanning the "/proc" filesystem
-                int n = scandir("/proc", &namelist, CheckDigit, alphasort);
+                int n = scandir( "/proc", &namelist, CheckDigit, alphasort );
 
                 if ( -1 == n )
                     throw system_error( "CProcList::GetProcList exception" );
                 if ( 0 == n )
                     return; // there were no files
 
-                for (int i = 0; i < n; ++i)
+                for ( int i = 0; i < n; ++i )
                 {
                     std::stringstream ss( namelist[i]->d_name );
                     pid_t pid;
                     ss >> pid;
                     _Procs->insert( pid );
-                    free(namelist[i]);
+                    free( namelist[i] );
                 }
 
-                free(namelist);
+                free( namelist );
             }
 
         private:
@@ -150,28 +150,9 @@ namespace MiscCommon
             {
                 const std::string sName( _d->d_name );
                 // Checking whether file name has all digits
-                return ( sName.end() == std::find_if( sName.begin(), sName.end(), std::not1(IsDigit()) ) );
+                return ( sName.end() == std::find_if( sName.begin(), sName.end(), std::not1( IsDigit() ) ) );
             }
     };
-    struct SFindName: public std::binary_function< CProcList::ProcContainer_t::value_type, std::string, bool >
-    {
-        bool operator()( CProcList::ProcContainer_t::value_type _pid, const std::string &_Name ) const
-        {
-            CProcStatus p;
-            p.Open( _pid );
-            return ( p.GetValue( "Name" ) == _Name );
-        }
-    };
-
-    inline pid_t getprocbyname( const std::string &_Srv )
-    {
-        CProcList::ProcContainer_t pids;
-        CProcList::GetProcList( &pids );
-
-        CProcList::ProcContainer_t::const_iterator iter =
-            std::find_if( pids.begin(), pids.end(), std::bind2nd( SFindName(), _Srv ) );
-        return ( pids.end() != iter ? *iter : 0 );
-    }
     /**
      *
      * @brief This class helps to retrieve process's information from /proc/\<pid\>/status
@@ -225,12 +206,12 @@ namespace MiscCommon
                 // the compiler is very aggressive in identifying function declarations and will identify the
                 // definition of vec as forward declaration of a function accepting two istream_iterator parameters
                 // and returning a vector of integers
-                custom_istream_iterator<std::string> in_begin(*m_f);
+                custom_istream_iterator<std::string> in_begin( *m_f );
                 custom_istream_iterator<std::string> in_end;
                 StringVector_t vec( in_begin, in_end );
 
                 for_each( vec.begin(), vec.end(),
-                          std::bind1st( MiscCommon::stlx::mem_fun(&CProcStatus::_Parser), this )
+                          std::bind1st( MiscCommon::stlx::mem_fun( &CProcStatus::_Parser ), this )
                         );
             }
             std::string GetValue( const std::string &_KeyName ) const
@@ -239,7 +220,7 @@ namespace MiscCommon
                 std::string sKey( _KeyName );
                 to_lower( sKey );
 
-                keyvalue_t::const_iterator iter = m_values.find(sKey);
+                keyvalue_t::const_iterator iter = m_values.find( sKey );
                 return( m_values.end() == iter ? std::string() : iter->second );
             }
 
@@ -247,7 +228,7 @@ namespace MiscCommon
             bool _Parser( const std::string &_sVal )
             {
                 regmatch_t PMatch[3];
-                if ( 0 != regexec( &m_re, _sVal.c_str(), 3, PMatch, 0) )
+                if ( 0 != regexec( &m_re, _sVal.c_str(), 3, PMatch, 0 ) )
                     return false;
                 std::string sKey( _sVal.c_str() + PMatch[1].rm_so, PMatch[1].rm_eo - PMatch[1].rm_so );
                 std::string sValue( _sVal.c_str() + PMatch[2].rm_so, PMatch[2].rm_eo - PMatch[2].rm_so );
@@ -257,7 +238,7 @@ namespace MiscCommon
                 trim<std::string>( &sValue, '\t' );
                 trim<std::string>( &sValue, ' ' );
                 // insert key-value if found
-                m_values.insert( keyvalue_t::value_type(sKey, sValue) );
+                m_values.insert( keyvalue_t::value_type( sKey, sValue ) );
                 return true;
             }
 
@@ -266,6 +247,32 @@ namespace MiscCommon
             regex_t m_re;
             keyvalue_t m_values;
     };
+    /**
+     *
+     *
+     */
+    struct SFindName: public std::binary_function< CProcList::ProcContainer_t::value_type, std::string, bool >
+    {
+        bool operator()( CProcList::ProcContainer_t::value_type _pid, const std::string &_Name ) const
+        {
+            CProcStatus p;
+            p.Open( _pid );
+            return ( p.GetValue( "Name" ) == _Name );
+        }
+    };
+    /**
+     *
+     *
+     */
+    inline pid_t getprocbyname( const std::string &_Srv )
+    {
+        CProcList::ProcContainer_t pids;
+        CProcList::GetProcList( &pids );
+
+        CProcList::ProcContainer_t::const_iterator iter =
+            std::find_if( pids.begin(), pids.end(), std::bind2nd( SFindName(), _Srv ) );
+        return ( pids.end() != iter ? *iter : 0 );
+    }
 
     static sig_atomic_t g_handled_sign = false;
     static sig_atomic_t g_child_status = 0;
@@ -275,35 +282,35 @@ namespace MiscCommon
      * @param[in] _sign - the signal
      *
      */
-    static void childSignalHandler ( int _sign )
+    static void childSignalHandler( int _sign )
     {
-        if ( _sign == SIGCHLD)
+        if ( _sign == SIGCHLD )
         {
             g_handled_sign = true;
             ::wait( &g_child_status );
         }
     }
 
-    inline bool is_status_ok(int status)
+    inline bool is_status_ok( int status )
     {
-        return WIFEXITED(status) && WEXITSTATUS(status) == 0;
+        return WIFEXITED( status ) && WEXITSTATUS( status ) == 0;
     }
 
     //TODO: Document me!
-    inline void do_execv( const std::string &_Command, const StringVector_t &_Params, size_t _Delay, bool _ShowLog = false ) throw (std::exception)
+    inline void do_execv( const std::string &_Command, const StringVector_t &_Params, size_t _Delay, bool _ShowLog = false ) throw( std::exception )
     {
         g_handled_sign = false;
         g_child_status = 0;
-        signal ( SIGCHLD, childSignalHandler);
+        signal( SIGCHLD, childSignalHandler );
 
         pid_t child_pid;
         std::vector<const char*> cargs; //careful with c_str()!!!
         cargs.push_back( _Command.c_str() );
         StringVector_t::const_iterator iter = _Params.begin();
         StringVector_t::const_iterator iter_end = _Params.end();
-        for (; iter != iter_end; ++iter )
+        for ( ; iter != iter_end; ++iter )
             cargs.push_back( iter->c_str() );
-        cargs.push_back(0);
+        cargs.push_back( 0 );
 
         int fdpipe[2];
         if ( !_ShowLog )
@@ -328,7 +335,7 @@ namespace MiscCommon
                 }
 
                 // child: execute the required command, on success does not return
-                execv ( _Command.c_str(), const_cast<char **>(&cargs[0]) );
+                execv( _Command.c_str(), const_cast<char **>( &cargs[0] ) );
                 ::exit( 1 );
         }
 
@@ -341,13 +348,13 @@ namespace MiscCommon
 
         for ( size_t i = 0; i < _Delay; ++i )
         {
-            if ( !IsProcessExist(child_pid) )
+            if ( !IsProcessExist( child_pid ) )
             {
-                if ( g_handled_sign && !is_status_ok(g_child_status) )
+                if ( g_handled_sign && !is_status_ok( g_child_status ) )
                 {
                     std::stringstream ss;
                     ss << "do_execv: Can't execute \"" << _Command << "\" with parameters: ";
-                    std::copy( _Params.begin(), _Params.end(), std::ostream_iterator<std::string>(ss, " ") );
+                    std::copy( _Params.begin(), _Params.end(), std::ostream_iterator<std::string>( ss, " " ) );
                     throw std::runtime_error( ss.str() );
                 }
                 return;
@@ -355,7 +362,7 @@ namespace MiscCommon
             //TODO: Needs to be fixed! Implement time-function based timeout measurements instead
             sleep( 1 );
         }
-        throw std::runtime_error("do_execv: Timeout has been reached, command execution will be terminated now." );
+        throw std::runtime_error( "do_execv: Timeout has been reached, command execution will be terminated now." );
         //kills the child
         kill( child_pid, SIGKILL );
     }
