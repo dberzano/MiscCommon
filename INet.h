@@ -102,19 +102,20 @@ namespace MiscCommon
                 }
                 int set_nonblock( bool _val = true )
                 {
-                    int opts = fcntl ( m_Socket, F_GETFL );
+                    int opts = fcntl( m_Socket, F_GETFL );
 
                     if ( opts < 0 )
                         return -1;
 
                     opts = _val ? ( opts | O_NONBLOCK ) : ( opts & ~O_NONBLOCK );
 
-                    return fcntl ( m_Socket, F_SETFL, opts );
+                    return fcntl( m_Socket, F_SETFL, opts );
                 }
                 void close()
                 {
                     if ( INVALID_SOCKET != m_Socket )
                     {
+                        shutdown();
                         ::close( m_Socket ); // ignoring error code
                         m_Socket = INVALID_SOCKET;
                     }
@@ -128,7 +129,7 @@ namespace MiscCommon
                     return ::shutdown( m_Socket, _How );
                 }
                 /// This function indicates that socket is ready to be read (for non-blocking sockets)
-                int is_read_ready( size_t m_SecTimeOut, size_t m_USecTimeOut = 0 ) throw (std::exception)
+                int is_read_ready( size_t m_SecTimeOut, size_t m_USecTimeOut = 0 ) throw( std::exception )
                 {
                     if ( !is_valid() )
                         throw std::runtime_error( "Socket is invalid" );
@@ -158,7 +159,7 @@ namespace MiscCommon
          *
          */
         template <typename _T>
-        smart_socket& operator >> ( smart_socket &_Socket, _T *_Buf ) throw ( std::exception );
+        smart_socket& operator >> ( smart_socket &_Socket, _T *_Buf ) throw( std::exception );
         /**
          *
          * @brief This is a stream operator which helps to \b receive data from the given socket.
@@ -166,12 +167,12 @@ namespace MiscCommon
          *
          */
         template <>
-        inline smart_socket& operator >> ( smart_socket &_Socket, BYTEVector_t *_Buf ) throw ( std::exception )
+        inline smart_socket& operator >> ( smart_socket &_Socket, BYTEVector_t *_Buf ) throw( std::exception )
         {
             if ( !_Buf )
                 throw std::runtime_error( "The given buffer pointer is NULL." );
 
-            const ssize_t bytes_read = ::recv( _Socket, &( *_Buf ) [ 0 ], _Buf->capacity(), 0 );
+            const ssize_t bytes_read = ::recv( _Socket, &( *_Buf )[ 0 ], _Buf->capacity(), 0 );
             if ( bytes_read > 0 )
                 _Buf->resize( bytes_read );
             else
@@ -179,7 +180,11 @@ namespace MiscCommon
                 if ( 0 == bytes_read ) // The  return value will be 0 when the peer has performed an orderly shutdown
                     _Socket.close();
                 else
-                    throw system_error("");
+                {
+                    if ( ECONNRESET == errno || ENOTCONN == errno )
+                        _Socket.close();
+                    throw system_error( "" );
+                }
             }
             return _Socket;
         }
@@ -246,9 +251,9 @@ namespace MiscCommon
             if ( !_Str2Receive )
                 throw std::invalid_argument( "smart_socket::receive_string: Parameter is NULL" );
 
-            BYTEVector_t buf(_BufSize);
+            BYTEVector_t buf( _BufSize );
             _Socket >> &buf;
-            *_Str2Receive = std::string( reinterpret_cast<char*>(&buf[ 0 ]), buf.size() );
+            *_Str2Receive = std::string( reinterpret_cast<char*>( &buf[ 0 ] ), buf.size() );
         }
         /**
          *
@@ -258,9 +263,9 @@ namespace MiscCommon
         inline bool is_ip_address( std::string _Addr )
         {
             // removing all dots
-            _Addr.erase( remove(_Addr.begin(), _Addr.end(), '.'), _Addr.end() );
+            _Addr.erase( remove( _Addr.begin(), _Addr.end(), '.' ), _Addr.end() );
             // Checking for all numerics
-            return ( _Addr.end() == std::find_if( _Addr.begin(), _Addr.end(), std::not1(IsDigit()) ) );
+            return ( _Addr.end() == std::find_if( _Addr.begin(), _Addr.end(), std::not1( IsDigit() ) ) );
         }
         /**
          *
@@ -272,7 +277,7 @@ namespace MiscCommon
             if ( !_IP )
                 return ;
 
-            if ( is_ip_address(_Host) )
+            if ( is_ip_address( _Host ) )
             {
                 *_IP = _Host;
                 return ;
@@ -282,7 +287,7 @@ namespace MiscCommon
             if ( !he )
                 return ; // TODO: throw... herror()
 
-            *_IP = inet_ntoa( *(reinterpret_cast<in_addr*>(he->h_addr)) );
+            *_IP = inet_ntoa( *( reinterpret_cast<in_addr*>( he->h_addr ) ) );
         }
         /**
          *
@@ -294,7 +299,7 @@ namespace MiscCommon
             if ( !_Host )
                 return ;
 
-            if ( !is_ip_address(_IP) )
+            if ( !is_ip_address( _IP ) )
             {
                 *_Host = _IP;
                 return ;
@@ -302,7 +307,7 @@ namespace MiscCommon
 
             in_addr addr;
             inet_aton( _IP.c_str(), &addr );
-            hostent *he = gethostbyaddr( &addr, sizeof(addr), AF_INET );
+            hostent *he = gethostbyaddr( &addr, sizeof( addr ), AF_INET );
             if ( !he )
                 return ;
 
@@ -318,10 +323,10 @@ namespace MiscCommon
             public:
                 CSocketServer() : m_Socket( AF_INET, SOCK_STREAM, 0 )
                 {}
-                void Bind( unsigned short _nPort, const std::string *_Addr = NULL ) throw ( std::exception )
+                void Bind( unsigned short _nPort, const std::string *_Addr = NULL ) throw( std::exception )
                 {
                     if ( m_Socket < 0 )
-		      throw std::runtime_error( socket_error_string( m_Socket, "NULL socket has been given to Bind" ) );
+                        throw std::runtime_error( socket_error_string( m_Socket, "NULL socket has been given to Bind" ) );
 
                     sockaddr_in addr;
                     addr.sin_family = AF_INET;
@@ -331,17 +336,17 @@ namespace MiscCommon
                     else
                         inet_aton( _Addr->c_str(), &addr.sin_addr );
 
-                    if ( bind( m_Socket, reinterpret_cast<struct sockaddr *> (& addr), sizeof( addr ) ) < 0 )
+                    if ( bind( m_Socket, reinterpret_cast<struct sockaddr *>( & addr ), sizeof( addr ) ) < 0 )
                         throw std::runtime_error( socket_error_string( m_Socket, "Socket bind error..." ) );
                 }
 
-                void Listen( int _Backlog ) throw ( std::exception )
+                void Listen( int _Backlog ) throw( std::exception )
                 {
                     if ( ::listen( m_Socket, _Backlog ) < 0 )
                         throw std::runtime_error( socket_error_string( m_Socket, "can't call listen on socket server" ) );
                 }
 
-                Socket_t Accept() throw ( std::exception )
+                Socket_t Accept() throw( std::exception )
                 {
                     return ::accept( m_Socket, NULL, NULL ) ;
                 }
@@ -396,7 +401,7 @@ namespace MiscCommon
          */
         struct SSocket2String_Trait
         {
-            bool operator() ( Socket_t _socket, sockaddr_in *_addr ) const
+            bool operator()( Socket_t _socket, sockaddr_in *_addr ) const
             {
                 socklen_t size = sizeof( sockaddr );
                 return ( getsockname( _socket, reinterpret_cast<sockaddr *>( _addr ), &size ) == -1 ) ? false : true;
@@ -409,7 +414,7 @@ namespace MiscCommon
          */
         struct SSocketPeer2String_Trait
         {
-            bool operator() ( Socket_t _socket, sockaddr_in *_addr ) const
+            bool operator()( Socket_t _socket, sockaddr_in *_addr ) const
             {
                 socklen_t size = sizeof( sockaddr );
                 return ( getpeername( _socket, reinterpret_cast<sockaddr *>( _addr ), &size ) == -1 ) ? false : true;
@@ -424,13 +429,13 @@ namespace MiscCommon
         template <class _Type>
         struct _socket2string
         {
-            _socket2string ( Socket_t _Socket, std::string *_Str )
+            _socket2string( Socket_t _Socket, std::string *_Str )
             {
                 if ( !_Str )
                     return ;
 
                 sockaddr_in addr;
-                if ( !_Type() ( _Socket, &addr ) )
+                if ( !_Type()( _Socket, &addr ) )
                     return ;
 
                 std::string host;
@@ -502,7 +507,7 @@ namespace MiscCommon
                     serv.Bind( i );
                     return i;
                 }
-                catch (...)
+                catch ( ... )
                 {
                     continue;
                 }
@@ -522,7 +527,7 @@ namespace MiscCommon
                 serv.Bind( _Port );
                 return _Port;
             }
-            catch (...)
+            catch ( ... )
                 {}
             return 0;
         }
