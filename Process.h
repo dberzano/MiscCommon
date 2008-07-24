@@ -153,6 +153,25 @@ namespace MiscCommon
                 return ( sName.end() == std::find_if( sName.begin(), sName.end(), std::not1(IsDigit()) ) );
             }
     };
+    struct SFindName: public std::binary_function< CProcList::ProcContainer_t::value_type, std::string, bool >
+    {
+        bool operator()( CProcList::ProcContainer_t::value_type _pid, const std::string &_Name ) const
+        {
+            CProcStatus p;
+            p.Open( _pid );
+            return ( p.GetValue( "Name" ) == _Name );
+        }
+    };
+
+    inline pid_t getprocbyname( const std::string &_Srv )
+    {
+        CProcList::ProcContainer_t pids;
+        CProcList::GetProcList( &pids );
+
+        CProcList::ProcContainer_t::const_iterator iter =
+            std::find_if( pids.begin(), pids.end(), std::bind2nd( SFindName(), _Srv ) );
+        return ( pids.end() != iter ? *iter : 0 );
+    }
     /**
      *
      * @brief This class helps to retrieve process's information from /proc/\<pid\>/status
