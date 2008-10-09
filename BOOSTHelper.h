@@ -48,11 +48,11 @@ namespace MiscCommon
          *
          */
         inline void conflicting_options( const boost::program_options::variables_map& _vm,
-                                         const char* _opt1, const char* _opt2 ) throw(std::exception)
+                                         const char* _opt1, const char* _opt2 ) throw( std::exception )
         {
-            if ( _vm.count(_opt1) && !_vm[_opt1].defaulted() && _vm.count(_opt2) && !_vm[_opt2].defaulted() )
+            if ( _vm.count( _opt1 ) && !_vm[_opt1].defaulted() && _vm.count( _opt2 ) && !_vm[_opt2].defaulted() )
             {
-                std::string str("Command line parameter \"%1\" conflicts with \"%2\"");
+                std::string str( "Command line parameter \"%1\" conflicts with \"%2\"" );
                 MiscCommon::replace<std::string>( &str, "%1", _opt1 );
                 MiscCommon::replace<std::string>( &str, "%2", _opt2 );
                 throw std::runtime_error( str );
@@ -69,15 +69,42 @@ namespace MiscCommon
          *
          */
         inline void option_dependency( const boost::program_options::variables_map &_vm,
-                                       const char *_for_what, const char *_required_option ) throw(std::exception)
+                                       const char *_for_what, const char *_required_option ) throw( std::exception )
         {
-            if ( _vm.count(_for_what) && !_vm[_for_what].defaulted() && ( !_vm.count(_required_option) || _vm[_required_option].defaulted() ) )
+            if ( _vm.count( _for_what ) && !_vm[_for_what].defaulted() && ( !_vm.count( _required_option ) || _vm[_required_option].defaulted() ) )
             {
-                std::string str("Command line parameter \"%1\" must be used with \"%2\"");
+                std::string str( "Command line parameter \"%1\" must be used with \"%2\"" );
                 MiscCommon::replace<std::string>( &str, "%1", _for_what );
                 MiscCommon::replace<std::string>( &str, "%2", _required_option );
                 throw std::runtime_error( str );
             }
+        }
+
+        template<class T>
+        void _loadcfg( T &_s, string _FileName )
+        {
+            smart_path( &_FileName );
+            if ( _FileName.empty() || !is_file_exists( _FileName ) )
+                throw exception();
+
+            ifstream f( _FileName.c_str() );
+            //assert(f.good());
+            boost::archive::xml_iarchive ia( f );
+            ia >> BOOST_SERIALIZATION_NVP( _s );
+        }
+
+        template<class T>
+        void _savecfg( const T &_s, string _FileName )
+        {
+            smart_path( &_FileName );
+            if ( _FileName.empty() )
+                throw exception();
+
+            // make an archive
+            ofstream f( _FileName.c_str() );
+            //assert(f.good());
+            boost::archive::xml_oarchive oa( f );
+            oa << BOOST_SERIALIZATION_NVP( _s );
         }
     };
 };
