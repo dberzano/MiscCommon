@@ -79,33 +79,6 @@ namespace MiscCommon
                 throw std::runtime_error( str );
             }
         }
-
-        template<class T>
-        void _loadcfg( T &_s, string _FileName )
-        {
-            smart_path( &_FileName );
-            if ( _FileName.empty() || !is_file_exists( _FileName ) )
-                throw exception();
-
-            ifstream f( _FileName.c_str() );
-            //assert(f.good());
-            boost::archive::xml_iarchive ia( f );
-            ia >> BOOST_SERIALIZATION_NVP( _s );
-        }
-
-        template<class T>
-        void _savecfg( const T &_s, string _FileName )
-        {
-            smart_path( &_FileName );
-            if ( _FileName.empty() )
-                throw exception();
-
-            // make an archive
-            ofstream f( _FileName.c_str() );
-            //assert(f.good());
-            boost::archive::xml_oarchive oa( f );
-            oa << BOOST_SERIALIZATION_NVP( _s );
-        }
     };
 };
 
