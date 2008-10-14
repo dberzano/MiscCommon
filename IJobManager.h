@@ -34,9 +34,7 @@ class IJobManager
         // void changeNumberOfJobs( int );
 };
 
-QT_BEGIN_NAMESPACE
 Q_DECLARE_INTERFACE( IJobManager,
                      "an interface for PAConsole plug-ins" );
-QT_END_NAMESPACE
 
 #endif /* IJOBMANAGER_H_ */
