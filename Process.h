@@ -297,7 +297,7 @@ namespace MiscCommon
     }
 
     //TODO: Document me!
-    inline void do_execv( const std::string &_Command, const StringVector_t &_Params, size_t _Delay, bool _ShowLog = false ) throw( std::exception )
+    inline void do_execv( const std::string &_Command, const StringVector_t &_Params, size_t _Delay, std::string *_output ) throw( std::exception )
     {
         g_handled_sign = false;
         g_child_status = 0;
@@ -313,11 +313,8 @@ namespace MiscCommon
         cargs.push_back( 0 );
 
         int fdpipe[2];
-        if ( !_ShowLog )
-        {
-            if ( pipe( fdpipe ) == -1 )
-                _ShowLog = true;
-        }
+        if ( _output )
+	  pipe( fdpipe );
 
         switch ( child_pid = fork() )
         {
@@ -328,24 +325,30 @@ namespace MiscCommon
                 throw std::runtime_error( "do_execv: Unable to fork process" );
 
             case 0:
-                if ( !_ShowLog )
-                {
-                    dup2( fdpipe[0], STDOUT_FILENO );
-                    dup2( fdpipe[1], STDERR_FILENO );
-                }
-
+	      if ( _output )
+		{
+		  close( fdpipe[0] );
+		  dup2( fdpipe[1], STDOUT_FILENO );
+		  close( fdpipe[1] );
+		}
+	      
                 // child: execute the required command, on success does not return
                 execv( _Command.c_str(), const_cast<char **>( &cargs[0] ) );
                 ::exit( 1 );
         }
 
         //parent
-        if ( !_ShowLog )
-        {
-            close( fdpipe[0] );
-            close( fdpipe[1] );
-        }
+        if ( _output )
+	  {
+	    close(fdpipe[1]);
+	    char buf;
+	    std::stringstream ss;
+	    while ( read(fdpipe[0], &buf, 1) > 0 )
+	      ss << buf;
 
+	    *_output = ss.str();
+	    
+	}
         for ( size_t i = 0; i < _Delay; ++i )
         {
             if ( !IsProcessExist( child_pid ) )
