@@ -10,7 +10,7 @@
                             2006-03-28
         last changed by:    $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2006-2007 GSI GridTeam. All rights reserved.
+        Copyright (c) 2006-2009 GSI GridTeam. All rights reserved.
 ************************************************************************/
 #ifndef DEF_H
 #define DEF_H
