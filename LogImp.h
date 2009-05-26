@@ -54,7 +54,7 @@ namespace MiscCommon
             int Init( const std::string &_LogFileName, bool _CreateNew = false )
             {
                 if ( m_log.get() )
-                    throw std::logic_error( "CLogSinglton error: singleton class has been already initialized." );
+                    throw std::logic_error( "The Log singleton class has been already initialized." );
 
                 m_log = CFileLogPtr( new CFileLog( _LogFileName, _CreateNew ) );
                 push( LOG_SEVERITY_INFO, 0, "LOG singleton", "LOG singleton has been initialized." );
