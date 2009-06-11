@@ -3,7 +3,7 @@
  * @file INet.h
  * @brief helpers for Socket and Network operations.
  * @author Anar Manafov A.Manafov@gsi.de
- */ /*
+ */ /* 
 
         version number:     $LastChangedRevision$
         created by:         Anar Manafov
@@ -143,9 +143,12 @@ namespace MiscCommon
                     timeout.tv_usec = m_USecTimeOut;
 
                     // TODO: Send errno to log
-                    if ( ::select( m_Socket + 1, &readset, NULL, NULL, &timeout ) < 0 )
-                        throw std::runtime_error( "Server socket got error while calling \"select\"" );
-
+		    int retval = ::select( m_Socket + 1, &readset, NULL, NULL, &timeout );
+                    if ( retval < 0 )
+                        throw std::runtime_error( "Server's socket got error while calling \"select\"" );
+		    if ( 0 == retval )
+		    	return 0;
+			
                     return FD_ISSET( m_Socket, &readset );
                 }
 
