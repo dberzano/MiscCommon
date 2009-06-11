@@ -264,14 +264,26 @@ namespace MiscCommon
      *
      *
      */
-    inline pid_t getprocbyname( const std::string &_Srv )
+    typedef std::vector<pid_t> vectorPid_t;
+
+    inline vectorPid_t getprocbyname( const std::string &_Srv )
     {
         CProcList::ProcContainer_t pids;
         CProcList::GetProcList( &pids );
+	
+	vectorPid_t retVal;
+        CProcList::ProcContainer_t::const_iterator iter = pids.begin();
+        while( true )
+	{
+	 	iter = std::find_if( iter, pids.end(), std::bind2nd( SFindName(), _Srv ) );
+		if( pids.end() == iter )
+			break;
 
-        CProcList::ProcContainer_t::const_iterator iter =
-            std::find_if( pids.begin(), pids.end(), std::bind2nd( SFindName(), _Srv ) );
-        return ( pids.end() != iter ? *iter : 0 );
+		retVal.push_back( *iter );
+		++iter;
+        };
+
+	return retVal;
     }
 
     static sig_atomic_t g_handled_sign = false;
