@@ -19,8 +19,8 @@ namespace PoD
         std::string m_workDir;           //!< Working folder.
         std::string m_logFileDir;        //!< The log filename.
         bool m_logFileOverwrite;         //!< Overwrite log file each session.
-        size_t m_logLevel;               //!< TODO: Implement me!
-        size_t m_agentTimeout;           //!< PoD Agent will not be allowed to work longer, than this value. Default is 0 - no timeout.
+        unsigned int m_logLevel;               //!< TODO: Implement me!
+        unsigned int m_agentTimeout;           //!< PoD Agent will not be allowed to work longer, than this value. Default is 0 - no timeout.
         std::string m_PROOFCfg;         //!< A location of the proof configuration file.
         std::string m_lastExecCmd;      //!< PROOFAgent will execute this command at the end of the session.
         //
