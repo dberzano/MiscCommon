@@ -128,7 +128,12 @@ namespace PoD
                 return convertAnyToString( m_keys[_Key].value() );
             }
 
-        public:
+            SPoDUserDefaultsOptions_t getOptions()
+            {
+            	return m_options;
+            }
+
+        private:
             boost::program_options::variables_map m_keys;
             SPoDUserDefaultsOptions_t m_options;
     };
