@@ -22,13 +22,13 @@ namespace PoD
         //
         // ---= GENERAL
         //
-        std::string m_workDir;           //!< Working folder.
-        std::string m_logFileDir;        //!< The log filename.
-        bool m_logFileOverwrite;         //!< Overwrite log file each session.
-        unsigned int m_logLevel;               //!< TODO: Implement me!
-        unsigned int m_agentTimeout;           //!< PoD Agent will not be allowed to work longer, than this value. Default is 0 - no timeout.
-        std::string m_PROOFCfg;         //!< A location of the proof configuration file.
-        std::string m_lastExecCmd;      //!< PROOFAgent will execute this command at the end of the session.
+        std::string m_workDir;         //!< Working folder.
+        std::string m_logFileDir;      //!< The log filename.
+        bool m_logFileOverwrite;       //!< Overwrite log file each session.
+        unsigned int m_logLevel;       //!< TODO: Implement me!
+        unsigned int m_agentTimeout;   //!< PoD Agent will not be allowed to work longer, than this value. Default is 0 - no timeout.
+        std::string m_PROOFCfg;        //!< A location of the proof configuration file.
+        std::string m_lastExecCmd;     //!< PROOFAgent will execute this command at the end of the session.
         //
         // ---= SERVER =---
         //
@@ -45,8 +45,10 @@ namespace PoD
         //
         // ---= WORKER =---
         //
-        unsigned int m_workerLocalXPROOFPort;                //!< PROOF's local port (on worker nodes)
-        int m_shutdownIfIdleForSec;                      //!< Shut down a worker if its idle time is higher this value. If value is 0 then the feature is off.
+        std::string m_setMyROOTSYS;                //!< Whether to use user's ROOTSYS to use on workers (values: yes/no)
+        std::string m_myROOTSYS;                   //!< User's ROOTSYS to use on workers
+        unsigned int m_workerLocalXPROOFPort;      //!< PROOF's local port (on worker nodes)
+        int m_shutdownIfIdleForSec;                //!< Shut down a worker if its idle time is higher this value. If value is 0 then the feature is off.
         unsigned int m_workerXrdPortsRangeMin;
         unsigned int m_workerXrdPortsRangeMax;
         unsigned int m_workerXproofPortsRangeMin;
@@ -103,6 +105,8 @@ namespace PoD
                 ( "server.agent_server_ports_range_max", boost::program_options::value<unsigned int>( &m_options.m_agentServerPortsRangeMax ) )
                 ;
                 config_file_options.add_options()
+                ( "worker.set_my_rootsys", boost::program_options::value<std::string>( &m_options.m_setMyROOTSYS ), "" )
+                ( "worker.my_rootsys", boost::program_options::value<std::string>( &m_options.m_myROOTSYS ), "" )
                 ( "worker.local_xproof_port", boost::program_options::value<unsigned int>( &m_options.m_workerLocalXPROOFPort )->default_value( 111 ), "" )
                 ( "worker.agent_shutdown_if_idle_for_sec", boost::program_options::value<int>( &m_options.m_shutdownIfIdleForSec )->default_value( 1800 ), "" )
                 ( "worker.xrd_ports_range_min", boost::program_options::value<unsigned int>( &m_options.m_workerXrdPortsRangeMin ) )
