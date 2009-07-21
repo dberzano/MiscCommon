@@ -155,6 +155,27 @@ namespace MiscCommon
             private:
                 Socket_t m_Socket;
         };
+
+        inline size_t read_from_socket ( smart_socket &_Socket, BYTEVector_t *_Buf )
+        {
+            if ( !_Buf )
+                throw std::runtime_error( "The given buffer pointer is NULL." );
+
+            const ssize_t bytes_read = ::recv( _Socket, &( *_Buf )[ 0 ], _Buf->capacity(), 0 );
+	    if ( 0 == bytes_read ) // The  return value will be 0 when the peer has performed an orderly shutdown
+	    {
+	      _Socket.close();
+	      return 0;
+	    }
+            if ( bytes_read < 0 )
+            {
+              if ( ECONNRESET == errno || ENOTCONN == errno )
+                 _Socket.close();
+              throw system_error( "" );
+            }
+
+            return bytes_read;
+        }
         /**
          *
          * @brief This is a stream operator which helps to \b receive data from the given socket.
@@ -176,19 +197,20 @@ namespace MiscCommon
                 throw std::runtime_error( "The given buffer pointer is NULL." );
 
             const ssize_t bytes_read = ::recv( _Socket, &( *_Buf )[ 0 ], _Buf->capacity(), 0 );
-            if ( bytes_read > 0 )
-                _Buf->resize( bytes_read );
-            else
+	    if ( 0 == bytes_read ) // The  return value will be 0 when the peer has performed an orderly shutdown
+	    {
+	      _Buf->resize( bytes_read );
+	      _Socket.close();
+	      return _Socket;
+	    }
+            if ( bytes_read < 0 )
             {
-                if ( 0 == bytes_read ) // The  return value will be 0 when the peer has performed an orderly shutdown
-                    _Socket.close();
-                else
-                {
-                    if ( ECONNRESET == errno || ENOTCONN == errno )
-                        _Socket.close();
-                    throw system_error( "" );
-                }
+              if ( ECONNRESET == errno || ENOTCONN == errno )
+                 _Socket.close();
+              throw system_error( "" );
             }
+
+	    _Buf->resize( bytes_read );
             return _Socket;
         }
         /**
@@ -206,11 +228,24 @@ namespace MiscCommon
             {
                 n = ::send( s, buf + total, len - total, flags );
                 if ( n == -1 )
-                    break;
-                total += n;
+		{
+		    // TODO: may be EWOULDBLOCK or on some systems EAGAIN when it returned
+		    // due to its inability to send off data without blocking.
+		    if ( EAGAIN == errno || EWOULDBLOCK == errno )
+		    {
+		       // wait for a reasonable amount of time until
+		       // we could send()
+		       // sleep for 100 ms
+		       //usleep(100 * 1000);
+		       continue;
+		    }
+		    else
+                    	throw system_error( "send data exception: " );
+                }
+		total += n;
             }
 
-            return ( n == -1 ? -1 : total );
+            return total;
         }
         /**
          *
