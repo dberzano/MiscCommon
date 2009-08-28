@@ -45,7 +45,6 @@ namespace PoD
         //
         std::string m_setMyROOTSYS;                //!< Whether to use user's ROOTSYS to use on workers (values: yes/no)
         std::string m_myROOTSYS;                   //!< User's ROOTSYS to use on workers
-        unsigned int m_workerLocalXPROOFPort;      //!< PROOF's local port (on worker nodes)
         int m_shutdownIfIdleForSec;                //!< Shut down a worker if its idle time is higher this value. If value is 0 then the feature is off.
         unsigned int m_workerXrdPortsRangeMin;
         unsigned int m_workerXrdPortsRangeMax;
@@ -103,7 +102,6 @@ namespace PoD
                 config_file_options.add_options()
                 ( "worker.set_my_rootsys", boost::program_options::value<std::string>( &m_options.m_setMyROOTSYS ), "" )
                 ( "worker.my_rootsys", boost::program_options::value<std::string>( &m_options.m_myROOTSYS ), "" )
-                ( "worker.local_xproof_port", boost::program_options::value<unsigned int>( &m_options.m_workerLocalXPROOFPort )->default_value( 111 ), "" )
                 ( "worker.agent_shutdown_if_idle_for_sec", boost::program_options::value<int>( &m_options.m_shutdownIfIdleForSec )->default_value( 1800 ), "" )
                 ( "worker.xrd_ports_range_min", boost::program_options::value<unsigned int>( &m_options.m_workerXrdPortsRangeMin ) )
                 ( "worker.xrd_ports_range_max", boost::program_options::value<unsigned int>( &m_options.m_workerXrdPortsRangeMax ) )
