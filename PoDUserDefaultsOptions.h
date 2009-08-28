@@ -32,8 +32,6 @@ namespace PoD
         //
         // ---= SERVER =---
         //
-        unsigned int m_agentServerListenPort;
-        std::string m_agentServerHost;                     //!< PROOFAgent's server host
         unsigned int m_agentServerLocalClientPortMin;
         unsigned int m_agentServerLocalClientPortMax;
         unsigned int m_serverXrdPortsRangeMin;
@@ -93,8 +91,6 @@ namespace PoD
                 ( "general.last_execute_cmd", boost::program_options::value<std::string>( &m_options.m_lastExecCmd ), "" )
                 ;
                 config_file_options.add_options()
-                ( "server.agent_server_listen_port", boost::program_options::value<unsigned int>( &m_options.m_agentServerListenPort )->default_value( 22001 ), "" )
-                ( "server.agent_server_host", boost::program_options::value<std::string>( &m_options.m_agentServerHost ), "" )
                 ( "server.agent_server_local_client_port_min", boost::program_options::value<unsigned int>( &m_options.m_agentServerLocalClientPortMin )->default_value( 20000 ), "" )
                 ( "server.agent_server_local_client_port_max", boost::program_options::value<unsigned int>( &m_options.m_agentServerLocalClientPortMax )->default_value( 25000 ), "" )
                 ( "server.xrd_ports_range_min", boost::program_options::value<unsigned int>( &m_options.m_serverXrdPortsRangeMin ) )
