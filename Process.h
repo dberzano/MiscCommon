@@ -146,7 +146,7 @@ namespace MiscCommon
             }
 
         private:
-            static int CheckDigit( const struct dirent* _d )
+            static int CheckDigit( struct dirent* _d )
             {
                 const std::string sName( _d->d_name );
                 // Checking whether file name has all digits

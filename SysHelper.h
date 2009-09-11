@@ -21,6 +21,7 @@
 #include <sys/syscall.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+
 // STD
 #include <typeinfo>
 
@@ -178,7 +179,13 @@ namespace MiscCommon
      **/
     inline pid_t gettid()
     {
+#ifdef __APPLE__
+        return syscall( SYS_gettid );
+#elif __linux
         return syscall( __NR_gettid );
+#else
+        return 0;
+#endif
     }
 
     /**
