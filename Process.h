@@ -146,7 +146,13 @@ namespace MiscCommon
             }
 
         private:
+
+
+#ifdef __APPLE__
             static int CheckDigit( struct dirent* _d )
+#else
+            static int CheckDigit( const struct dirent* _d )
+#endif
             {
                 const std::string sName( _d->d_name );
                 // Checking whether file name has all digits
