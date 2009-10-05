@@ -386,7 +386,7 @@ namespace MiscCommon
 
                 Socket_t Accept() const throw( std::exception )
                 {
-                    return ::accept( m_Socket, NULL, NULL ) ;
+                    return ::accept( m_Socket, NULL, NULL );
                 }
 
                 smart_socket& GetSocket()

@@ -15,6 +15,8 @@
 #ifndef HEXVIEW_H_
 #define HEXVIEW_H_
 
+//STD
+#include <iomanip>
 // MiscCommon
 #include "def.h"
 
