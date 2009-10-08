@@ -22,6 +22,7 @@ namespace PoD
         std::string m_workDir;      //!< Working folder.
         std::string m_logFileDir;   //!< The log filename.
         bool m_logFileOverwrite;    //!< Overwrite log file each session.
+        unsigned char m_logLevel;   //!< A log level
         std::string m_proofCFG;     //!< A location of the proof configuration file.
         unsigned int m_xrdPortsRangeMin;
         unsigned int m_xrdPortsRangeMax;
@@ -61,7 +62,7 @@ namespace PoD
 
     } SPoDUserDefaultsOptions_t;
 
-// TODO: we use boost 1.32. This is the only method I found to conver boost::any to string.
+// TODO: we use boost 1.32. This is the only method I found to convert boost::any to string.
 // In the next version of boost its solved.
     inline std::string convertAnyToString( const boost::any &_any )
     {
@@ -74,6 +75,9 @@ namespace PoD
 
         if ( _any.type() == typeid( unsigned int ) )
             ss << boost::any_cast<unsigned int>( _any );
+
+        if ( _any.type() == typeid( unsigned char ) )
+            ss << boost::any_cast<unsigned char>( _any );
 
         if ( _any.type() == typeid( bool ) )
             ss << boost::any_cast<bool>( _any );
@@ -88,11 +92,12 @@ namespace PoD
             {
                 m_keys.clear();
                 boost::program_options::options_description config_file_options( "PoD user defaults options" );
-                // HACK: Don't make a long add_options, otherwise Eclipse 3.5's CDT idexer can't handle it
+                // HACK: Don't make a long add_options, otherwise Eclipse 3.5's CDT indexer can't handle it
                 config_file_options.add_options()
                 ( "server.work_dir", boost::program_options::value<std::string>( &m_options.m_server.m_common.m_workDir )->default_value( "$POD_LOCATION/" ), "" )
                 ( "server.logfile_dir", boost::program_options::value<std::string>( &m_options.m_server.m_common.m_logFileDir )->default_value( "$POD_LOCATION/log" ), "" )
                 ( "server.logfile_overwrite", boost::program_options::value<bool>( &m_options.m_server.m_common.m_logFileOverwrite )->default_value( false, "no" ), "" )
+                ( "server.log_level", boost::program_options::value<unsigned char>( &m_options.m_server.m_common.m_logLevel )->default_value( 1 ), "" )
                 ( "server.proof_cfg_path", boost::program_options::value<std::string>( &m_options.m_server.m_common.m_proofCFG )->default_value( "$POD_LOCATION/etc/proof.conf" ), "" )
                 ( "server.agent_local_client_port_min", boost::program_options::value<unsigned int>( &m_options.m_server.m_agentLocalClientPortMin )->default_value( 20000 ), "" )
                 ( "server.agent_local_client_port_max", boost::program_options::value<unsigned int>( &m_options.m_server.m_agentLocalClientPortMax )->default_value( 25000 ), "" )
@@ -102,13 +107,14 @@ namespace PoD
                 ( "server.xproof_ports_range_max", boost::program_options::value<unsigned int>( &m_options.m_server.m_common.m_xproofPortsRangeMax ) )
                 ( "server.agent_ports_range_min", boost::program_options::value<unsigned int>( &m_options.m_server.m_agentPortsRangeMin ) )
                 ( "server.agent_ports_range_max", boost::program_options::value<unsigned int>( &m_options.m_server.m_agentPortsRangeMax ) )
-                ( "server.agent_threads", boost::program_options::value<unsigned int>( &m_options.m_server.m_common.m_agentThreads ) )
-                ( "server.agent_node_readbuffer", boost::program_options::value<unsigned int>( &m_options.m_server.m_common.m_agentNodeReadBuffer ) )
+                ( "server.agent_threads", boost::program_options::value<unsigned int>( &m_options.m_server.m_common.m_agentThreads )->default_value(8) )
+                ( "server.agent_node_readbuffer", boost::program_options::value<unsigned int>( &m_options.m_server.m_common.m_agentNodeReadBuffer )->default_value(5000) )
                 ;
                 config_file_options.add_options()
                 ( "worker.work_dir", boost::program_options::value<std::string>( &m_options.m_worker.m_common.m_workDir )->default_value( "$POD_LOCATION/" ), "" )
                 ( "worker.logfile_dir", boost::program_options::value<std::string>( &m_options.m_worker.m_common.m_logFileDir )->default_value( "$POD_LOCATION/" ), "" )
                 ( "worker.logfile_overwrite", boost::program_options::value<bool>( &m_options.m_worker.m_common.m_logFileOverwrite )->default_value( false, "no" ), "" )
+                ( "worker.log_level", boost::program_options::value<unsigned char>( &m_options.m_worker.m_common.m_logLevel )->default_value( 1 ), "" )
                 ( "worker.proof_cfg_path", boost::program_options::value<std::string>( &m_options.m_worker.m_common.m_proofCFG )->default_value( "$POD_LOCATION/proof.conf" ), "" )
                 ( "worker.set_my_rootsys", boost::program_options::value<std::string>( &m_options.m_worker.m_setMyROOTSYS ), "" )
                 ( "worker.my_rootsys", boost::program_options::value<std::string>( &m_options.m_worker.m_myROOTSYS ), "" )
@@ -117,8 +123,8 @@ namespace PoD
                 ( "worker.xrd_ports_range_max", boost::program_options::value<unsigned int>( &m_options.m_worker.m_common.m_xrdPortsRangeMax ) )
                 ( "worker.xproof_ports_range_min", boost::program_options::value<unsigned int>( &m_options.m_worker.m_common.m_xproofPortsRangeMin ) )
                 ( "worker.xproof_ports_range_max", boost::program_options::value<unsigned int>( &m_options.m_worker.m_common.m_xproofPortsRangeMax ) )
-                ( "worker.agent_threads", boost::program_options::value<unsigned int>( &m_options.m_worker.m_common.m_agentThreads ) )
-                ( "worker.agent_node_readbuffer", boost::program_options::value<unsigned int>( &m_options.m_worker.m_common.m_agentNodeReadBuffer ) )
+                ( "worker.agent_threads", boost::program_options::value<unsigned int>( &m_options.m_worker.m_common.m_agentThreads )->default_value(3) )
+                ( "worker.agent_node_readbuffer", boost::program_options::value<unsigned int>( &m_options.m_worker.m_common.m_agentNodeReadBuffer )->default_value(5000) )
                 ;
 
                 std::ifstream ifs( _PoDCfgFileName.c_str() );

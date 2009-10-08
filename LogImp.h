@@ -51,12 +51,13 @@ namespace MiscCommon
             {}
 
         public:
-            int Init( const std::string &_LogFileName, bool _CreateNew = false )
+            int Init( const std::string &_LogFileName, bool _CreateNew = false,
+            		unsigned char _logLevel = LOG_SEVERITY_INFO | LOG_SEVERITY_WARNING | LOG_SEVERITY_FAULT | LOG_SEVERITY_CRITICAL_ERROR )
             {
                 if ( m_log.get() )
                     throw std::logic_error( "The Log singleton class has been already initialized." );
 
-                m_log = CFileLogPtr( new CFileLog( _LogFileName, _CreateNew ) );
+                m_log = CFileLogPtr( new CFileLog( _LogFileName, _CreateNew, _logLevel ) );
                 push( LOG_SEVERITY_INFO, 0, "LOG singleton", "LOG singleton has been initialized." );
                 return 0;
             }
@@ -65,13 +66,14 @@ namespace MiscCommon
                 static CLogSingleton log;
                 return log;
             }
-            CFileLog::stream_type &push( LOG_SEVERITY _Severity, unsigned long _ErrorCode, const std::string &_Module, const std::string &_Message )
+            void push( LOG_SEVERITY _Severity, unsigned long _ErrorCode, const std::string &_Module, const std::string &_Message )
             {
                 if ( !m_log.get() )
                 {
-                    return reinterpret_cast<CFileLog::stream_type &>( std::cerr << _Message << std::endl );
+                	std::cerr << _Message << std::endl;
+                	return;
                 }
-                return m_log->push( _Severity, _ErrorCode, _Module, _Message );
+                m_log->push( _Severity, _ErrorCode, _Module, _Message );
             }
             bool IsReady()
             {
@@ -80,6 +82,8 @@ namespace MiscCommon
 
         private:
             CFileLogPtr m_log;
+            /// 0 - all messages, 1 - Info/Warning, 2 - (1)/
+            unsigned short m_logLevel;
     };
 
     /**
@@ -111,27 +115,27 @@ namespace MiscCommon
             {
                 CLogSingleton::Instance().push( LOG_SEVERITY_INFO, 0, g_cszMODULENAME_CORE, "Shutting down >>> " + GetModuleName() + " <<<" );
             }
-            CFileLog::stream_type &InfoLog( const std::string &_Message )
+            void InfoLog( const std::string &_Message )
             {
                 return CLogSingleton::Instance().push( LOG_SEVERITY_INFO, 0, GetModuleName(), _Message );
             }
-            CFileLog::stream_type &InfoLog( unsigned long _ErrorCode, const std::string &_Message )
+            void InfoLog( unsigned long _ErrorCode, const std::string &_Message )
             {
                 return CLogSingleton::Instance().push( LOG_SEVERITY_INFO, _ErrorCode, GetModuleName(), _Message );
             }
-            CFileLog::stream_type &WarningLog( unsigned long _ErrorCode, const std::string &_Message )
+            void WarningLog( unsigned long _ErrorCode, const std::string &_Message )
             {
                 return CLogSingleton::Instance().push( LOG_SEVERITY_WARNING, _ErrorCode, GetModuleName(), _Message );
             }
-            CFileLog::stream_type &FaultLog( unsigned long _ErrorCode, const std::string &_Message )
+            void FaultLog( unsigned long _ErrorCode, const std::string &_Message )
             {
                 return CLogSingleton::Instance().push( LOG_SEVERITY_FAULT, _ErrorCode, GetModuleName(), _Message );
             }
-            CFileLog::stream_type &CriticalErrLog( unsigned long _ErrorCode, const std::string &_Message )
+            void CriticalErrLog( unsigned long _ErrorCode, const std::string &_Message )
             {
                 return CLogSingleton::Instance().push( LOG_SEVERITY_CRITICAL_ERROR, _ErrorCode, GetModuleName(), _Message );
             }
-            CFileLog::stream_type &DebugLog( unsigned long _ErrorCode, const std::string &_Message )
+            void DebugLog( unsigned long _ErrorCode, const std::string &_Message )
             {
                 return CLogSingleton::Instance().push( LOG_SEVERITY_DEBUG, _ErrorCode, GetModuleName(), _Message );
             }

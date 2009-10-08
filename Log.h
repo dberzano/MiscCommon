@@ -43,7 +43,7 @@ namespace MiscCommon
         LOG_SEVERITY_FAULT = 0x4,
         LOG_SEVERITY_CRITICAL_ERROR = 0x8,
         LOG_SEVERITY_DEBUG = 0x10
-    }LOG_SEVERITY;
+    } LOG_SEVERITY;
     enum
     {
         e_FieldSeparator = 0x20,
@@ -60,12 +60,17 @@ namespace MiscCommon
     class CLog
     {
         public:
-            CLog( _T *_stream ) :
-                    m_stream( _stream )
+            CLog( _T *_stream, unsigned char _logLevel ) :
+                    m_stream( _stream ),
+                    m_logLevel( _logLevel )
             {}
 
-            _T &push( LOG_SEVERITY _Severity, unsigned long _ErrorCode, const std::string &_Module, const std::string &_Message )
+            void push( LOG_SEVERITY _Severity, unsigned long _ErrorCode,
+                       const std::string &_Module, const std::string &_Message )
             {
+                if ( _Severity & m_logLevel != m_logLevel )
+                    return;
+
                 // Thread ID
                 pid_t tid = gettid();
                 std::string _DTBuff;
@@ -87,7 +92,6 @@ namespace MiscCommon
                 {
                     std::cout << strMsg.str() << std::endl;
                 }
-                return *m_stream;
             }
 
         private:
@@ -98,10 +102,10 @@ namespace MiscCommon
 
                 // Obtain the time of day, and convert it to a tm struct.
                 timeval tv;
-                gettimeofday (&tv, NULL);
+                gettimeofday( &tv, NULL );
                 tm *tm_now( localtime( &tv.tv_sec ) );
                 CHARVector_t buff( LOG_DATETIME_BUFF_LEN );
-                strftime ( &buff[ 0 ], sizeof( char ) * LOG_DATETIME_BUFF_LEN, g_cszLOG_DATETIME_FRMT, tm_now );
+                strftime( &buff[ 0 ], sizeof( char ) * LOG_DATETIME_BUFF_LEN, g_cszLOG_DATETIME_FRMT, tm_now );
                 const long milliseconds = tv.tv_usec / 1000;
                 *_Buf = &buff[ 0 ];
                 std::stringstream ss;
@@ -137,6 +141,7 @@ namespace MiscCommon
         private:
             _T *m_stream;
             CMutex m_mutex;
+            unsigned char m_logLevel;
     };
     /**
      *
@@ -156,7 +161,9 @@ namespace MiscCommon
             typedef std::ofstream stream_type;
 
         public:
-            CFileLog( const std::string &_LogFileName, bool _CreateNew = false ) : CLog<stream_type>( &m_log_file ),
+            CFileLog( const std::string &_LogFileName, bool _CreateNew = false,
+                      unsigned char _logLevel = LOG_SEVERITY_INFO | LOG_SEVERITY_WARNING | LOG_SEVERITY_FAULT | LOG_SEVERITY_CRITICAL_ERROR ) :
+                    CLog<stream_type>( &m_log_file, _logLevel ),
                     m_log_file( _LogFileName.c_str(), ( _CreateNew ? std::ios::trunc : std::ios::app ) | std::ios::out )
             {}
 
