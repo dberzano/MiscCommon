@@ -68,7 +68,7 @@ namespace MiscCommon
             void push( LOG_SEVERITY _Severity, unsigned long _ErrorCode,
                        const std::string &_Module, const std::string &_Message )
             {
-                if ( _Severity & m_logLevel != _Severity )
+                if ( (_Severity & m_logLevel) != _Severity )
                     return;
 
                 // Thread ID
