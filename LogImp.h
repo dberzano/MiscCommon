@@ -52,10 +52,10 @@ namespace MiscCommon
 
         public:
             int Init( const std::string &_LogFileName, bool _CreateNew = false,
-            		unsigned char _logLevel = LOG_SEVERITY_INFO | LOG_SEVERITY_WARNING | LOG_SEVERITY_FAULT | LOG_SEVERITY_CRITICAL_ERROR )
+                      unsigned char _logLevel = LOG_SEVERITY_INFO | LOG_SEVERITY_WARNING | LOG_SEVERITY_FAULT | LOG_SEVERITY_CRITICAL_ERROR )
             {
                 if ( m_log.get() )
-                    throw std::logic_error( "The Log singleton class has been already initialized." );
+                    throw std::logic_error( "Log's singleton class has been already initialized." );
 
                 m_log = CFileLogPtr( new CFileLog( _LogFileName, _CreateNew, _logLevel ) );
                 push( LOG_SEVERITY_INFO, 0, "LOG singleton", "LOG singleton has been initialized." );
@@ -70,8 +70,8 @@ namespace MiscCommon
             {
                 if ( !m_log.get() )
                 {
-                	std::cerr << _Message << std::endl;
-                	return;
+                    std::cerr << _Message << std::endl;
+                    return;
                 }
                 m_log->push( _Severity, _ErrorCode, _Module, _Message );
             }
