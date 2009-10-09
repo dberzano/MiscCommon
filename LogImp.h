@@ -139,7 +139,10 @@ namespace MiscCommon
             {
                 return CLogSingleton::Instance().push( LOG_SEVERITY_DEBUG, _ErrorCode, GetModuleName(), _Message );
             }
-
+            void msgPush( LOG_SEVERITY _Severity, const std::string &_Message, unsigned long _ErrorCode = 0 )
+            {
+            	return CLogSingleton::Instance().push( _Severity, _ErrorCode, GetModuleName(), _Message );
+            }
         private:
             std::string GetModuleName()
             {
