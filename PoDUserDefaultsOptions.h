@@ -24,6 +24,7 @@ namespace PoD
         bool m_logFileOverwrite;    //!< Overwrite log file each session.
         unsigned char m_logLevel;   //!< A log level
         std::string m_proofCFG;     //!< A location of the proof configuration file.
+        int m_shutdownIfIdleForSec; //!< Shut down agent if its idle time is higher this value. If value is 0 then the feature is off.
         unsigned int m_xrdPortsRangeMin;
         unsigned int m_xrdPortsRangeMax;
         unsigned int m_xproofPortsRangeMin;
@@ -52,7 +53,6 @@ namespace PoD
         SCommonOptions_t m_common;
         std::string m_setMyROOTSYS;                 //!< Whether to use user's ROOTSYS to use on workers (values: yes/no)
         std::string m_myROOTSYS;                    //!< User's ROOTSYS to use on workers
-        int m_shutdownIfIdleForSec;                 //!< Shut down a worker if its idle time is higher this value. If value is 0 then the feature is off.
     } SWorkerOptions_t;
 
     typedef struct SPoDUserDefaultOptions
@@ -99,6 +99,7 @@ namespace PoD
                 ( "server.logfile_overwrite", boost::program_options::value<bool>( &m_options.m_server.m_common.m_logFileOverwrite )->default_value( false, "no" ), "" )
                 ( "server.log_level", boost::program_options::value<unsigned char>( &m_options.m_server.m_common.m_logLevel )->default_value( 1 ), "" )
                 ( "server.proof_cfg_path", boost::program_options::value<std::string>( &m_options.m_server.m_common.m_proofCFG )->default_value( "$POD_LOCATION/etc/proof.conf" ), "" )
+                ( "server.agent_shutdown_if_idle_for_sec", boost::program_options::value<int>( &m_options.m_server.m_common.m_shutdownIfIdleForSec )->default_value( 1800 ), "" )
                 ( "server.agent_local_client_port_min", boost::program_options::value<unsigned int>( &m_options.m_server.m_agentLocalClientPortMin )->default_value( 20000 ), "" )
                 ( "server.agent_local_client_port_max", boost::program_options::value<unsigned int>( &m_options.m_server.m_agentLocalClientPortMax )->default_value( 25000 ), "" )
                 ( "server.xrd_ports_range_min", boost::program_options::value<unsigned int>( &m_options.m_server.m_common.m_xrdPortsRangeMin ) )
@@ -107,8 +108,8 @@ namespace PoD
                 ( "server.xproof_ports_range_max", boost::program_options::value<unsigned int>( &m_options.m_server.m_common.m_xproofPortsRangeMax ) )
                 ( "server.agent_ports_range_min", boost::program_options::value<unsigned int>( &m_options.m_server.m_agentPortsRangeMin ) )
                 ( "server.agent_ports_range_max", boost::program_options::value<unsigned int>( &m_options.m_server.m_agentPortsRangeMax ) )
-                ( "server.agent_threads", boost::program_options::value<unsigned int>( &m_options.m_server.m_common.m_agentThreads )->default_value(8) )
-                ( "server.agent_node_readbuffer", boost::program_options::value<unsigned int>( &m_options.m_server.m_common.m_agentNodeReadBuffer )->default_value(5000) )
+                ( "server.agent_threads", boost::program_options::value<unsigned int>( &m_options.m_server.m_common.m_agentThreads )->default_value( 8 ) )
+                ( "server.agent_node_readbuffer", boost::program_options::value<unsigned int>( &m_options.m_server.m_common.m_agentNodeReadBuffer )->default_value( 5000 ) )
                 ;
                 config_file_options.add_options()
                 ( "worker.work_dir", boost::program_options::value<std::string>( &m_options.m_worker.m_common.m_workDir )->default_value( "$POD_LOCATION/" ), "" )
@@ -118,13 +119,13 @@ namespace PoD
                 ( "worker.proof_cfg_path", boost::program_options::value<std::string>( &m_options.m_worker.m_common.m_proofCFG )->default_value( "$POD_LOCATION/proof.conf" ), "" )
                 ( "worker.set_my_rootsys", boost::program_options::value<std::string>( &m_options.m_worker.m_setMyROOTSYS ), "" )
                 ( "worker.my_rootsys", boost::program_options::value<std::string>( &m_options.m_worker.m_myROOTSYS ), "" )
-                ( "worker.agent_shutdown_if_idle_for_sec", boost::program_options::value<int>( &m_options.m_worker.m_shutdownIfIdleForSec )->default_value( 1800 ), "" )
+                ( "worker.agent_shutdown_if_idle_for_sec", boost::program_options::value<int>( &m_options.m_worker.m_common.m_shutdownIfIdleForSec )->default_value( 1800 ), "" )
                 ( "worker.xrd_ports_range_min", boost::program_options::value<unsigned int>( &m_options.m_worker.m_common.m_xrdPortsRangeMin ) )
                 ( "worker.xrd_ports_range_max", boost::program_options::value<unsigned int>( &m_options.m_worker.m_common.m_xrdPortsRangeMax ) )
                 ( "worker.xproof_ports_range_min", boost::program_options::value<unsigned int>( &m_options.m_worker.m_common.m_xproofPortsRangeMin ) )
                 ( "worker.xproof_ports_range_max", boost::program_options::value<unsigned int>( &m_options.m_worker.m_common.m_xproofPortsRangeMax ) )
-                ( "worker.agent_threads", boost::program_options::value<unsigned int>( &m_options.m_worker.m_common.m_agentThreads )->default_value(3) )
-                ( "worker.agent_node_readbuffer", boost::program_options::value<unsigned int>( &m_options.m_worker.m_common.m_agentNodeReadBuffer )->default_value(5000) )
+                ( "worker.agent_threads", boost::program_options::value<unsigned int>( &m_options.m_worker.m_common.m_agentThreads )->default_value( 3 ) )
+                ( "worker.agent_node_readbuffer", boost::program_options::value<unsigned int>( &m_options.m_worker.m_common.m_agentNodeReadBuffer )->default_value( 5000 ) )
                 ;
 
                 std::ifstream ifs( _PoDCfgFileName.c_str() );
