@@ -38,10 +38,10 @@ namespace MiscCommon
      */
     typedef enum ESeverity
     {
-        LOG_SEVERITY_INFO = 0x1,
-        LOG_SEVERITY_WARNING = 0x2,
-        LOG_SEVERITY_FAULT = 0x4,
-        LOG_SEVERITY_CRITICAL_ERROR = 0x8,
+        LOG_SEVERITY_INFO = 0x01,
+        LOG_SEVERITY_WARNING = 0x02,
+        LOG_SEVERITY_FAULT = 0x04,
+        LOG_SEVERITY_CRITICAL_ERROR = 0x08,
         LOG_SEVERITY_DEBUG = 0x10
     } LOG_SEVERITY;
     enum
@@ -68,7 +68,7 @@ namespace MiscCommon
             void push( LOG_SEVERITY _Severity, unsigned long _ErrorCode,
                        const std::string &_Module, const std::string &_Message )
             {
-                if ( _Severity & m_logLevel != m_logLevel )
+                if ( _Severity & m_logLevel != _Severity )
                     return;
 
                 // Thread ID

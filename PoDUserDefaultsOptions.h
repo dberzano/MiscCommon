@@ -22,9 +22,9 @@ namespace PoD
         std::string m_workDir;      //!< Working folder.
         std::string m_logFileDir;   //!< The log filename.
         bool m_logFileOverwrite;    //!< Overwrite log file each session.
-        unsigned char m_logLevel;   //!< A log level
         std::string m_proofCFG;     //!< A location of the proof configuration file.
         int m_shutdownIfIdleForSec; //!< Shut down agent if its idle time is higher this value. If value is 0 then the feature is off.
+        unsigned short m_logLevel;   //!< A log level
         unsigned int m_xrdPortsRangeMin;
         unsigned int m_xrdPortsRangeMax;
         unsigned int m_xproofPortsRangeMin;
@@ -79,6 +79,9 @@ namespace PoD
         if ( _any.type() == typeid( unsigned char ) )
             ss << boost::any_cast<unsigned char>( _any );
 
+        if ( _any.type() == typeid( unsigned short ) )
+            ss << boost::any_cast<unsigned short>( _any );
+
         if ( _any.type() == typeid( bool ) )
             ss << boost::any_cast<bool>( _any );
 
@@ -97,7 +100,7 @@ namespace PoD
                 ( "server.work_dir", boost::program_options::value<std::string>( &m_options.m_server.m_common.m_workDir )->default_value( "$POD_LOCATION/" ), "" )
                 ( "server.logfile_dir", boost::program_options::value<std::string>( &m_options.m_server.m_common.m_logFileDir )->default_value( "$POD_LOCATION/log" ), "" )
                 ( "server.logfile_overwrite", boost::program_options::value<bool>( &m_options.m_server.m_common.m_logFileOverwrite )->default_value( false, "no" ), "" )
-                ( "server.log_level", boost::program_options::value<unsigned char>( &m_options.m_server.m_common.m_logLevel )->default_value( 1 ), "" )
+                ( "server.log_level", boost::program_options::value<unsigned short>( &m_options.m_server.m_common.m_logLevel )->default_value( 1 ), "" )
                 ( "server.proof_cfg_path", boost::program_options::value<std::string>( &m_options.m_server.m_common.m_proofCFG )->default_value( "$POD_LOCATION/etc/proof.conf" ), "" )
                 ( "server.agent_shutdown_if_idle_for_sec", boost::program_options::value<int>( &m_options.m_server.m_common.m_shutdownIfIdleForSec )->default_value( 1800 ), "" )
                 ( "server.agent_local_client_port_min", boost::program_options::value<unsigned int>( &m_options.m_server.m_agentLocalClientPortMin )->default_value( 20000 ), "" )
@@ -115,7 +118,7 @@ namespace PoD
                 ( "worker.work_dir", boost::program_options::value<std::string>( &m_options.m_worker.m_common.m_workDir )->default_value( "$POD_LOCATION/" ), "" )
                 ( "worker.logfile_dir", boost::program_options::value<std::string>( &m_options.m_worker.m_common.m_logFileDir )->default_value( "$POD_LOCATION/" ), "" )
                 ( "worker.logfile_overwrite", boost::program_options::value<bool>( &m_options.m_worker.m_common.m_logFileOverwrite )->default_value( false, "no" ), "" )
-                ( "worker.log_level", boost::program_options::value<unsigned char>( &m_options.m_worker.m_common.m_logLevel )->default_value( 1 ), "" )
+                ( "worker.log_level", boost::program_options::value<unsigned short>( &m_options.m_worker.m_common.m_logLevel )->default_value( 1 ), "" )
                 ( "worker.proof_cfg_path", boost::program_options::value<std::string>( &m_options.m_worker.m_common.m_proofCFG )->default_value( "$POD_LOCATION/proof.conf" ), "" )
                 ( "worker.set_my_rootsys", boost::program_options::value<std::string>( &m_options.m_worker.m_setMyROOTSYS ), "" )
                 ( "worker.my_rootsys", boost::program_options::value<std::string>( &m_options.m_worker.m_myROOTSYS ), "" )
