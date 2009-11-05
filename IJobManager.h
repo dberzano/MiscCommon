@@ -27,6 +27,7 @@ class IJobManager
         virtual QString getName() const = 0;
         virtual QWidget *getWidget() = 0;
         virtual QIcon getIcon() = 0;
+        // argument in seconds; if 0 is given the timer should stop
         virtual void startUpdTimer(int _JobStatusUpdInterval) = 0;
         virtual int getJobsCount() const = 0;
 
