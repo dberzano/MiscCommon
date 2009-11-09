@@ -133,7 +133,7 @@ namespace MiscCommon
         if ( _T::npos == p_begin )
             return;
 
-        ++p_begin; // ecluding '$' from the name
+        ++p_begin; // Excluding '$' from the name
 
         typename _T::size_type p_end = _Path->find( _T( "/" ), p_begin );
         if ( _T::npos == p_end )
