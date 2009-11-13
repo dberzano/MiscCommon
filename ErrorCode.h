@@ -30,8 +30,8 @@ namespace MiscCommon
     typedef const ERRORCODE ERRORCODE_C;
 
     ERRORCODE_C erOK( EXIT_SUCCESS );
-    ERRORCODE_C erTrue(-1);
-    ERRORCODE_C erFalse(-2);
+    ERRORCODE_C erTrue( -1 );
+    ERRORCODE_C erFalse( -2 );
     ERRORCODE_C erError( EXIT_FAILURE );
     ERRORCODE_C erNotImpl( 3 );
 
@@ -73,7 +73,7 @@ namespace MiscCommon
     inline std::string errno2str()
     {
         char *p = strerror( errno );
-        return std::string(p);
+        return std::string( p );
     }
     /**
      *
@@ -84,13 +84,14 @@ namespace MiscCommon
     class system_error: public std::exception
     {
         public:
-            explicit system_error( const std::string &_ErrorPrefix)
+            explicit system_error( const std::string &_ErrorPrefix )
             {
-                const char * const szError = strerror( errno );
+            	m_errno = errno;
+                const char * const szError = strerror( m_errno );
                 std::stringstream ss;
                 if ( !_ErrorPrefix.empty() )
                     ss << _ErrorPrefix << ". ";
-                ss <<  "System error description [" << errno << "]: " << szError;
+                ss <<  "System error description [" << m_errno << "]: " << szError;
                 m_Msg = ss.str();
             }
             virtual ~system_error() throw()
@@ -99,9 +100,14 @@ namespace MiscCommon
             {
                 return m_Msg.c_str();
             }
+            int getErrno() const throw()
+            {
+            	return m_errno;
+            }
 
         private:
             std::string m_Msg;
+            int m_errno;
     };
 
 };
