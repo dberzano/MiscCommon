@@ -155,7 +155,7 @@ namespace PoD
                 boost::program_options::notify( m_keys );
             }
 
-            std::string getValueForKey( const std::string &_Key )
+            std::string getValueForKey( const std::string &_Key ) const
             {
                 return convertAnyToString( m_keys[_Key].value() );
             }
