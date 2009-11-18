@@ -55,10 +55,19 @@ namespace PoD
         std::string m_myROOTSYS;                    //!< User's ROOTSYS to use on workers
     } SWorkerOptions_t;
 
+    typedef struct SLSFOptions
+    {
+        //
+        // ---= LSF =---
+        //
+        bool m_emailOutput;         //!< specifies whether job's output is sent to the user by mail
+    } SLSFOptions_t;
+
     typedef struct SPoDUserDefaultOptions
     {
         SServerOptions_t m_server;
         SWorkerOptions_t m_worker;
+        SLSFOptions_t m_lsf;
 
     } SPoDUserDefaultsOptions_t;
 
@@ -129,6 +138,9 @@ namespace PoD
                 ( "worker.xproof_ports_range_max", boost::program_options::value<unsigned int>( &m_options.m_worker.m_common.m_xproofPortsRangeMax ) )
                 ( "worker.agent_threads", boost::program_options::value<unsigned int>( &m_options.m_worker.m_common.m_agentThreads )->default_value( 3 ) )
                 ( "worker.agent_node_readbuffer", boost::program_options::value<unsigned int>( &m_options.m_worker.m_common.m_agentNodeReadBuffer )->default_value( 5000 ) )
+                ;
+                config_file_options.add_options()
+                ( "lsf_plugin.email_job_output", boost::program_options::value<bool>( &m_options.m_lsf.m_emailOutput )->default_value( false, "no" ), "" )
                 ;
 
                 std::ifstream ifs( _PoDCfgFileName.c_str() );
