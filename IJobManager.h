@@ -15,6 +15,8 @@
 #ifndef IJOBMANAGER_H_
 #define IJOBMANAGER_H_
 
+#include "PoDUserDefaultsOptions.h"
+
 class QString;
 class QWidget;
 class QIcon;
