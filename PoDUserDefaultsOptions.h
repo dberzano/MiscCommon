@@ -61,6 +61,7 @@ namespace PoD
         // ---= LSF =---
         //
         bool m_emailOutput;         //!< specifies whether job's output is sent to the user by mail
+        bool m_uploadJobLog;        //!< specifies whether to upload jobs log files from workers when PoD jobs are completed.
     } SLSFOptions_t;
 
     typedef struct SPoDUserDefaultOptions
@@ -141,6 +142,7 @@ namespace PoD
                 ;
                 config_file_options.add_options()
                 ( "lsf_plugin.email_job_output", boost::program_options::value<bool>( &m_options.m_lsf.m_emailOutput )->default_value( false, "no" ), "" )
+                ( "lsf_plugin.upload_job_log", boost::program_options::value<bool>( &m_options.m_lsf.m_uploadJobLog )->default_value( false, "no" ), "" )
                 ;
 
                 std::ifstream ifs( _PoDCfgFileName.c_str() );
