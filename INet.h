@@ -218,7 +218,7 @@ namespace MiscCommon
          * @brief A helper function, which insures that whole buffer was send.
          *
          */
-        inline int sendall( int s, unsigned char *buf, int len, int flags )
+        inline int sendall( int s, const unsigned char * const buf, int len, int flags )
         {
             //TODO: sendall - Make this code safer!!!
             int total = 0;
