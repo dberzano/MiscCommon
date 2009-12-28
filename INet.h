@@ -569,6 +569,26 @@ namespace MiscCommon
                 {}
             return 0;
         }
+
+        // The following 4 functions convert values between host and network byte order.
+        // Whenever data should be send to a remote peer the _normalizeWrite must be used.
+        // Whenever data are going to be read from the _normalizeRead must be used to check that Endianness is correct.
+        inline uint16_t _normalizeRead16( uint16_t _value )
+        {
+            return ntohs( _value );
+        }
+        inline uint32_t _normalizeRead32( uint32_t _value )
+        {
+            return ntohl( _value );
+        }
+        inline uint16_t _normalizeWrite16( uint16_t _value )
+        {
+            return htons( _value );
+        }
+        inline uint32_t _normalizeWrite32( uint32_t _value )
+        {
+            return htonl( _value );
+        }
     };
 };
 
