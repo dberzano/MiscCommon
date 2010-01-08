@@ -388,10 +388,17 @@ namespace MiscCommon
                 {
                     return ::accept( m_Socket, NULL, NULL );
                 }
-
-                smart_socket& GetSocket()
+                Socket_t getSocket()
                 {
-                    return m_Socket;
+                    return m_Socket.get();
+                }
+                void setNonBlock( bool _val = true )
+                {
+                    m_Socket.set_nonblock( _val );
+                }
+                Socket_t detach()
+                {
+                    return m_Socket.detach();
                 }
 
             protected:
@@ -408,7 +415,7 @@ namespace MiscCommon
                 CSocketClient() : m_Socket( AF_INET, SOCK_STREAM, 0 )
                 {}
 
-                void Connect( unsigned short _nPort, const std::string &_Addr )
+                void connect( unsigned short _nPort, const std::string &_Addr )
                 {
                     if ( m_Socket < 0 )
                         throw std::runtime_error( socket_error_string( m_Socket, "there was NULL socket given as a client socket to Connect" ) );
@@ -424,9 +431,17 @@ namespace MiscCommon
                         throw std::runtime_error( socket_error_string( m_Socket, "Can't connect to the server" ) );
                 }
 
-                smart_socket& GetSocket()
+                Socket_t getSocket()
                 {
-                    return m_Socket;
+                    return m_Socket.get();
+                }
+                void setNonBlock( bool _val = true )
+                {
+                    m_Socket.set_nonblock( _val );
+                }
+                Socket_t detach()
+                {
+                    return m_Socket.detach();
                 }
 
             protected:
