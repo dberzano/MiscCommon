@@ -1,10 +1,17 @@
-/*
- * PoDUserDefaultsOptions.h
- *
- *  Created on: Jun 30, 2009
- *      Author: Anar Manafov
- */
+/************************************************************************/
+/**
+ * @file PoDUserDefaultsOptions.h
+ * @brief
+ * @author Anar Manafov A.Manafov@gsi.de
+ */ /*
 
+        version number:     $LastChangedRevision$
+        created by:         Anar Manafov
+                            2009-06-30
+        last changed by:    $LastChangedBy$ $LastChangedDate$
+
+        Copyright (c) 2010 GSI GridTeam. All rights reserved.
+*************************************************************************/
 #ifndef PODUSERDEFAULTSOPTIONS_H_
 #define PODUSERDEFAULTSOPTIONS_H_
 // STD
@@ -43,6 +50,7 @@ namespace PoD
         unsigned int m_agentLocalClientPortMax;
         unsigned int m_agentPortsRangeMin;
         unsigned int m_agentPortsRangeMax;
+        std::string m_packetForwarding;
     } SServerOptions_t;
 
     typedef struct SWorkerOptions
@@ -123,6 +131,7 @@ namespace PoD
                 ( "server.agent_ports_range_max", boost::program_options::value<unsigned int>( &m_options.m_server.m_agentPortsRangeMax ) )
                 ( "server.agent_threads", boost::program_options::value<unsigned int>( &m_options.m_server.m_common.m_agentThreads )->default_value( 8 ) )
                 ( "server.agent_node_readbuffer", boost::program_options::value<unsigned int>( &m_options.m_server.m_common.m_agentNodeReadBuffer )->default_value( 5000 ) )
+                ( "server.packet_forwarding", boost::program_options::value<std::string>( &m_options.m_server.m_packetForwarding )->default_value( "auto" ), "" )
                 ;
                 config_file_options.add_options()
                 ( "worker.work_dir", boost::program_options::value<std::string>( &m_options.m_worker.m_common.m_workDir )->default_value( "$POD_LOCATION/" ), "" )
@@ -153,6 +162,7 @@ namespace PoD
                     throw std::runtime_error( msg );
                 }
                 // Parse the config file
+                // TODO: use allow_unregistered when switched to boost 1.35
                 boost::program_options::store( boost::program_options::parse_config_file( ifs, config_file_options ), m_keys );
                 boost::program_options::notify( m_keys );
             }
