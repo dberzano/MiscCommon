@@ -10,7 +10,7 @@
                             2009-06-30
         last changed by:    $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2010 GSI GridTeam. All rights reserved.
+        Copyright (c) 2009-2010 GSI GridTeam. All rights reserved.
 *************************************************************************/
 #ifndef PODUSERDEFAULTSOPTIONS_H_
 #define PODUSERDEFAULTSOPTIONS_H_
