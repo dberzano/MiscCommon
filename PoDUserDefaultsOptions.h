@@ -72,11 +72,21 @@ namespace PoD
         bool m_uploadJobLog;        //!< specifies whether to upload jobs log files from workers when PoD jobs are completed.
     } SLSFOptions_t;
 
+    typedef struct SPBSOptions
+    {
+        //
+        // ---= PBS =---
+        //
+        bool m_uploadJobLog;        //!< specifies whether to upload jobs log files from workers when PoD jobs are completed.
+        bool m_sharedHome;          //!< the parameter specifies whether a shared home files system is used.
+    } SPBSOptions_t;
+
     typedef struct SPoDUserDefaultOptions
     {
         SServerOptions_t m_server;
         SWorkerOptions_t m_worker;
         SLSFOptions_t m_lsf;
+        SPBSOptions_t m_pbs;
 
     } SPoDUserDefaultsOptions_t;
 
@@ -84,23 +94,23 @@ namespace PoD
 // In the next version of boost its solved.
     inline std::string convertAnyToString( const boost::any &_any )
     {
-        if ( _any.type() == typeid( std::string ) )
+        if( _any.type() == typeid( std::string ) )
             return boost::any_cast<std::string>( _any );
 
         std::ostringstream ss;
-        if ( _any.type() == typeid( int ) )
+        if( _any.type() == typeid( int ) )
             ss << boost::any_cast<int>( _any );
 
-        if ( _any.type() == typeid( unsigned int ) )
+        if( _any.type() == typeid( unsigned int ) )
             ss << boost::any_cast<unsigned int>( _any );
 
-        if ( _any.type() == typeid( unsigned char ) )
+        if( _any.type() == typeid( unsigned char ) )
             ss << boost::any_cast<unsigned char>( _any );
 
-        if ( _any.type() == typeid( unsigned short ) )
+        if( _any.type() == typeid( unsigned short ) )
             ss << boost::any_cast<unsigned short>( _any );
 
-        if ( _any.type() == typeid( bool ) )
+        if( _any.type() == typeid( bool ) )
             ss << boost::any_cast<bool>( _any );
 
         return ss.str();
@@ -153,9 +163,13 @@ namespace PoD
                 ( "lsf_plugin.email_job_output", boost::program_options::value<bool>( &m_options.m_lsf.m_emailOutput )->default_value( false, "no" ), "" )
                 ( "lsf_plugin.upload_job_log", boost::program_options::value<bool>( &m_options.m_lsf.m_uploadJobLog )->default_value( false, "no" ), "" )
                 ;
+                config_file_options.add_options()
+                ( "pbs_plugin.upload_job_log", boost::program_options::value<bool>( &m_options.m_pbs.m_uploadJobLog )->default_value( false, "no" ), "" )
+                ( "pbs_plugin.shared_home", boost::program_options::value<bool>( &m_options.m_pbs.m_sharedHome )->default_value( false, "no" ), "" )
+                ;
 
                 std::ifstream ifs( _PoDCfgFileName.c_str() );
-                if ( !ifs.good() )
+                if( !ifs.good() )
                 {
                     std::string msg( "Could not open a PoD configuration file: " );
                     msg += _PoDCfgFileName;
