@@ -18,7 +18,7 @@
 // STD
 #include <stdexcept>
 //gLite
-#include "glite/wmsutils/jobid/JobId.h"
+#include "glite/jobid/JobId.h"
 // gLite jdl
 #include "glite/jdl/JobAd.h"
 #include "glite/jdl/jdl_attributes.h"

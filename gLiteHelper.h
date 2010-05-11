@@ -44,7 +44,7 @@ namespace MiscCommon
                 CJobStatusObj( const std::string &_gLiteJobID,
                                int _Flag = glite::lb::Job::STAT_CLASSADS | glite::lb::Job::STAT_CHILDSTAT | glite::lb::Job::STAT_CHILDREN )
                 {
-                    glite::wmsutils::jobid::JobId jobid( _gLiteJobID );
+                    glite::jobid::JobId jobid( _gLiteJobID );
                     glite::lb::Job job( jobid );
                     m_status = job.status( _Flag );
                 }
