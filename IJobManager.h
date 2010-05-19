@@ -36,7 +36,7 @@ class IJobManager
         {
 
         }
-        virtual void setEnvironment(char **envp)
+        virtual void setEnvironment(const std::string &_envp)
         {
 
         }
