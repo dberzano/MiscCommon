@@ -36,6 +36,10 @@ class IJobManager
         {
 
         }
+        virtual void setEnvironment(char **envp)
+        {
+
+        }
 
         // The object of this interface has to provide the following signals:
         // void changeNumberOfJobs( int );
