@@ -139,7 +139,7 @@ namespace PoD
                 ( "server.xproof_ports_range_max", boost::program_options::value<unsigned int>( &m_options.m_server.m_common.m_xproofPortsRangeMax ) )
                 ( "server.agent_ports_range_min", boost::program_options::value<unsigned int>( &m_options.m_server.m_agentPortsRangeMin ) )
                 ( "server.agent_ports_range_max", boost::program_options::value<unsigned int>( &m_options.m_server.m_agentPortsRangeMax ) )
-                ( "server.agent_threads", boost::program_options::value<unsigned int>( &m_options.m_server.m_server.m_agentThreads )->default_value( 8 ) )
+                ( "server.agent_threads", boost::program_options::value<unsigned int>( &m_options.m_server.m_agentThreads )->default_value( 8 ) )
                 ( "server.agent_node_readbuffer", boost::program_options::value<unsigned int>( &m_options.m_server.m_common.m_agentNodeReadBuffer )->default_value( 5000 ) )
                 ( "server.packet_forwarding", boost::program_options::value<std::string>( &m_options.m_server.m_packetForwarding )->default_value( "auto" ), "" )
                 ;
@@ -156,7 +156,6 @@ namespace PoD
                 ( "worker.xrd_ports_range_max", boost::program_options::value<unsigned int>( &m_options.m_worker.m_common.m_xrdPortsRangeMax ) )
                 ( "worker.xproof_ports_range_min", boost::program_options::value<unsigned int>( &m_options.m_worker.m_common.m_xproofPortsRangeMin ) )
                 ( "worker.xproof_ports_range_max", boost::program_options::value<unsigned int>( &m_options.m_worker.m_common.m_xproofPortsRangeMax ) )
-                ( "worker.agent_threads", boost::program_options::value<unsigned int>( &m_options.m_worker.m_common.m_agentThreads )->default_value( 3 ) )
                 ( "worker.agent_node_readbuffer", boost::program_options::value<unsigned int>( &m_options.m_worker.m_common.m_agentNodeReadBuffer )->default_value( 5000 ) )
                 ;
                 config_file_options.add_options()
