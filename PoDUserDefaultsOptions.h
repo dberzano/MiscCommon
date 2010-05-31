@@ -31,12 +31,11 @@ namespace PoD
         bool m_logFileOverwrite;    //!< Overwrite log file each session.
         std::string m_proofCFG;     //!< A location of the proof configuration file.
         int m_shutdownIfIdleForSec; //!< Shut down agent if its idle time is higher this value. If value is 0 then the feature is off.
-        unsigned short m_logLevel;   //!< A log level
+        unsigned short m_logLevel;  //!< A log level
         unsigned int m_xrdPortsRangeMin;
         unsigned int m_xrdPortsRangeMax;
         unsigned int m_xproofPortsRangeMin;
         unsigned int m_xproofPortsRangeMax;
-        unsigned int m_agentThreads;    //!< A number of threads in thread pool.
         unsigned int m_agentNodeReadBuffer; //!< A buffer size, used by a proxy (in bytes).
     } SCommonOptions_t;
 
@@ -51,6 +50,7 @@ namespace PoD
         unsigned int m_agentPortsRangeMin;
         unsigned int m_agentPortsRangeMax;
         std::string m_packetForwarding;
+        unsigned int m_agentThreads;    //!< A number of threads in thread pool.
     } SServerOptions_t;
 
     typedef struct SWorkerOptions
@@ -139,7 +139,7 @@ namespace PoD
                 ( "server.xproof_ports_range_max", boost::program_options::value<unsigned int>( &m_options.m_server.m_common.m_xproofPortsRangeMax ) )
                 ( "server.agent_ports_range_min", boost::program_options::value<unsigned int>( &m_options.m_server.m_agentPortsRangeMin ) )
                 ( "server.agent_ports_range_max", boost::program_options::value<unsigned int>( &m_options.m_server.m_agentPortsRangeMax ) )
-                ( "server.agent_threads", boost::program_options::value<unsigned int>( &m_options.m_server.m_common.m_agentThreads )->default_value( 8 ) )
+                ( "server.agent_threads", boost::program_options::value<unsigned int>( &m_options.m_server.m_server.m_agentThreads )->default_value( 8 ) )
                 ( "server.agent_node_readbuffer", boost::program_options::value<unsigned int>( &m_options.m_server.m_common.m_agentNodeReadBuffer )->default_value( 5000 ) )
                 ( "server.packet_forwarding", boost::program_options::value<std::string>( &m_options.m_server.m_packetForwarding )->default_value( "auto" ), "" )
                 ;
