@@ -317,7 +317,7 @@ namespace MiscCommon
      * @brief
      *
      */
-    inline bool is_file_exists( const std::string &_FileName )
+    inline bool does_file_exists( const std::string &_FileName )
     {
         try
         {
