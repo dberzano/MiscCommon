@@ -34,7 +34,7 @@ namespace MiscCommon
         {
             _T path(_Path);
             MiscCommon::smart_path( &path );
-            return ( is_file_exists( path ) );
+            return ( does_file_exists( path ) );
         }
     };
     /**
