@@ -23,6 +23,7 @@
 
 namespace PoD
 {
+    class CPoDUserDefaults;
 
     typedef struct SCommonOptions
     {
@@ -59,7 +60,7 @@ namespace PoD
         // ---= WORKER =---
         //
         SCommonOptions_t m_common;
-        std::string m_setMyROOTSYS;                 //!< Whether to use user's ROOTSYS to use on workers (values: yes/no)
+        bool m_setMyROOTSYS;                 //!< Whether to use user's ROOTSYS to use on workers (values: yes/no)
         std::string m_myROOTSYS;                    //!< User's ROOTSYS to use on workers
     } SWorkerOptions_t;
 
@@ -87,7 +88,6 @@ namespace PoD
         SWorkerOptions_t m_worker;
         SLSFOptions_t m_lsf;
         SPBSOptions_t m_pbs;
-
     } SPoDUserDefaultsOptions_t;
 
 // TODO: we use boost 1.32. This is the only method I found to convert boost::any to string.
@@ -111,7 +111,7 @@ namespace PoD
             ss << boost::any_cast<unsigned short>( _any );
 
         if( _any.type() == typeid( bool ) )
-            ss << boost::any_cast<bool>( _any );
+            ss << ( boost::any_cast<bool>( _any ) ? "yes" : "no" );
 
         return ss.str();
     }
@@ -119,7 +119,7 @@ namespace PoD
     class CPoDUserDefaults
     {
         public:
-            void init( const std::string &_PoDCfgFileName )
+            void init( const std::string &_PoDCfgFileName, bool _get_default = false )
             {
                 m_keys.clear();
                 boost::program_options::options_description config_file_options( "PoD user defaults options" );
@@ -127,18 +127,18 @@ namespace PoD
                 config_file_options.add_options()
                 ( "server.work_dir", boost::program_options::value<std::string>( &m_options.m_server.m_common.m_workDir )->default_value( "$POD_LOCATION/" ), "" )
                 ( "server.logfile_dir", boost::program_options::value<std::string>( &m_options.m_server.m_common.m_logFileDir )->default_value( "$POD_LOCATION/log" ), "" )
-                ( "server.logfile_overwrite", boost::program_options::value<bool>( &m_options.m_server.m_common.m_logFileOverwrite )->default_value( false, "no" ), "" )
+                ( "server.logfile_overwrite", boost::program_options::value<bool>( &m_options.m_server.m_common.m_logFileOverwrite )->default_value( true, "yes" ), "" )
                 ( "server.log_level", boost::program_options::value<unsigned short>( &m_options.m_server.m_common.m_logLevel )->default_value( 1 ), "" )
                 ( "server.proof_cfg_path", boost::program_options::value<std::string>( &m_options.m_server.m_common.m_proofCFG )->default_value( "$POD_LOCATION/etc/proof.conf" ), "" )
                 ( "server.agent_shutdown_if_idle_for_sec", boost::program_options::value<int>( &m_options.m_server.m_common.m_shutdownIfIdleForSec )->default_value( 1800 ), "" )
                 ( "server.agent_local_client_port_min", boost::program_options::value<unsigned int>( &m_options.m_server.m_agentLocalClientPortMin )->default_value( 20000 ), "" )
                 ( "server.agent_local_client_port_max", boost::program_options::value<unsigned int>( &m_options.m_server.m_agentLocalClientPortMax )->default_value( 25000 ), "" )
-                ( "server.xrd_ports_range_min", boost::program_options::value<unsigned int>( &m_options.m_server.m_common.m_xrdPortsRangeMin ) )
-                ( "server.xrd_ports_range_max", boost::program_options::value<unsigned int>( &m_options.m_server.m_common.m_xrdPortsRangeMax ) )
-                ( "server.xproof_ports_range_min", boost::program_options::value<unsigned int>( &m_options.m_server.m_common.m_xproofPortsRangeMin ) )
-                ( "server.xproof_ports_range_max", boost::program_options::value<unsigned int>( &m_options.m_server.m_common.m_xproofPortsRangeMax ) )
-                ( "server.agent_ports_range_min", boost::program_options::value<unsigned int>( &m_options.m_server.m_agentPortsRangeMin ) )
-                ( "server.agent_ports_range_max", boost::program_options::value<unsigned int>( &m_options.m_server.m_agentPortsRangeMax ) )
+                ( "server.xrd_ports_range_min", boost::program_options::value<unsigned int>( &m_options.m_server.m_common.m_xrdPortsRangeMin )->default_value( 20000 ) )
+                ( "server.xrd_ports_range_max", boost::program_options::value<unsigned int>( &m_options.m_server.m_common.m_xrdPortsRangeMax )->default_value( 21000 ) )
+                ( "server.xproof_ports_range_min", boost::program_options::value<unsigned int>( &m_options.m_server.m_common.m_xproofPortsRangeMin )->default_value( 21000 ) )
+                ( "server.xproof_ports_range_max", boost::program_options::value<unsigned int>( &m_options.m_server.m_common.m_xproofPortsRangeMax )->default_value( 21000 ) )
+                ( "server.agent_ports_range_min", boost::program_options::value<unsigned int>( &m_options.m_server.m_agentPortsRangeMin )->default_value( 22001 ) )
+                ( "server.agent_ports_range_max", boost::program_options::value<unsigned int>( &m_options.m_server.m_agentPortsRangeMax )->default_value( 23000 ) )
                 ( "server.agent_threads", boost::program_options::value<unsigned int>( &m_options.m_server.m_agentThreads )->default_value( 8 ) )
                 ( "server.agent_node_readbuffer", boost::program_options::value<unsigned int>( &m_options.m_server.m_common.m_agentNodeReadBuffer )->default_value( 5000 ) )
                 ( "server.packet_forwarding", boost::program_options::value<std::string>( &m_options.m_server.m_packetForwarding )->default_value( "auto" ), "" )
@@ -146,16 +146,16 @@ namespace PoD
                 config_file_options.add_options()
                 ( "worker.work_dir", boost::program_options::value<std::string>( &m_options.m_worker.m_common.m_workDir )->default_value( "$POD_LOCATION/" ), "" )
                 ( "worker.logfile_dir", boost::program_options::value<std::string>( &m_options.m_worker.m_common.m_logFileDir )->default_value( "$POD_LOCATION/" ), "" )
-                ( "worker.logfile_overwrite", boost::program_options::value<bool>( &m_options.m_worker.m_common.m_logFileOverwrite )->default_value( false, "no" ), "" )
+                ( "worker.logfile_overwrite", boost::program_options::value<bool>( &m_options.m_worker.m_common.m_logFileOverwrite )->default_value( true, "yes" ), "" )
                 ( "worker.log_level", boost::program_options::value<unsigned short>( &m_options.m_worker.m_common.m_logLevel )->default_value( 1 ), "" )
                 ( "worker.proof_cfg_path", boost::program_options::value<std::string>( &m_options.m_worker.m_common.m_proofCFG )->default_value( "$POD_LOCATION/proof.conf" ), "" )
-                ( "worker.set_my_rootsys", boost::program_options::value<std::string>( &m_options.m_worker.m_setMyROOTSYS ), "" )
-                ( "worker.my_rootsys", boost::program_options::value<std::string>( &m_options.m_worker.m_myROOTSYS ), "" )
+                ( "worker.set_my_rootsys", boost::program_options::value<bool>( &m_options.m_worker.m_setMyROOTSYS )->default_value( true, "yes" ), "" )
+                ( "worker.my_rootsys", boost::program_options::value<std::string>( &m_options.m_worker.m_myROOTSYS )->default_value( "$ROOTSYS" ), "" )
                 ( "worker.agent_shutdown_if_idle_for_sec", boost::program_options::value<int>( &m_options.m_worker.m_common.m_shutdownIfIdleForSec )->default_value( 1800 ), "" )
-                ( "worker.xrd_ports_range_min", boost::program_options::value<unsigned int>( &m_options.m_worker.m_common.m_xrdPortsRangeMin ) )
-                ( "worker.xrd_ports_range_max", boost::program_options::value<unsigned int>( &m_options.m_worker.m_common.m_xrdPortsRangeMax ) )
-                ( "worker.xproof_ports_range_min", boost::program_options::value<unsigned int>( &m_options.m_worker.m_common.m_xproofPortsRangeMin ) )
-                ( "worker.xproof_ports_range_max", boost::program_options::value<unsigned int>( &m_options.m_worker.m_common.m_xproofPortsRangeMax ) )
+                ( "worker.xrd_ports_range_min", boost::program_options::value<unsigned int>( &m_options.m_worker.m_common.m_xrdPortsRangeMin )->default_value( 20000 ) )
+                ( "worker.xrd_ports_range_max", boost::program_options::value<unsigned int>( &m_options.m_worker.m_common.m_xrdPortsRangeMax )->default_value( 21000 ) )
+                ( "worker.xproof_ports_range_min", boost::program_options::value<unsigned int>( &m_options.m_worker.m_common.m_xproofPortsRangeMin )->default_value( 21000 ) )
+                ( "worker.xproof_ports_range_max", boost::program_options::value<unsigned int>( &m_options.m_worker.m_common.m_xproofPortsRangeMax )->default_value( 21000 ) )
                 ( "worker.agent_node_readbuffer", boost::program_options::value<unsigned int>( &m_options.m_worker.m_common.m_agentNodeReadBuffer )->default_value( 5000 ) )
                 ;
                 config_file_options.add_options()
@@ -167,16 +167,28 @@ namespace PoD
                 ( "pbs_plugin.shared_home", boost::program_options::value<bool>( &m_options.m_pbs.m_sharedHome )->default_value( false, "no" ), "" )
                 ;
 
-                std::ifstream ifs( _PoDCfgFileName.c_str() );
-                if( !ifs.good() )
+                if( !_get_default )
                 {
-                    std::string msg( "Could not open a PoD configuration file: " );
-                    msg += _PoDCfgFileName;
-                    throw std::runtime_error( msg );
+                    std::ifstream ifs( _PoDCfgFileName.c_str() );
+                    if( !ifs.good() )
+                    {
+                        std::string msg( "Could not open a PoD configuration file: " );
+                        msg += _PoDCfgFileName;
+                        throw std::runtime_error( msg );
+                    }
+                    // Parse the config file
+                    // TODO: use allow_unregistered when switched to boost 1.35
+                    boost::program_options::store( boost::program_options::parse_config_file( ifs, config_file_options ), m_keys );
                 }
-                // Parse the config file
-                // TODO: use allow_unregistered when switched to boost 1.35
-                boost::program_options::store( boost::program_options::parse_config_file( ifs, config_file_options ), m_keys );
+                else
+                {
+                    // we fake reading of arguments, just to get a default values of all keys
+                    char **arg;
+                    boost::program_options::store(
+                        boost::program_options::basic_command_line_parser<char>( 0, arg ).options( config_file_options ).run(),
+                        m_keys );
+                }
+
                 boost::program_options::notify( m_keys );
             }
 
@@ -188,6 +200,55 @@ namespace PoD
             SPoDUserDefaultsOptions_t getOptions()
             {
                 return m_options;
+            }
+
+            static void printDefaults( std::ostream &_stream )
+            {
+                CPoDUserDefaults ud;
+                ud.init( "", true );
+
+                _stream
+                        << "[server]\n"
+                        << "work_dir=" << ud.getValueForKey( "server.work_dir" ) << "\n"
+                        << "logfile_dir=" << ud.getValueForKey( "server.logfile_dir" ) << "\n"
+                        << "logfile_overwrite=" << ud.getValueForKey( "server.logfile_overwrite" ) << "\n"
+                        << "log_level=" << ud.getValueForKey( "server.log_level" ) << "\n"
+                        << "proof_cfg_path=" << ud.getValueForKey( "server.proof_cfg_path" ) << "\n"
+                        << "agent_shutdown_if_idle_for_sec=" << ud.getValueForKey( "server.agent_shutdown_if_idle_for_sec" ) << "\n"
+                        << "agent_local_client_port_min=" << ud.getValueForKey( "server.agent_local_client_port_min" ) << "\n"
+                        << "agent_local_client_port_max=" << ud.getValueForKey( "server.agent_local_client_port_max" ) << "\n"
+                        << "xrd_ports_range_min=" << ud.getValueForKey( "server.xrd_ports_range_min" ) << "\n"
+                        << "xrd_ports_range_max=" << ud.getValueForKey( "server.xrd_ports_range_max" ) << "\n"
+                        << "xproof_ports_range_min=" << ud.getValueForKey( "server.xproof_ports_range_min" ) << "\n"
+                        << "xproof_ports_range_max=" << ud.getValueForKey( "server.xproof_ports_range_max" ) << "\n"
+                        << "agent_ports_range_min=" << ud.getValueForKey( "server.agent_ports_range_min" ) << "\n"
+                        << "agent_ports_range_max=" << ud.getValueForKey( "server.agent_ports_range_max" ) << "\n"
+                        << "agent_threads=" << ud.getValueForKey( "server.agent_threads" ) << "\n"
+                        << "agent_node_readbuffer=" << ud.getValueForKey( "server.agent_node_readbuffer" ) << "\n"
+                        << "packet_forwarding=" << ud.getValueForKey( "server.packet_forwarding" ) << "\n";
+                _stream
+                        << "[worker]\n"
+                        << "work_dir=" << ud.getValueForKey( "worker.work_dir" ) << "\n"
+                        << "logfile_dir=" << ud.getValueForKey( "worker.logfile_dir" ) << "\n"
+                        << "logfile_overwrite=" << ud.getValueForKey( "worker.logfile_overwrite" ) << "\n"
+                        << "log_level=" << ud.getValueForKey( "worker.log_level" ) << "\n"
+                        << "proof_cfg_path=" << ud.getValueForKey( "worker.proof_cfg_path" ) << "\n"
+                        << "set_my_rootsys=" << ud.getValueForKey( "worker.set_my_rootsys" ) << "\n"
+                        << "my_rootsys=" << ud.getValueForKey( "worker.my_rootsys" ) << "\n"
+                        << "agent_shutdown_if_idle_for_sec=" << ud.getValueForKey( "worker.agent_shutdown_if_idle_for_sec" ) << "\n"
+                        << "xrd_ports_range_min=" << ud.getValueForKey( "worker.xrd_ports_range_min" ) << "\n"
+                        << "xrd_ports_range_max=" << ud.getValueForKey( "worker.xrd_ports_range_max" ) << "\n"
+                        << "xproof_ports_range_min=" << ud.getValueForKey( "worker.xproof_ports_range_min" ) << "\n"
+                        << "xproof_ports_range_max=" << ud.getValueForKey( "worker.xproof_ports_range_max" ) << "\n"
+                        << "agent_node_readbuffer=" << ud.getValueForKey( "worker.agent_node_readbuffer" ) << "\n";
+                _stream
+                        << "[lsf_plugin]\n"
+                        << "email_job_output=" << ud.getValueForKey( "lsf_plugin.email_job_output" ) << "\n"
+                        << "upload_job_log=" << ud.getValueForKey( "lsf_plugin.upload_job_log" ) << "\n";
+                _stream
+                        << "[pbs_plugin]\n"
+                        << "upload_job_log=" << ud.getValueForKey( "pbs_plugin.upload_job_log" ) << "\n"
+                        << "shared_home=" << ud.getValueForKey( "pbs_plugin.shared_home" ) << "\n";
             }
 
         private:
