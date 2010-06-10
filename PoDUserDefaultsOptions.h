@@ -185,8 +185,9 @@ namespace PoD
                     // we fake reading of arguments, just to get a default values of all keys
                     char *arg[1];
                     arg[0] = new char[1];
+                    arg[0][0] = '\0';
                     boost::program_options::store(
-                        boost::program_options::basic_command_line_parser<char>( 0, arg ).options( config_file_options ).run(),
+                        boost::program_options::basic_command_line_parser<char>( 1, arg ).options( config_file_options ).run(),
                         m_keys );
                     delete[] arg[0];
                 }
