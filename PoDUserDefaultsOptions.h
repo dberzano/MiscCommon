@@ -183,10 +183,12 @@ namespace PoD
                 else
                 {
                     // we fake reading of arguments, just to get a default values of all keys
-                    const char *arg[] = {""};
+                    char *arg[1];
+                    arg[0] = new char[1];
                     boost::program_options::store(
                         boost::program_options::basic_command_line_parser<char>( 0, arg ).options( config_file_options ).run(),
                         m_keys );
+                    delete[] arg[0];
                 }
 
                 boost::program_options::notify( m_keys );
