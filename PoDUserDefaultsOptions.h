@@ -200,6 +200,16 @@ namespace PoD
                 return convertAnyToString( m_keys[_Key].value() );
             }
 
+            /// Returns strings "yes" or "no". Returns an empty string (if key is not of type bool)
+            std::string getUnifiedBoolValueForBoolKey( const std::string &_Key ) const
+            {
+                if( m_keys[_Key].value().type() != typeid( bool ) )
+                    return ( "" );
+
+                return ( m_keys[_Key].as<bool>() ? "yes" : "no" );
+            }
+
+
             SPoDUserDefaultsOptions_t getOptions()
             {
                 return m_options;
@@ -214,7 +224,7 @@ namespace PoD
                         << "[server]\n"
                         << "work_dir=" << ud.getValueForKey( "server.work_dir" ) << "\n"
                         << "logfile_dir=" << ud.getValueForKey( "server.logfile_dir" ) << "\n"
-                        << "logfile_overwrite=" << (ud.getValueForKey( "server.logfile_overwrite" )? "yes" : "no") << "\n"
+                        << "logfile_overwrite=" << ud.getUnifiedBoolValueForBoolKey( "server.logfile_overwrite" ) << "\n"
                         << "log_level=" << ud.getValueForKey( "server.log_level" ) << "\n"
                         << "proof_cfg_path=" << ud.getValueForKey( "server.proof_cfg_path" ) << "\n"
                         << "agent_shutdown_if_idle_for_sec=" << ud.getValueForKey( "server.agent_shutdown_if_idle_for_sec" ) << "\n"
@@ -233,10 +243,10 @@ namespace PoD
                         << "[worker]\n"
                         << "work_dir=" << ud.getValueForKey( "worker.work_dir" ) << "\n"
                         << "logfile_dir=" << ud.getValueForKey( "worker.logfile_dir" ) << "\n"
-                        << "logfile_overwrite=" << (ud.getValueForKey( "worker.logfile_overwrite" )? "yes" : "no") << "\n"
+                        << "logfile_overwrite=" << ud.getUnifiedBoolValueForBoolKey( "worker.logfile_overwrite" ) << "\n"
                         << "log_level=" << ud.getValueForKey( "worker.log_level" ) << "\n"
                         << "proof_cfg_path=" << ud.getValueForKey( "worker.proof_cfg_path" ) << "\n"
-                        << "set_my_rootsys=" << (ud.getValueForKey( "worker.set_my_rootsys" )? "yes" : "no") << "\n"
+                        << "set_my_rootsys=" << ud.getUnifiedBoolValueForBoolKey( "worker.set_my_rootsys" ) << "\n"
                         << "my_rootsys=" << ud.getValueForKey( "worker.my_rootsys" ) << "\n"
                         << "agent_shutdown_if_idle_for_sec=" << ud.getValueForKey( "worker.agent_shutdown_if_idle_for_sec" ) << "\n"
                         << "xrd_ports_range_min=" << ud.getValueForKey( "worker.xrd_ports_range_min" ) << "\n"
@@ -246,12 +256,12 @@ namespace PoD
                         << "agent_node_readbuffer=" << ud.getValueForKey( "worker.agent_node_readbuffer" ) << "\n";
                 _stream
                         << "[lsf_plugin]\n"
-                        << "email_job_output=" << (ud.getValueForKey( "lsf_plugin.email_job_output" )? "yes" : "no") << "\n"
-                        << "upload_job_log=" << (ud.getValueForKey( "lsf_plugin.upload_job_log" )? "yes" : "no")  << "\n";
+                        << "email_job_output=" << ud.getUnifiedBoolValueForBoolKey( "lsf_plugin.email_job_output" ) << "\n"
+                        << "upload_job_log=" << ud.getUnifiedBoolValueForBoolKey( "lsf_plugin.upload_job_log" ) << "\n";
                 _stream
                         << "[pbs_plugin]\n"
-                        << "upload_job_log=" << (ud.getValueForKey( "pbs_plugin.upload_job_log" )? "yes" : "no")  << "\n"
-                        << "shared_home=" << (ud.getValueForKey( "pbs_plugin.shared_home" )? "yes" : "no") << "\n";
+                        << "upload_job_log=" << ud.getUnifiedBoolValueForBoolKey( "pbs_plugin.upload_job_log" ) << "\n"
+                        << "shared_home=" << ud.getUnifiedBoolValueForBoolKey( "pbs_plugin.shared_home" ) << "\n";
             }
 
         private:
