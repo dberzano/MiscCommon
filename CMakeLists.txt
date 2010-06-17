@@ -32,3 +32,12 @@ configure_file( ${PROJECT_SOURCE_DIR}/Doxyfile.in ${PROJECT_BINARY_DIR}/Doxyfile
 add_custom_target(MiscCommon-api-docs doxygen ${PROJECT_BINARY_DIR}/Doxyfile
     COMMENT "Generating MiscCommon API docs")
 
+#
+## Unit tests
+#
+if (BUILD_TESTS)
+    message (STATUS "Build MiscCommon unit tests - YES")
+    add_subdirectory ( ${MiscCommon_SOURCE_DIR}/tests ) 
+else (BUILD_TESTS)
+    message (STATUS "Build MiscCommon unit tests - NO")
+endif (BUILD_TESTS)
