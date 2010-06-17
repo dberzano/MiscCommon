@@ -13,7 +13,12 @@
         Copyright (c) 2007 GSI GridTeam. All rights reserved.
 *************************************************************************/
 // BOOST: tests
-#include <boost/test/unit_test.hpp>
+// Defines test_main function to link with actual unit test code.
+#define BOOST_TEST_DYN_LINK
+#define BOOST_AUTO_TEST_MAIN    // Boost 1.33
+#define BOOST_TEST_MAIN
+#include <boost/test/auto_unit_test.hpp>
+
 using boost::unit_test::test_suite;
 
 // STD
@@ -25,30 +30,12 @@ using boost::unit_test::test_suite;
 using namespace MiscCommon;
 using namespace std;
 
-void test_smart_append();
-void test_replace();
-void test_to_lower();
-void test_to_upper();
-
-
-test_suite* init_unit_test_suite( int, char* [] )
+BOOST_AUTO_TEST_SUITE( MiscCommon_MiscCommon1 );
+//=============================================================================
+BOOST_AUTO_TEST_CASE( Test_MiscCommon_smart_append )
 {
-    test_suite * test = BOOST_TEST_SUITE( "Unit tests of MiscCommon" );
-
-    test->add( BOOST_TEST_CASE( &test_smart_append ), 0 );
-    test->add( BOOST_TEST_CASE( &test_replace ), 0 );
-    test->add( BOOST_TEST_CASE( &test_to_lower ), 0 );
-    test->add( BOOST_TEST_CASE( &test_to_upper ), 0 );
-
-    return test;
-}
-
-
-
-void test_smart_append()
-{
-    const string sTempl("/Test1/Test/");
-    const string sTempl2("Test1/Test/");
+    const string sTempl( "/Test1/Test/" );
+    const string sTempl2( "Test1/Test/" );
 
     {
         string sVal = "/Test1/Test/";
@@ -68,34 +55,34 @@ void test_smart_append()
         BOOST_CHECK( sTempl2 == sVal );
     }
 }
-
-void test_replace()
+//=============================================================================
+BOOST_AUTO_TEST_CASE( Test_MiscCommonreplace )
 {
-    const string sTempl("Test_HELLO/Tset");
+    const string sTempl( "Test_HELLO/Tset" );
 
     {
         string sVal = "%1_HELLO/Tset";
-        replace<string>( &sVal, "%1", "Test");
+        replace<string>( &sVal, "%1", "Test" );
         BOOST_CHECK( sTempl == sVal );
     }
 
     {
         string sVal = "Test_HELLO/%1";
-        replace<string>( &sVal, "%1", "Tset");
+        replace<string>( &sVal, "%1", "Tset" );
         BOOST_CHECK( sTempl == sVal );
     }
 
     {
         string sVal = "Test_%1/Tset";
-        replace<string>( &sVal, "%1", "HELLO");
+        replace<string>( &sVal, "%1", "HELLO" );
         BOOST_CHECK( sTempl == sVal );
     }
 
 }
-
-void test_to_lower()
+//=============================================================================
+BOOST_AUTO_TEST_CASE( Test_MiscCommon_to_lower )
 {
-    const string sTempl("test_4hello");
+    const string sTempl( "test_4hello" );
 
     {
         string sVal = "TesT_4HEllO";
@@ -103,10 +90,10 @@ void test_to_lower()
         BOOST_CHECK( sTempl == sVal );
     }
 }
-
-void test_to_upper()
+//=============================================================================
+BOOST_AUTO_TEST_CASE( Test_MiscCommon_to_upper )
 {
-    const string sTempl("TEST2_HELLO");
+    const string sTempl( "TEST2_HELLO" );
 
     {
         string sVal = "TesT2_HEllo";
@@ -114,10 +101,10 @@ void test_to_upper()
         BOOST_CHECK( sTempl == sVal );
     }
 }
-
-void test_trim()
+//=============================================================================
+BOOST_AUTO_TEST_CASE( Test_MiscCommon_trim )
 {
-    const string sTempl("TEST2_HELLO");
+    const string sTempl( "TEST2_HELLO" );
 
     {
         string sVal = " TEST2_HELLO ";
@@ -137,3 +124,5 @@ void test_trim()
         BOOST_CHECK( sTempl == sVal );
     }
 }
+//=============================================================================
+BOOST_AUTO_TEST_SUITE_END();

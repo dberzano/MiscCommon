@@ -14,7 +14,7 @@
 #*************************************************************************
 project( MiscCommon-tests )
 
-include_directories(${MiscCommon_SOURCE_DIR})
+include_directories(${MiscCommon_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
 #=============================================================================
 add_executable(MiscCommon_test_MiscUtils Test_MiscUtils.cpp )
 
