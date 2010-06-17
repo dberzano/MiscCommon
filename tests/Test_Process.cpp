@@ -47,9 +47,10 @@ void test_CProcStatus()
     CProcStatus p;
     pid_t pid( ::getpid() );
     p.Open( pid );
-    BOOST_CHECK( p.GetValue("Name") == "UT_Process" );
+// TODO: need a new algorithms for a longer app names retrieval
+    BOOST_CHECK( p.GetValue("Name") == "MiscCommon_test" );
 
-    BOOST_CHECK( p.GetValue("NAME") == "UT_Process" );
+    BOOST_CHECK( p.GetValue("NAME") == "MiscCommon_test" );
 
     stringstream ss_pid;
     ss_pid << pid;

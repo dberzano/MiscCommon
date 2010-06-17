@@ -174,6 +174,7 @@ namespace MiscCommon
      * @endcode
      *
      */
+// TODO: need a new algorithms for a longer app names retrieval
     class CProcStatus
     {
             typedef std::auto_ptr<std::ifstream> ifstream_ptr;
