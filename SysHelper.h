@@ -177,10 +177,12 @@ namespace MiscCommon
      * @brief A system helper, which helps to get a Thread ID of the current thread.
      * @return Current thread ID.
      **/
-    inline pid_t gettid()
+    inline unsigned long gettid()
     {
 #ifdef __APPLE__
-        return syscall( SYS_gettid );
+        union { pthread_t th; unsigned long int i; } v = { };
+        v.th = pthread_self ();
+        return v.i;
 #elif __linux
         return syscall( __NR_gettid );
 #else
