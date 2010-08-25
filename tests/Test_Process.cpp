@@ -17,6 +17,7 @@
 #define BOOST_TEST_DYN_LINK
 #define BOOST_AUTO_TEST_MAIN    // Boost 1.33
 #define BOOST_TEST_MAIN
+#define BOOST_TEST_IGNORE_SIGCHLD // we don't need a dead child reported as an error
 #include <boost/test/auto_unit_test.hpp>
 
 // MiscCommon

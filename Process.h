@@ -42,6 +42,7 @@ namespace MiscCommon
      * @brief The function checks, whether the process which corresponds to the given \b _PID can be found.
      * @param[in] _PID - a process ID to look for.
      * @return \b true when the process is found, otherwise return value is \b false.
+     * @note This function will not be able to check existence of a zombie process
      *
      */
     inline bool IsProcessExist( pid_t _PID )
@@ -58,11 +59,11 @@ namespace MiscCommon
         public:
             CPIDFile( const std::string &_FileName, pid_t _PID ): m_FileName( _FileName )
             {
-                if ( !_FileName.empty() && _PID > 0 )
+                if( !_FileName.empty() && _PID > 0 )
                 {
                     // Preventing to start a second "instance" if the pidfile references to the running process
                     const pid_t pid = GetPIDFromFile( m_FileName );
-                    if ( pid > 0 && IsProcessExist( pid ) )
+                    if( pid > 0 && IsProcessExist( pid ) )
                     {
                         // We don't want to unlink this file
                         m_FileName.clear();
@@ -71,7 +72,7 @@ namespace MiscCommon
 
                     // Wrtiting new pidfile
                     std::ofstream f( m_FileName.c_str() );
-                    if ( !f. is_open() )
+                    if( !f. is_open() )
                         throw std::runtime_error( "can't create PID file: " + m_FileName );
 
                     f << _PID;
@@ -82,14 +83,14 @@ namespace MiscCommon
 
             ~CPIDFile()
             {
-                if ( !m_FileName.empty() )
+                if( !m_FileName.empty() )
                     ::unlink( m_FileName.c_str() );
             }
 
             static pid_t GetPIDFromFile( const std::string &_FileName )
             {
                 std::ifstream f( _FileName.c_str() );
-                if ( !f. is_open() )
+                if( !f. is_open() )
                     return 0;
 
                 pid_t pid( 0 );
@@ -119,7 +120,7 @@ namespace MiscCommon
         public:
             static void GetProcList( ProcContainer_t *_Procs )
             {
-                if ( !_Procs )
+                if( !_Procs )
                     throw std::invalid_argument( "CProcList::GetProcList: Input container is NULL" );
 
                 _Procs->clear();
@@ -128,12 +129,12 @@ namespace MiscCommon
                 // scanning the "/proc" filesystem
                 int n = scandir( "/proc", &namelist, CheckDigit, alphasort );
 
-                if ( -1 == n )
+                if( -1 == n )
                     throw system_error( "CProcList::GetProcList exception" );
-                if ( 0 == n )
+                if( 0 == n )
                     return; // there were no files
 
-                for ( int i = 0; i < n; ++i )
+                for( int i = 0; i < n; ++i )
                 {
                     std::stringstream ss( namelist[i]->d_name );
                     pid_t pid;
@@ -192,14 +193,14 @@ namespace MiscCommon
             void Open( pid_t _PId )
             {
                 m_values.clear();
-                if ( m_f.get() )
+                if( m_f.get() )
                     m_f->close();
 
                 std::stringstream ss;
                 ss
-                << "/proc/"
-                << _PId
-                << "/status";
+                        << "/proc/"
+                        << _PId
+                        << "/status";
                 m_f = ifstream_ptr( new std::ifstream( ss.str().c_str() ) );
                 // create reader objects
                 // HACK: the extra set of parenthesis (the last argument of vector's ctor) is required (for gcc 4.1+)
@@ -235,7 +236,7 @@ namespace MiscCommon
             bool _Parser( const std::string &_sVal )
             {
                 regmatch_t PMatch[3];
-                if ( 0 != regexec( &m_re, _sVal.c_str(), 3, PMatch, 0 ) )
+                if( 0 != regexec( &m_re, _sVal.c_str(), 3, PMatch, 0 ) )
                     return false;
                 std::string sKey( _sVal.c_str() + PMatch[1].rm_so, PMatch[1].rm_eo - PMatch[1].rm_so );
                 std::string sValue( _sVal.c_str() + PMatch[2].rm_so, PMatch[2].rm_eo - PMatch[2].rm_so );
@@ -277,37 +278,20 @@ namespace MiscCommon
     {
         CProcList::ProcContainer_t pids;
         CProcList::GetProcList( &pids );
-	
-	vectorPid_t retVal;
+
+        vectorPid_t retVal;
         CProcList::ProcContainer_t::const_iterator iter = pids.begin();
         while( true )
-	{
-	 	iter = std::find_if( iter, pids.end(), std::bind2nd( SFindName(), _Srv ) );
-		if( pids.end() == iter )
-			break;
+        {
+            iter = std::find_if( iter, pids.end(), std::bind2nd( SFindName(), _Srv ) );
+            if( pids.end() == iter )
+                break;
 
-		retVal.push_back( *iter );
-		++iter;
+            retVal.push_back( *iter );
+            ++iter;
         };
 
-	return retVal;
-    }
-
-    static sig_atomic_t g_handled_sign = false;
-    static sig_atomic_t g_child_status = 0;
-    /**
-     *
-     * @brief handles the signal returned by the child of the process, sets handled_sign at true
-     * @param[in] _sign - the signal
-     *
-     */
-    static void childSignalHandler( int _sign )
-    {
-        if ( _sign == SIGCHLD )
-        {
-            g_handled_sign = true;
-            ::wait( &g_child_status );
-        }
+        return retVal;
     }
 
     inline bool is_status_ok( int status )
@@ -318,24 +302,20 @@ namespace MiscCommon
     //TODO: Document me!
     inline void do_execv( const std::string &_Command, const StringVector_t &_Params, size_t _Delay, std::string *_output ) throw( std::exception )
     {
-        g_handled_sign = false;
-        g_child_status = 0;
-        signal( SIGCHLD, childSignalHandler );
-
         pid_t child_pid;
         std::vector<const char*> cargs; //careful with c_str()!!!
         cargs.push_back( _Command.c_str() );
         StringVector_t::const_iterator iter = _Params.begin();
         StringVector_t::const_iterator iter_end = _Params.end();
-        for ( ; iter != iter_end; ++iter )
+        for( ; iter != iter_end; ++iter )
             cargs.push_back( iter->c_str() );
         cargs.push_back( 0 );
 
         int fdpipe[2];
-        if ( _output )
-	  pipe( fdpipe );
+        if( _output )
+            pipe( fdpipe );
 
-        switch ( child_pid = fork() )
+        switch( child_pid = fork() )
         {
             case - 1:
                 close( fdpipe[0] );
@@ -344,35 +324,36 @@ namespace MiscCommon
                 throw std::runtime_error( "do_execv: Unable to fork process" );
 
             case 0:
-	      if ( _output )
-		{
-		  close( fdpipe[0] );
-		  dup2( fdpipe[1], STDOUT_FILENO );
-		  close( fdpipe[1] );
-		}
-	      
+                if( _output )
+                {
+                    close( fdpipe[0] );
+                    dup2( fdpipe[1], STDOUT_FILENO );
+                    close( fdpipe[1] );
+                }
+
                 // child: execute the required command, on success does not return
                 execv( _Command.c_str(), const_cast<char **>( &cargs[0] ) );
                 ::exit( 1 );
         }
 
         //parent
-        if ( _output )
-	  {
-	    close(fdpipe[1]);
-	    char buf;
-	    std::stringstream ss;
-	    while ( read(fdpipe[0], &buf, 1) > 0 )
-	      ss << buf;
-
-	    *_output = ss.str();
-	    
-	}
-        for ( size_t i = 0; i < _Delay; ++i )
+        if( _output )
         {
-            if ( !IsProcessExist( child_pid ) )
+            close( fdpipe[1] );
+            char buf;
+            std::stringstream ss;
+            while( read( fdpipe[0], &buf, 1 ) > 0 )
+                ss << buf;
+
+            *_output = ss.str();
+
+        }
+        for( size_t i = 0; i < _Delay; ++i )
+        {
+            int stat;
+            if( child_pid == ::waitpid( child_pid, &stat, WNOHANG ) )
             {
-                if ( g_handled_sign && !is_status_ok( g_child_status ) )
+                if( !is_status_ok( stat ) )
                 {
                     std::stringstream ss;
                     ss << "do_execv: Can't execute \"" << _Command << "\" with parameters: ";
