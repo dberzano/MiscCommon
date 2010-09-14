@@ -33,8 +33,6 @@ namespace PoD
         std::string m_proofCFG;     //!< A location of the proof configuration file.
         int m_shutdownIfIdleForSec; //!< Shut down agent if its idle time is higher this value. If value is 0 then the feature is off.
         unsigned short m_logLevel;  //!< A log level
-        unsigned int m_xrdPortsRangeMin;
-        unsigned int m_xrdPortsRangeMax;
         unsigned int m_xproofPortsRangeMin;
         unsigned int m_xproofPortsRangeMax;
         unsigned int m_agentNodeReadBuffer; //!< A buffer size, used by a proxy (in bytes).
@@ -133,8 +131,6 @@ namespace PoD
                 ( "server.agent_shutdown_if_idle_for_sec", boost::program_options::value<int>( &m_options.m_server.m_common.m_shutdownIfIdleForSec )->default_value( 1800 ), "" )
                 ( "server.agent_local_client_port_min", boost::program_options::value<unsigned int>( &m_options.m_server.m_agentLocalClientPortMin )->default_value( 20000 ), "" )
                 ( "server.agent_local_client_port_max", boost::program_options::value<unsigned int>( &m_options.m_server.m_agentLocalClientPortMax )->default_value( 25000 ), "" )
-                ( "server.xrd_ports_range_min", boost::program_options::value<unsigned int>( &m_options.m_server.m_common.m_xrdPortsRangeMin )->default_value( 20000 ) )
-                ( "server.xrd_ports_range_max", boost::program_options::value<unsigned int>( &m_options.m_server.m_common.m_xrdPortsRangeMax )->default_value( 21000 ) )
                 ( "server.xproof_ports_range_min", boost::program_options::value<unsigned int>( &m_options.m_server.m_common.m_xproofPortsRangeMin )->default_value( 21001 ) )
                 ( "server.xproof_ports_range_max", boost::program_options::value<unsigned int>( &m_options.m_server.m_common.m_xproofPortsRangeMax )->default_value( 22000 ) )
                 ( "server.agent_ports_range_min", boost::program_options::value<unsigned int>( &m_options.m_server.m_agentPortsRangeMin )->default_value( 22001 ) )
@@ -152,8 +148,6 @@ namespace PoD
                 ( "worker.set_my_rootsys", boost::program_options::value<bool>( &m_options.m_worker.m_setMyROOTSYS )->default_value( true, "yes" ), "" )
                 ( "worker.my_rootsys", boost::program_options::value<std::string>( &m_options.m_worker.m_myROOTSYS )->default_value( "$ROOTSYS" ), "" )
                 ( "worker.agent_shutdown_if_idle_for_sec", boost::program_options::value<int>( &m_options.m_worker.m_common.m_shutdownIfIdleForSec )->default_value( 1800 ), "" )
-                ( "worker.xrd_ports_range_min", boost::program_options::value<unsigned int>( &m_options.m_worker.m_common.m_xrdPortsRangeMin )->default_value( 20000 ) )
-                ( "worker.xrd_ports_range_max", boost::program_options::value<unsigned int>( &m_options.m_worker.m_common.m_xrdPortsRangeMax )->default_value( 21000 ) )
                 ( "worker.xproof_ports_range_min", boost::program_options::value<unsigned int>( &m_options.m_worker.m_common.m_xproofPortsRangeMin )->default_value( 21001 ) )
                 ( "worker.xproof_ports_range_max", boost::program_options::value<unsigned int>( &m_options.m_worker.m_common.m_xproofPortsRangeMax )->default_value( 22000 ) )
                 ( "worker.agent_node_readbuffer", boost::program_options::value<unsigned int>( &m_options.m_worker.m_common.m_agentNodeReadBuffer )->default_value( 5000 ) )
@@ -230,8 +224,6 @@ namespace PoD
                         << "agent_shutdown_if_idle_for_sec=" << ud.getValueForKey( "server.agent_shutdown_if_idle_for_sec" ) << "\n"
                         << "agent_local_client_port_min=" << ud.getValueForKey( "server.agent_local_client_port_min" ) << "\n"
                         << "agent_local_client_port_max=" << ud.getValueForKey( "server.agent_local_client_port_max" ) << "\n"
-                        << "xrd_ports_range_min=" << ud.getValueForKey( "server.xrd_ports_range_min" ) << "\n"
-                        << "xrd_ports_range_max=" << ud.getValueForKey( "server.xrd_ports_range_max" ) << "\n"
                         << "xproof_ports_range_min=" << ud.getValueForKey( "server.xproof_ports_range_min" ) << "\n"
                         << "xproof_ports_range_max=" << ud.getValueForKey( "server.xproof_ports_range_max" ) << "\n"
                         << "agent_ports_range_min=" << ud.getValueForKey( "server.agent_ports_range_min" ) << "\n"
@@ -249,8 +241,6 @@ namespace PoD
                         << "set_my_rootsys=" << ud.getUnifiedBoolValueForBoolKey( "worker.set_my_rootsys" ) << "\n"
                         << "my_rootsys=" << ud.getValueForKey( "worker.my_rootsys" ) << "\n"
                         << "agent_shutdown_if_idle_for_sec=" << ud.getValueForKey( "worker.agent_shutdown_if_idle_for_sec" ) << "\n"
-                        << "xrd_ports_range_min=" << ud.getValueForKey( "worker.xrd_ports_range_min" ) << "\n"
-                        << "xrd_ports_range_max=" << ud.getValueForKey( "worker.xrd_ports_range_max" ) << "\n"
                         << "xproof_ports_range_min=" << ud.getValueForKey( "worker.xproof_ports_range_min" ) << "\n"
                         << "xproof_ports_range_max=" << ud.getValueForKey( "worker.xproof_ports_range_max" ) << "\n"
                         << "agent_node_readbuffer=" << ud.getValueForKey( "worker.agent_node_readbuffer" ) << "\n";
