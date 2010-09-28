@@ -106,7 +106,6 @@ namespace MiscCommon
             std::string m_FileName;
     };
     
-//#ifdef __APPLE__
     class CFindProcess
     {
         public:
@@ -194,35 +193,7 @@ namespace MiscCommon
                 free( BSDProcInfo );
             }
 
-//            static int GetPIDForProcessName( const char* ProcessName )
-//            {
-//                pid_t PIDArray[1] = {0};
-//                int Error = 0;
-//                unsigned int NumberOfMatches = 0;
-//
-//                /* Here we are calling the function GetAllPIDsForProcessName which wil give us the PIDs
-//                 * of the process name we pass.  Of course here we are hoping for a single PID return.
-//                 * First Argument: The BSD process name of the process we want to lookup.  In this case the
-//                 *  the process name passed to us.
-//                 * Second Argument: A preallocated array of pid_t.  This is where the PIDs of matching processes
-//                 *  will be placed on return.  We pass the array we just allocated which is length one.
-//                 * Third Argument: The number of pid_t entries located in the array of pid_t (argument 2).  In this
-//                 *   case our array has one pid_t entry so pass one.
-//                 * Forth Argument: On return this will hold the number of PIDs placed into the
-//                 *  pid_t array (array passed in argument 2).
-//                 * Fifth Argument: Passing NULL to ignore this argument.
-//                 * Return Value: An error indicating success (zero result) or failure (non-zero).
-//                 *
-//                 */
-//                Error = GetAllPIDsForProcessName( ProcessName, PIDArray, 1, &NumberOfMatches, NULL );
-//
-//                if(( Error == 0 ) && ( NumberOfMatches == 1 ) )
-//                    return(( int ) PIDArray[0] ); //return the one PID we found.
-//
-//                return( -1 );
-//            }
-
-            static bool PidExists( int pid )
+            static bool pidExists( int _pid )
             {
                 int name[] = {CTL_KERN, KERN_PROC, KERN_PROC_ALL, 0};
                 size_t length = 0;
@@ -234,7 +205,7 @@ namespace MiscCommon
                 {
                     kinfo_proc *test = &result[i];
 
-                    if( test->kp_proc.p_pid == pid )
+                    if( test->kp_proc.p_pid == _pid )
                     {
                         free( result );
                         return true;
@@ -248,7 +219,6 @@ namespace MiscCommon
         private:
 
     };
-//#endif
 
     /**
      *
