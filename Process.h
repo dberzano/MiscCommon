@@ -21,6 +21,9 @@
 #include <sys/wait.h>
 #include <signal.h>
 #include <dirent.h>
+
+#include <sys/sysctl.h>
+
 // STD
 #include <fstream>
 #include <stdexcept>
@@ -102,9 +105,155 @@ namespace MiscCommon
         private:
             std::string m_FileName;
     };
+    
+//#ifdef __APPLE__
+    class CFindProcess
+    {
+        public:
+            typedef std::set<pid_t> ProcContainer_t;
+
+        public:
+            static void getAllPIDsForProcessName( const std::string &_processName,
+                                                  ProcContainer_t *_pidContainer,
+                                                  bool _filterForRealUserID = false )
+            {
+                // Setting up the mib (Management Information Base)
+                // We pass CTL_KERN, KERN_PROC, KERN_PROC_ALL to sysctl as the MIB
+                // to get back a BSD structure with all BSD process information for
+                // all processes in it (including BSD process names)
+                int mib[3] = {CTL_KERN, KERN_PROC, KERN_PROC_ALL };
+
+
+                size_t buffSize = 0; //set to zero to start with.
+                int error = 0;
+                struct kinfo_proc* BSDProcInfo = NULL;
+
+                if( _processName.empty() )
+                    return;
+                if( !_pidContainer )
+                    return;
+
+                _pidContainer->clear();
+
+                // Getting list of process information for all processes
+                bool done( false );
+                do
+                {
+                    error = sysctl( mib, 3, NULL, &buffSize, NULL, NULL );
+                    if( error != 0 )
+                        throw system_error( "Error occurred while retrieving a running processes list" );
+
+                    BSDProcInfo = ( struct kinfo_proc* ) malloc( buffSize );
+
+                    if( BSDProcInfo == NULL )
+                        throw system_error( "Error occurred while retrieving a running processes list. Unable to allocate the buffer." );
+
+                    error = sysctl( mib, 3, BSDProcInfo, &buffSize, NULL, NULL );
+
+                    // Here we successfully got the process information.
+                    // Thus set the variable to end this sysctl calling loop
+                    if( error == 0 )
+                    {
+                        done = true;
+                    }
+                    else
+                    {
+                        // failed getting process information we will try again next time around the loop.  Note this is caused
+                        // by the fact the process list changed between getting the size of the buffer and actually filling
+                        // the buffer (something which will happen from time to time since the process list is dynamic).
+                        // Anyways, the attempted sysctl call failed.  We will now begin again by freeing up the allocated
+                        // buffer and starting again at the beginning of the loop.
+                        free( BSDProcInfo );
+                    }
+                }
+                while( !done );
+
+                // Going through process list looking for processes with matching names
+
+                uid_t userid = getuid();
+
+                const size_t processCount = buffSize / sizeof( struct kinfo_proc );
+                for( size_t i = 0 ; i < processCount ; ++i )
+                {
+                    //Getting PID of process we are examining
+                    const pid_t pid = BSDProcInfo[i].kp_proc.p_pid;
+                    //Getting name of process we are examining
+                    const std::string name = BSDProcInfo[i].kp_proc.p_comm;
+                    // Getting real user if of the process
+                    const uid_t uid = BSDProcInfo[i].kp_eproc.e_pcred.p_ruid;
+
+                    if(( pid > 0 ) && ( name == _processName ) )
+                    {
+                        if( !_filterForRealUserID )
+                            _pidContainer->insert( pid );
+                        else if (uid == userid )
+                            _pidContainer->insert( pid );
+                    }
+                }
+
+                free( BSDProcInfo );
+            }
+
+//            static int GetPIDForProcessName( const char* ProcessName )
+//            {
+//                pid_t PIDArray[1] = {0};
+//                int Error = 0;
+//                unsigned int NumberOfMatches = 0;
+//
+//                /* Here we are calling the function GetAllPIDsForProcessName which wil give us the PIDs
+//                 * of the process name we pass.  Of course here we are hoping for a single PID return.
+//                 * First Argument: The BSD process name of the process we want to lookup.  In this case the
+//                 *  the process name passed to us.
+//                 * Second Argument: A preallocated array of pid_t.  This is where the PIDs of matching processes
+//                 *  will be placed on return.  We pass the array we just allocated which is length one.
+//                 * Third Argument: The number of pid_t entries located in the array of pid_t (argument 2).  In this
+//                 *   case our array has one pid_t entry so pass one.
+//                 * Forth Argument: On return this will hold the number of PIDs placed into the
+//                 *  pid_t array (array passed in argument 2).
+//                 * Fifth Argument: Passing NULL to ignore this argument.
+//                 * Return Value: An error indicating success (zero result) or failure (non-zero).
+//                 *
+//                 */
+//                Error = GetAllPIDsForProcessName( ProcessName, PIDArray, 1, &NumberOfMatches, NULL );
+//
+//                if(( Error == 0 ) && ( NumberOfMatches == 1 ) )
+//                    return(( int ) PIDArray[0] ); //return the one PID we found.
+//
+//                return( -1 );
+//            }
+
+            static bool PidExists( int pid )
+            {
+                int name[] = {CTL_KERN, KERN_PROC, KERN_PROC_ALL, 0};
+                size_t length = 0;
+                int err = sysctl( name, 4, NULL, &length, NULL, 0 );
+                kinfo_proc *result = ( kinfo_proc* )malloc( length ); //Bitte castet doch immer :P
+                err = sysctl( name, 4, result, &length, NULL, 0 );
+                int i, procCount = length / sizeof( kinfo_proc );
+                for( i = 0; i < procCount; i++ )
+                {
+                    kinfo_proc *test = &result[i];
+
+                    if( test->kp_proc.p_pid == pid )
+                    {
+                        free( result );
+                        return true;
+                    }
+                    test = NULL;
+                }
+
+                free( result );
+                return false;
+            }
+        private:
+
+    };
+//#endif
+
     /**
      *
      * @brief This class is used to quarry a list of currently running processes
+     * @note The class is using proc filesystem (Linux)
      * @note Usage: In the example container pids will be containing pids of currently running processes
      * @code
      CProcList::ProcContainer_t pids;
@@ -112,6 +261,7 @@ namespace MiscCommon
      * @endcode
      *
      */
+//#ifndef __APPLE__
     class CProcList
     {
         public:
@@ -147,8 +297,6 @@ namespace MiscCommon
             }
 
         private:
-
-
 #ifdef __APPLE__
             static int CheckDigit( struct dirent* _d )
 #else
@@ -160,6 +308,7 @@ namespace MiscCommon
                 return ( sName.end() == std::find_if( sName.begin(), sName.end(), std::not1( IsDigit() ) ) );
             }
     };
+//#endif
     /**
      *
      * @brief This class helps to retrieve process's information from /proc/\<pid\>/status
@@ -333,7 +482,8 @@ namespace MiscCommon
 
                 // child: execute the required command, on success does not return
                 execv( _Command.c_str(), const_cast<char **>( &cargs[0] ) );
-                ::exit( 1 );
+                // not usually reached
+                exit( 1 );
         }
 
         //parent

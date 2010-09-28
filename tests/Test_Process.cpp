@@ -17,7 +17,6 @@
 #define BOOST_TEST_DYN_LINK
 #define BOOST_AUTO_TEST_MAIN    // Boost 1.33
 #define BOOST_TEST_MAIN
-#define BOOST_TEST_IGNORE_SIGCHLD // we don't need a dead child reported as an error
 #include <boost/test/auto_unit_test.hpp>
 
 // MiscCommon
@@ -27,8 +26,9 @@ using namespace MiscCommon;
 using namespace std;
 using boost::unit_test::test_suite;
 //=============================================================================
-BOOST_AUTO_TEST_SUITE( pod_agent_ProtocolCommands );
+BOOST_AUTO_TEST_SUITE( pod_agent_MiscCommon );
 //=============================================================================
+#ifndef __APPLE__
 BOOST_AUTO_TEST_CASE( test_MiscCommon_CProcStatus )
 {
     CProcStatus p;
@@ -43,6 +43,7 @@ BOOST_AUTO_TEST_CASE( test_MiscCommon_CProcStatus )
     ss_pid << pid;
     BOOST_CHECK( p.GetValue( "Pid" ) == ss_pid.str() );
 }
+#endif
 //=============================================================================
 BOOST_AUTO_TEST_CASE( test_MiscCommon_do_execv0 )
 {
@@ -80,9 +81,9 @@ BOOST_AUTO_TEST_CASE( test_MiscCommon_do_execv0 )
 BOOST_AUTO_TEST_CASE( test_MiscCommon_do_execv1 )
 {
     StringVector_t params;
-    params.push_back( "5" );
+    params.push_back( "4" );
     const string cmd( "/bin/sleep" );
-    BOOST_CHECK_THROW( do_execv( cmd, params, 3, NULL ), runtime_error );
+    BOOST_CHECK_THROW( do_execv( cmd, params, 2, NULL ), runtime_error );
 }
 //=============================================================================
 BOOST_AUTO_TEST_CASE( test_MiscCommon_do_execv2 )
@@ -93,4 +94,24 @@ BOOST_AUTO_TEST_CASE( test_MiscCommon_do_execv2 )
     BOOST_CHECK_THROW( do_execv( cmd, params, 3, NULL ), runtime_error );
 }
 //=============================================================================
+BOOST_AUTO_TEST_CASE( test_MiscCommon_CFindProcess )
+{
+    CFindProcess::ProcContainer_t container;
+#ifdef __APPLE__    
+    CFindProcess::getAllPIDsForProcessName( "syslogd", &container, true );
+    BOOST_CHECK( container.empty() );
+    CFindProcess::getAllPIDsForProcessName( "syslogd", &container );
+    BOOST_CHECK( !container.empty() );
+    CFindProcess::getAllPIDsForProcessName( "launchd", &container, true );
+    BOOST_CHECK( !container.empty() );
+#else
+    CFindProcess::getAllPIDsForProcessName( "kdm", &container, true );
+    BOOST_CHECK( container.empty() );
+    CFindProcess::getAllPIDsForProcessName( "kdm", &container );
+    BOOST_CHECK( !container.empty() );
+    CFindProcess::getAllPIDsForProcessName( "sshd", &container, true );
+    BOOST_CHECK( container.empty() );    
+#endif
+    
+}
 BOOST_AUTO_TEST_SUITE_END();
