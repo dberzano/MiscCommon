@@ -94,24 +94,30 @@ BOOST_AUTO_TEST_CASE( test_MiscCommon_do_execv2 )
     BOOST_CHECK_THROW( do_execv( cmd, params, 3, NULL ), runtime_error );
 }
 //=============================================================================
-BOOST_AUTO_TEST_CASE( test_MiscCommon_CFindProcess )
+BOOST_AUTO_TEST_CASE( test_MiscCommon_getprocbyname )
 {
-    CFindProcess::ProcContainer_t container;
-#ifdef __APPLE__    
-    CFindProcess::getAllPIDsForProcessName( "syslogd", &container, true );
-    BOOST_CHECK( container.empty() );
-    CFindProcess::getAllPIDsForProcessName( "syslogd", &container );
-    BOOST_CHECK( !container.empty() );
-    CFindProcess::getAllPIDsForProcessName( "launchd", &container, true );
-    BOOST_CHECK( !container.empty() );
+#ifdef __APPLE__
+    const string name1( "syslogd" );
+    const string name2( "launchd" );
 #else
-    CFindProcess::getAllPIDsForProcessName( "kdm", &container, true );
-    BOOST_CHECK( container.empty() );
-    CFindProcess::getAllPIDsForProcessName( "kdm", &container );
-    BOOST_CHECK( !container.empty() );
-    CFindProcess::getAllPIDsForProcessName( "sshd", &container, true );
-    BOOST_CHECK( container.empty() );    
+    const string name1( "kdm" );
+    const string name2( "sshd" );
 #endif
-    
+    {
+        vectorPid_t container;
+        getprocbyname( name1, true );
+        BOOST_CHECK( container.empty() );
+    }
+    {
+        vectorPid_t container;
+        getprocbyname( name1 );
+        BOOST_CHECK( container.empty() );
+    }
+    {
+        vectorPid_t container;
+        getprocbyname( name2, true );
+        BOOST_CHECK( container.empty() );
+    }
 }
+
 BOOST_AUTO_TEST_SUITE_END();

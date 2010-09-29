@@ -22,7 +22,9 @@
 #include <signal.h>
 #include <dirent.h>
 
+#if defined(__APPLE__)
 #include <sys/sysctl.h>
+#endif
 
 // STD
 #include <fstream>
@@ -105,7 +107,8 @@ namespace MiscCommon
         private:
             std::string m_FileName;
     };
-    
+
+#if defined(__APPLE__)
     class CFindProcess
     {
         public:
@@ -185,7 +188,7 @@ namespace MiscCommon
                     {
                         if( !_filterForRealUserID )
                             _pidContainer->insert( pid );
-                        else if (uid == userid )
+                        else if( uid == userid )
                             _pidContainer->insert( pid );
                     }
                 }
@@ -198,10 +201,10 @@ namespace MiscCommon
                 int name[] = {CTL_KERN, KERN_PROC, KERN_PROC_ALL, 0};
                 size_t length = 0;
                 int err = sysctl( name, 4, NULL, &length, NULL, 0 );
-                kinfo_proc *result = ( kinfo_proc* )malloc( length ); //Bitte castet doch immer :P
+                kinfo_proc *result = ( kinfo_proc* )malloc( length );
                 err = sysctl( name, 4, result, &length, NULL, 0 );
                 int i, procCount = length / sizeof( kinfo_proc );
-                for( i = 0; i < procCount; i++ )
+                for( i = 0; i < procCount; ++i )
                 {
                     kinfo_proc *test = &result[i];
 
@@ -216,9 +219,8 @@ namespace MiscCommon
                 free( result );
                 return false;
             }
-        private:
-
     };
+#endif
 
     /**
      *
@@ -231,7 +233,7 @@ namespace MiscCommon
      * @endcode
      *
      */
-//#ifndef __APPLE__
+#if !defined(__APPLE__)
     class CProcList
     {
         public:
@@ -267,18 +269,14 @@ namespace MiscCommon
             }
 
         private:
-#ifdef __APPLE__
-            static int CheckDigit( struct dirent* _d )
-#else
             static int CheckDigit( const struct dirent* _d )
-#endif
             {
                 const std::string sName( _d->d_name );
                 // Checking whether file name has all digits
                 return ( sName.end() == std::find_if( sName.begin(), sName.end(), std::not1( IsDigit() ) ) );
             }
     };
-//#endif
+#endif
     /**
      *
      * @brief This class helps to retrieve process's information from /proc/\<pid\>/status
@@ -295,6 +293,7 @@ namespace MiscCommon
      *
      */
 // TODO: need a new algorithms for a longer app names retrieval
+#if !defined(__APPLE__)
     class CProcStatus
     {
             typedef std::auto_ptr<std::ifstream> ifstream_ptr;
@@ -374,10 +373,12 @@ namespace MiscCommon
             regex_t m_re;
             keyvalue_t m_values;
     };
+#endif
     /**
      *
      *
      */
+#if !defined(__APPLE__)
     struct SFindName: public std::binary_function< CProcList::ProcContainer_t::value_type, std::string, bool >
     {
         bool operator()( CProcList::ProcContainer_t::value_type _pid, const std::string &_Name ) const
@@ -387,18 +388,25 @@ namespace MiscCommon
             return ( p.GetValue( "Name" ) == _Name );
         }
     };
+#endif
     /**
      *
      *
      */
     typedef std::vector<pid_t> vectorPid_t;
 
-    inline vectorPid_t getprocbyname( const std::string &_Srv )
+    inline vectorPid_t getprocbyname( const std::string &_Srv,
+                                      bool _filterForRealUserID = false )
     {
+        vectorPid_t retVal;
+#if defined(__APPLE__)
+        CFindProcess::ProcContainer_t container;
+        CFindProcess::getAllPIDsForProcessName( _Srv, &container, _filterForRealUserID );
+        copy( container.begin(), container.end(), std::back_inserter( retVal ) );
+#else
         CProcList::ProcContainer_t pids;
         CProcList::GetProcList( &pids );
 
-        vectorPid_t retVal;
         CProcList::ProcContainer_t::const_iterator iter = pids.begin();
         while( true )
         {
@@ -409,7 +417,7 @@ namespace MiscCommon
             retVal.push_back( *iter );
             ++iter;
         };
-
+#endif
         return retVal;
     }
 
