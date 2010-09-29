@@ -10,7 +10,7 @@
                             2007-04-12
         last changed by:    $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2007-2008 GSI GridTeam. All rights reserved.
+        Copyright (c) 2007-2010 GSI GridTeam. All rights reserved.
 *************************************************************************/
 #ifndef PROCESS_H_
 #define PROCESS_H_
@@ -109,6 +109,13 @@ namespace MiscCommon
     };
 
 #if defined(__APPLE__)
+    /**
+     *
+     * @brief Getting List of All Processes on Mac OS X.
+     * @note This class gets a list of all BSD processes, which includes
+     * daemon processes, using the BSD sysctl routine.
+     *
+     */
     class CFindProcess
     {
         public:
@@ -277,6 +284,8 @@ namespace MiscCommon
             }
     };
 #endif
+
+#if !defined(__APPLE__)
     /**
      *
      * @brief This class helps to retrieve process's information from /proc/\<pid\>/status
@@ -293,7 +302,6 @@ namespace MiscCommon
      *
      */
 // TODO: need a new algorithms for a longer app names retrieval
-#if !defined(__APPLE__)
     class CProcStatus
     {
             typedef std::auto_ptr<std::ifstream> ifstream_ptr;
