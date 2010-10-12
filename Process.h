@@ -448,7 +448,10 @@ namespace MiscCommon
 
         int fdpipe[2];
         if( _output )
-            pipe( fdpipe );
+        {
+            if( pipe( fdpipe ) )
+                throw system_error( "Pipe error" );
+        }
 
         switch( child_pid = fork() )
         {
