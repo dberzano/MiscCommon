@@ -52,16 +52,16 @@ namespace MiscCommon
     class auto_setenv
     {
         public:
-            auto_setenv(): m_unset(false)
+            auto_setenv(): m_unset( false )
             {
             }
-            auto_setenv( const std::string &_VarName, const std::string &_NewValue ): m_unset(false)
+            auto_setenv( const std::string &_VarName, const std::string &_NewValue ): m_unset( false )
             {
                 m_sVarName = _VarName;
                 m_sNewValue = _NewValue;
 
                 char *chTmp = getenv( m_sVarName.c_str() );
-                if ( chTmp )
+                if( chTmp )
                     m_sOldValue = chTmp;
                 else
                     m_unset = true;
@@ -82,7 +82,7 @@ namespace MiscCommon
                 m_sNewValue = _NewValue;
 
                 char *chTmp = getenv( m_sVarName.c_str() );
-                if ( chTmp )
+                if( chTmp )
                     m_sOldValue = chTmp;
                 else
                     m_unset = true;
@@ -91,14 +91,14 @@ namespace MiscCommon
             }
             void unset()
             {
-                if ( m_unset )
+                if( m_unset )
                 {
                     m_unset = false;
                     unsetenv( m_sVarName.c_str() );
                     return;
                 }
 
-                if ( !m_sVarName.empty() )
+                if( !m_sVarName.empty() )
                 {
                     m_sVarName.clear();
                     setenv( m_sVarName.c_str(), m_sOldValue.c_str(), 1 );
@@ -123,27 +123,13 @@ namespace MiscCommon
     template <typename _T>
     _T* smart_append( _T* _pString, const typename _T::value_type _ItemToAdd )
     {
-        if ( !_pString )
+        if( !_pString )
             return _pString;
 
-        if ( _pString->empty() || ( *_pString ) [ _pString->size() - 1 ] != _ItemToAdd )
+        if( _pString->empty() || ( *_pString )[ _pString->size() - 1 ] != _ItemToAdd )
             _pString->push_back( _ItemToAdd );
 
         return _pString;
-    }
-
-    /**
-     *
-     *  @brief trims trailing and leading characters from the string.
-     *  @param[in] _pString - The string to be trimmed.
-     *  @param[in] _chWhat - The target character to be trimmed.
-     *  @return A reference to the string object from which the elements have been trimmed.
-     *
-     */
-    template <typename _T>
-    _T& trim( _T* _pString, const typename _T::value_type& _chWhat )
-    {
-        return trim_right( &trim_left( _pString, _chWhat ), _chWhat );
     }
 
     /**
@@ -176,6 +162,20 @@ namespace MiscCommon
 
     /**
      *
+     *  @brief trims trailing and leading characters from the string.
+     *  @param[in] _pString - The string to be trimmed.
+     *  @param[in] _chWhat - The target character to be trimmed.
+     *  @return A reference to the string object from which the elements have been trimmed.
+     *
+     */
+    template <typename _T>
+    _T& trim( _T* _pString, const typename _T::value_type& _chWhat )
+    {
+        return trim_right( &trim_left( _pString, _chWhat ), _chWhat );
+    }
+
+    /**
+     *
      *  @brief finds elements in a string match a specified string and replaces it.
      *  @param[in,out] _pString - The string to be processed.
      *  @param[in,out] _what - String to be replaced.
@@ -189,10 +189,10 @@ namespace MiscCommon
         typename _T::size_type pos = 0;
         typename _T::size_type withLen = _with.length();
         typename _T::size_type whatLen = _what.length();
-        while ( ( pos = _pString->find( _what, pos ) ) != _T::npos )
+        while(( pos = _pString->find( _what, pos ) ) != _T::npos )
         {
             _pString->replace( pos, _what.length(), _with );
-            if ( withLen > whatLen )
+            if( withLen > whatLen )
                 pos += withLen - whatLen + 1;
         }
         return ( *_pString );
@@ -201,21 +201,21 @@ namespace MiscCommon
     // HACK: because of the bug in gcc 3.3 we need to use this nasty ToLower and ToUpper instead of direct calls of tolower (tolower.. is inline in this version of std lib)...
     struct ToLower
     {
-        char operator() ( char c ) const
+        char operator()( char c ) const
         {
             return std::tolower( c );
         }
     };
     struct ToUpper
     {
-        char operator() ( char c ) const
+        char operator()( char c ) const
         {
             return std::toupper( c );
         }
     };
     struct IsDigit: std::unary_function<int, int>
     {
-        int operator() ( int c ) const
+        int operator()( int c ) const
         {
             return std::isdigit( c );
         }
