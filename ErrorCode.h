@@ -58,7 +58,7 @@ namespace MiscCommon
      */
     inline int errno2str( std::string *_msg )
     {
-        if ( !_msg )
+        if( !_msg )
             return erNULLArg;
         char *p = strerror( errno );
         *_msg = p;
@@ -86,10 +86,10 @@ namespace MiscCommon
         public:
             explicit system_error( const std::string &_ErrorPrefix )
             {
-            	m_errno = errno;
+                m_errno = errno;
                 const char * const szError = strerror( m_errno );
                 std::stringstream ss;
-                if ( !_ErrorPrefix.empty() )
+                if( !_ErrorPrefix.empty() )
                     ss << _ErrorPrefix << ". ";
                 ss <<  "System error description [" << m_errno << "]: " << szError;
                 m_Msg = ss.str();
@@ -102,7 +102,7 @@ namespace MiscCommon
             }
             int getErrno() const throw()
             {
-            	return m_errno;
+                return m_errno;
             }
 
         private:

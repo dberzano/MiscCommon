@@ -32,7 +32,7 @@ namespace MiscCommon
      */
     template < class T, class Ch = char, class Tr = std::char_traits<Ch>, class Dist = std::ptrdiff_t >
     class custom_istream_iterator:
-                public std::iterator < std::input_iterator_tag, T, Dist, const T*, const T& >
+        public std::iterator < std::input_iterator_tag, T, Dist, const T*, const T& >
     {
         public:
             typedef custom_istream_iterator<T, Ch, Tr, Dist> m_it;
@@ -41,11 +41,11 @@ namespace MiscCommon
             typedef std::basic_istream<Ch, Tr> istream_type;
 
             // construct singular iterator
-            custom_istream_iterator() : m_istream(0)
+            custom_istream_iterator() : m_istream( 0 )
             { }
 
             // construct with input stream
-            custom_istream_iterator(istream_type& s) : m_istream(&s)
+            custom_istream_iterator( istream_type& s ) : m_istream( &s )
             {
                 getval();
             }
@@ -70,7 +70,7 @@ namespace MiscCommon
             }
 
             // postincrement
-            custom_istream_iterator operator++(int)
+            custom_istream_iterator operator++( int )
             {
                 m_it tmp = *this;
                 ++*this;
@@ -78,7 +78,7 @@ namespace MiscCommon
             }
 
             // test for iterator equality
-            bool equal(const m_it& rhs) const
+            bool equal( const m_it& rhs ) const
             {
                 return m_istream == rhs.m_istream;
             }
@@ -87,7 +87,7 @@ namespace MiscCommon
             // get a T value if possible
             void getval()
             {
-                if (m_istream != 0 && !(*m_istream >> m_val))
+                if( m_istream != 0 && !( *m_istream >> m_val ) )
                     m_istream = 0;
             }
 
@@ -98,26 +98,26 @@ namespace MiscCommon
     // specialization for std::string
     template <>
     inline void custom_istream_iterator < std::basic_string<char>, char,
-    std::char_traits<char>, std::ptrdiff_t > ::getval()
+           std::char_traits<char>, std::ptrdiff_t > ::getval()
     {
-        if (m_istream != 0 && !(std::getline(*m_istream, m_val)))
+        if( m_istream != 0 && !( std::getline( *m_istream, m_val ) ) )
             m_istream = 0;
     }
 
     // m_istream_iterator template operators
     // test for m_istream_iterator equality
     template <class T, class Ch, class Tr, class Dist>
-    inline bool operator==(const custom_istream_iterator<T, Ch, Tr, Dist>& lhs,
-                           const custom_istream_iterator<T, Ch, Tr, Dist>& rhs)
+    inline bool operator==( const custom_istream_iterator<T, Ch, Tr, Dist>& lhs,
+                            const custom_istream_iterator<T, Ch, Tr, Dist>& rhs )
     {
-        return lhs.equal(rhs);
+        return lhs.equal( rhs );
     }
 
     template <class T, class Ch, class Tr, class Dist>
-    inline bool operator!=(const custom_istream_iterator<T, Ch, Tr, Dist>& lhs,
-                           const custom_istream_iterator<T, Ch, Tr, Dist>& rhs)
+    inline bool operator!=( const custom_istream_iterator<T, Ch, Tr, Dist>& lhs,
+                            const custom_istream_iterator<T, Ch, Tr, Dist>& rhs )
     {
-        return !(lhs == rhs);
+        return !( lhs == rhs );
     }
 
 };

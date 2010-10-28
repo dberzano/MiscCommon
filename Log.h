@@ -61,14 +61,14 @@ namespace MiscCommon
     {
         public:
             CLog( _T *_stream, unsigned char _logLevel ) :
-                    m_stream( _stream ),
-                    m_logLevel( _logLevel )
+                m_stream( _stream ),
+                m_logLevel( _logLevel )
             {}
 
             void push( LOG_SEVERITY _Severity, unsigned long _ErrorCode,
                        const std::string &_Module, const std::string &_Message )
             {
-                if ( (_Severity & m_logLevel) != _Severity )
+                if(( _Severity & m_logLevel ) != _Severity )
                     return;
 
                 // Thread ID
@@ -76,14 +76,14 @@ namespace MiscCommon
                 std::string _DTBuff;
                 std::stringstream strMsg;
                 strMsg
-                << GetCurTimeString( &_DTBuff ) << char( e_FieldSeparator )
-                << GetSeverityString( _Severity ) << char( e_FieldSeparator )
-                << GetErrorCode( _ErrorCode ) << char( e_FieldSeparator )
-                << "[" << _Module << ":thread-" << tid << "]" << char( e_FieldSeparator )
-                << _Message;
+                        << GetCurTimeString( &_DTBuff ) << char( e_FieldSeparator )
+                        << GetSeverityString( _Severity ) << char( e_FieldSeparator )
+                        << GetErrorCode( _ErrorCode ) << char( e_FieldSeparator )
+                        << "[" << _Module << ":thread-" << tid << "]" << char( e_FieldSeparator )
+                        << _Message;
 
                 smart_mutex m( m_mutex );
-                if ( m_stream && m_stream->good() )
+                if( m_stream && m_stream->good() )
                 {
                     *m_stream << strMsg.str() << std::endl;
                     m_stream->flush();
@@ -97,7 +97,7 @@ namespace MiscCommon
         private:
             std::string &GetCurTimeString( std::string *_Buf )
             {
-                if ( !_Buf )
+                if( !_Buf )
                     return * _Buf;
 
                 // Obtain the time of day, and convert it to a tm struct.
@@ -116,7 +116,7 @@ namespace MiscCommon
 
             const std::string GetSeverityString( LOG_SEVERITY _Severity ) const
             {
-                switch ( _Severity )
+                switch( _Severity )
                 {
                     case LOG_SEVERITY_INFO:
                         return g_cszLOG_SEVERITY_INFO;
@@ -163,8 +163,8 @@ namespace MiscCommon
         public:
             CFileLog( const std::string &_LogFileName, bool _CreateNew = false,
                       unsigned char _logLevel = LOG_SEVERITY_INFO | LOG_SEVERITY_WARNING | LOG_SEVERITY_FAULT | LOG_SEVERITY_CRITICAL_ERROR ) :
-                    CLog<stream_type>( &m_log_file, _logLevel ),
-                    m_log_file( _LogFileName.c_str(), ( _CreateNew ? std::ios::trunc : std::ios::app ) | std::ios::out )
+                CLog<stream_type>( &m_log_file, _logLevel ),
+                m_log_file( _LogFileName.c_str(), ( _CreateNew ? std::ios::trunc : std::ios::app ) | std::ios::out )
             {}
 
         private:

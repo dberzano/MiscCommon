@@ -48,7 +48,7 @@ namespace MiscCommon
          */
         struct SGetName
         {
-            std::string operator() (const voms &_voms) const
+            std::string operator()( const voms &_voms ) const
             {
                 return _voms.voname;
             }
@@ -69,19 +69,19 @@ namespace MiscCommon
          *
          */
         inline void get_voname( MiscCommon::StringVector_t *_RetVal,
-                                const std::string &_voms_dir = "", const std::string &_cert_dir = "" ) throw (std::exception)
+                                const std::string &_voms_dir = "", const std::string &_cert_dir = "" ) throw( std::exception )
         {
-            if ( !_RetVal )
-                throw std::invalid_argument("Container must not be a NULL value.");
+            if( !_RetVal )
+                throw std::invalid_argument( "Container must not be a NULL value." );
 
             // Getting VOMS name
             vomsdata data( _voms_dir, _cert_dir );
             data.RetrieveFromProxy( RECURSE_CHAIN );
 
-            if ( data.data.empty() )
-                throw std::runtime_error("User's proxy doesn't have a valid VOMS extension.");
+            if( data.data.empty() )
+                throw std::runtime_error( "User's proxy doesn't have a valid VOMS extension." );
 
-            std::transform( data.data.begin(), data.data.end(), std::back_inserter(*_RetVal), SGetName() );
+            std::transform( data.data.begin(), data.data.end(), std::back_inserter( *_RetVal ), SGetName() );
         }
 
     };

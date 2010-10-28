@@ -41,10 +41,10 @@ namespace MiscCommon
          ..
          ..
          vec.push_back(167);
-       
+
          cout << BYTEVectorHexView_t( vec ) << endl;
      }
-     
+
      Output:
      0x00000000 | 7D 0D 45 7B 9A 7D 7D 7D 7D 7D 7D 7D 7D 7D A7 7D  | }.E{.}}}}}}}}}.}
      0x00000010 | 7D 7D 0D 45 7B 9A 7D 7D 7D 7D 7D 7D 7D 7D 7D A7  | }}.E{.}}}}}}}}}.
@@ -58,8 +58,8 @@ namespace MiscCommon
     {
         public:
             CHexView( const _T &_Val, size_t _nElementsInRaw = 16 ):
-                    m_nElementsInRaw( _nElementsInRaw ),
-                    m_Container(_Val)
+                m_nElementsInRaw( _nElementsInRaw ),
+                m_Container( _Val )
             {}
 
             friend std::ostream& operator << ( std::ostream &_ostream, const CHexView<_T> &_this )
@@ -70,19 +70,19 @@ namespace MiscCommon
                 size_t nCount = 0;
                 BYTEVector_t::const_iterator iter = _this.m_Container.begin();
                 BYTEVector_t::const_iterator iter_end = _this.m_Container.end();
-                for (; iter != iter_end; ++iter )
+                for( ; iter != iter_end; ++iter )
                 {
-                    ssHex << std::setw(2) << std::setfill('0') << ( static_cast<unsigned int>(*iter) ) << ' ';
-                    ssTxt << (isprint(*iter) ? static_cast<char>(*iter) : '.' );
+                    ssHex << std::setw( 2 ) << std::setfill( '0' ) << ( static_cast<unsigned int>( *iter ) ) << ' ';
+                    ssTxt << ( isprint( *iter ) ? static_cast<char>( *iter ) : '.' );
                     ++nCount;
-                    if ( 0 == (nCount % _this.m_nElementsInRaw) )
+                    if( 0 == ( nCount % _this.m_nElementsInRaw ) )
                     {
                         _this.Print( _ostream, ssHex, ssTxt, nCount );
-                        ssHex.str("");
-                        ssTxt.str("");
+                        ssHex.str( "" );
+                        ssTxt.str( "" );
                     }
                 }
-                if ( !ssHex.str().empty() )
+                if( !ssHex.str().empty() )
                     _this.Print( _ostream, ssHex, ssTxt, nCount );
 
                 return _ostream;
@@ -92,13 +92,13 @@ namespace MiscCommon
             void Print( std::ostream &_ostream, const std::stringstream &_ssHex, const std::stringstream &_ssTxt, size_t _nCount ) const
             {
                 static size_t nRaw = 0;
-                if ( _nCount <= m_nElementsInRaw )
+                if( _nCount <= m_nElementsInRaw )
                     nRaw = 0;
                 _ostream
-                << "0x" << std::right << std::setw(8) << std::setfill('0') << std::hex << std::uppercase << (nRaw * m_nElementsInRaw)
-                << " | " << std::left << std::setw( m_nElementsInRaw * 3 ) << std::setfill(' ') << _ssHex.str()
-                << " | " << std::left << std::setw( m_nElementsInRaw ) << _ssTxt.str()
-                << '\n';
+                        << "0x" << std::right << std::setw( 8 ) << std::setfill( '0' ) << std::hex << std::uppercase << ( nRaw * m_nElementsInRaw )
+                        << " | " << std::left << std::setw( m_nElementsInRaw * 3 ) << std::setfill( ' ' ) << _ssHex.str()
+                        << " | " << std::left << std::setw( m_nElementsInRaw ) << _ssTxt.str()
+                        << '\n';
                 ++nRaw;
             }
 

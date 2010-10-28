@@ -48,16 +48,16 @@ namespace MiscCommon
          * @return <b>true</b> if the given path represents a file and <b>false</b> otherwise.
          *
          */
-        inline bool is_file (const std::string &_pathname)
+        inline bool is_file( const std::string &_pathname )
         {
             bool is_valid = false;
 
             try
             {
-                fs::path cp ( normalize_path(_pathname), fs::native );
-                is_valid = !( fs::is_directory(cp) ) ;
+                fs::path cp( normalize_path( _pathname ), fs::native );
+                is_valid = !( fs::is_directory( cp ) ) ;
             }
-            catch (const fs::filesystem_error &_ex)
+            catch( const fs::filesystem_error &_ex )
                 {}
 
             return is_valid;
@@ -69,15 +69,15 @@ namespace MiscCommon
          * @return <b>true</b> if the given path represents a directory and <b>false</b> otherwise.
          *
          */
-        inline bool is_directory (const std::string &_pathname)
+        inline bool is_directory( const std::string &_pathname )
         {
             bool is_valid = false;
             try
             {
-                fs::path cp ( normalize_path(_pathname), fs::native );
-                is_valid =  fs::is_directory(cp) ;
+                fs::path cp( normalize_path( _pathname ), fs::native );
+                is_valid =  fs::is_directory( cp ) ;
             }
-            catch ( const fs::filesystem_error &_ex)
+            catch( const fs::filesystem_error &_ex )
                 {}
 
             return is_valid;

@@ -61,16 +61,16 @@ namespace MiscCommon
                 // TODO: Implement reference count
             public:
                 smart_socket() :
-                        m_Socket( INVALID_SOCKET )
+                    m_Socket( INVALID_SOCKET )
                 {}
                 smart_socket( int _Socket ) :
-                        m_Socket( _Socket )
+                    m_Socket( _Socket )
                 {}
                 smart_socket( int _domain, int _type, int _protocol, bool _Block = false )
                 {
                     m_Socket = ::socket( _domain, _type, _protocol );
                     // Blocking or Non-blocking socket
-                    if ( _Block )
+                    if( _Block )
                         set_nonblock();
                 }
                 ~smart_socket()
@@ -104,7 +104,7 @@ namespace MiscCommon
                 {
                     int opts = fcntl( m_Socket, F_GETFL );
 
-                    if ( opts < 0 )
+                    if( opts < 0 )
                         return -1;
 
                     opts = _val ? ( opts | O_NONBLOCK ) : ( opts & ~O_NONBLOCK );
@@ -113,7 +113,7 @@ namespace MiscCommon
                 }
                 void close()
                 {
-                    if ( INVALID_SOCKET != m_Socket )
+                    if( INVALID_SOCKET != m_Socket )
                     {
                         shutdown();
                         ::close( m_Socket ); // ignoring error code
@@ -131,7 +131,7 @@ namespace MiscCommon
                 /// This function indicates that socket is ready to be read (for non-blocking sockets)
                 int is_read_ready( size_t m_SecTimeOut, size_t m_USecTimeOut = 0 ) throw( std::exception )
                 {
-                    if ( !is_valid() )
+                    if( !is_valid() )
                         throw std::runtime_error( "Socket is invalid" );
                     fd_set readset;
                     FD_ZERO( &readset );
@@ -144,9 +144,9 @@ namespace MiscCommon
 
                     // TODO: Send errno to log
                     int retval = ::select( m_Socket + 1, &readset, NULL, NULL, &timeout );
-                    if ( retval < 0 )
+                    if( retval < 0 )
                         throw std::runtime_error( "Server's socket got error while calling \"select\"" );
-                    if ( 0 == retval )
+                    if( 0 == retval )
                         return 0;
 
                     return FD_ISSET( m_Socket, &readset );
@@ -158,18 +158,18 @@ namespace MiscCommon
 
         inline size_t read_from_socket( smart_socket &_Socket, BYTEVector_t *_Buf )
         {
-            if ( !_Buf )
+            if( !_Buf )
                 throw std::runtime_error( "The given buffer pointer is NULL." );
 
             const ssize_t bytes_read = ::recv( _Socket, &( *_Buf )[ 0 ], _Buf->capacity(), 0 );
-            if ( 0 == bytes_read ) // The  return value will be 0 when the peer has performed an orderly shutdown
+            if( 0 == bytes_read )  // The  return value will be 0 when the peer has performed an orderly shutdown
             {
                 _Socket.close();
                 return 0;
             }
-            if ( bytes_read < 0 )
+            if( bytes_read < 0 )
             {
-                if ( ECONNRESET == errno || ENOTCONN == errno )
+                if( ECONNRESET == errno || ENOTCONN == errno )
                     _Socket.close();
                 throw system_error( "" );
             }
@@ -193,19 +193,19 @@ namespace MiscCommon
         template <>
         inline smart_socket& operator >> ( smart_socket &_Socket, BYTEVector_t *_Buf ) throw( std::exception )
         {
-            if ( !_Buf )
+            if( !_Buf )
                 throw std::runtime_error( "The given buffer pointer is NULL." );
 
             const ssize_t bytes_read = ::recv( _Socket, &( *_Buf )[ 0 ], _Buf->capacity(), 0 );
-            if ( 0 == bytes_read ) // The  return value will be 0 when the peer has performed an orderly shutdown
+            if( 0 == bytes_read )  // The  return value will be 0 when the peer has performed an orderly shutdown
             {
                 _Buf->resize( bytes_read );
                 _Socket.close();
                 return _Socket;
             }
-            if ( bytes_read < 0 )
+            if( bytes_read < 0 )
             {
-                if ( ECONNRESET == errno || ENOTCONN == errno )
+                if( ECONNRESET == errno || ENOTCONN == errno )
                     _Socket.close();
                 throw system_error( "" );
             }
@@ -224,14 +224,14 @@ namespace MiscCommon
             int total = 0;
             int n = 0;
 
-            while ( total < len )
+            while( total < len )
             {
                 n = ::send( s, buf + total, len - total, flags );
-                if ( n == -1 )
+                if( n == -1 )
                 {
                     // TODO: may be EWOULDBLOCK or on some systems EAGAIN when it returned
                     // due to its inability to send off data without blocking.
-                    if ( EAGAIN == errno || EWOULDBLOCK == errno )
+                    if( EAGAIN == errno || EWOULDBLOCK == errno )
                     {
                         // wait for a reasonable amount of time until
                         // we could send()
@@ -286,7 +286,7 @@ namespace MiscCommon
          */
         inline void receive_string( smart_socket &_Socket, std::string *_Str2Receive, size_t _BufSize )
         {
-            if ( !_Str2Receive )
+            if( !_Str2Receive )
                 throw std::invalid_argument( "smart_socket::receive_string: Parameter is NULL" );
 
             BYTEVector_t buf( _BufSize );
@@ -312,17 +312,17 @@ namespace MiscCommon
          */
         inline void host2ip( const std::string &_Host, std::string *_IP ) // _Host can be either host name or IP address
         {
-            if ( !_IP )
+            if( !_IP )
                 return ;
 
-            if ( is_ip_address( _Host ) )
+            if( is_ip_address( _Host ) )
             {
                 *_IP = _Host;
                 return ;
             }
 
             hostent *he = gethostbyname( _Host.c_str() );
-            if ( !he )
+            if( !he )
                 return ; // TODO: throw... herror()
 
             *_IP = inet_ntoa( *( reinterpret_cast<in_addr*>( he->h_addr ) ) );
@@ -334,10 +334,10 @@ namespace MiscCommon
          */
         inline void ip2host( const std::string &_IP, std::string *_Host )
         {
-            if ( !_Host )
+            if( !_Host )
                 return ;
 
-            if ( !is_ip_address( _IP ) )
+            if( !is_ip_address( _IP ) )
             {
                 *_Host = _IP;
                 return ;
@@ -346,7 +346,7 @@ namespace MiscCommon
             in_addr addr;
             inet_aton( _IP.c_str(), &addr );
             hostent *he = gethostbyaddr( &addr, sizeof( addr ), AF_INET );
-            if ( !he )
+            if( !he )
                 return ;
 
             *_Host = he->h_name;
@@ -363,24 +363,24 @@ namespace MiscCommon
                 {}
                 void Bind( unsigned short _nPort, const std::string *_Addr = NULL ) throw( std::exception )
                 {
-                    if ( m_Socket < 0 )
+                    if( m_Socket < 0 )
                         throw std::runtime_error( socket_error_string( m_Socket, "NULL socket has been given to Bind" ) );
 
                     sockaddr_in addr;
                     addr.sin_family = AF_INET;
                     addr.sin_port = htons( _nPort );
-                    if ( !_Addr )
+                    if( !_Addr )
                         addr.sin_addr.s_addr = htonl( INADDR_ANY );
                     else
                         inet_aton( _Addr->c_str(), &addr.sin_addr );
 
-                    if ( bind( m_Socket, reinterpret_cast<struct sockaddr *>( & addr ), sizeof( addr ) ) < 0 )
+                    if( bind( m_Socket, reinterpret_cast<struct sockaddr *>( & addr ), sizeof( addr ) ) < 0 )
                         throw std::runtime_error( socket_error_string( m_Socket, "Socket bind error..." ) );
                 }
 
                 void Listen( int _Backlog ) throw( std::exception )
                 {
-                    if ( ::listen( m_Socket, _Backlog ) < 0 )
+                    if( ::listen( m_Socket, _Backlog ) < 0 )
                         throw std::runtime_error( socket_error_string( m_Socket, "can't call listen on socket server" ) );
                 }
 
@@ -417,7 +417,7 @@ namespace MiscCommon
 
                 void connect( unsigned short _nPort, const std::string &_Addr )
                 {
-                    if ( m_Socket < 0 )
+                    if( m_Socket < 0 )
                         throw std::runtime_error( socket_error_string( m_Socket, "there was NULL socket given as a client socket to Connect" ) );
 
                     sockaddr_in addr;
@@ -427,7 +427,7 @@ namespace MiscCommon
                     host2ip( _Addr, &ip );
                     inet_aton( ip.c_str(), &addr.sin_addr );
 
-                    if ( ::connect( m_Socket, ( struct sockaddr * ) & addr, sizeof( addr ) ) < 0 )
+                    if( ::connect( m_Socket, ( struct sockaddr * ) & addr, sizeof( addr ) ) < 0 )
                         throw std::runtime_error( socket_error_string( m_Socket, "Can't connect to the server" ) );
                 }
 
@@ -484,11 +484,11 @@ namespace MiscCommon
         {
             _socket2string( Socket_t _Socket, std::string *_Str )
             {
-                if ( !_Str )
+                if( !_Str )
                     return ;
 
                 sockaddr_in addr;
-                if ( !_Type()( _Socket, &addr ) )
+                if( !_Type()( _Socket, &addr ) )
                     return ;
 
                 std::string host;
@@ -496,9 +496,9 @@ namespace MiscCommon
 
                 std::stringstream ss;
                 ss
-                << host
-                << ":"
-                << ntohs( addr.sin_port );
+                        << host
+                        << ":"
+                        << ntohs( addr.sin_port );
                 *_Str = ss.str();
             }
         };
@@ -529,15 +529,15 @@ namespace MiscCommon
             MiscCommon::errno2str( &sErr );
 
             std::ostringstream ss;
-            if ( _strMsg )
+            if( _strMsg )
             {
                 ss << _strMsg << "\n";
             }
             ss
-            << "Error on Socket<"
-            << strSocket << ">";
+                    << "Error on Socket<"
+                    << strSocket << ">";
 
-            if ( !strSocketPeer.empty() )
+            if( !strSocketPeer.empty() )
             {
                 ss << "and peer <" << strSocketPeer << ">";
             }
@@ -553,14 +553,14 @@ namespace MiscCommon
         inline int get_free_port( int _Min, int _Max )
         {
             CSocketServer serv;
-            for ( int i = _Min; i <= _Max; ++i )
+            for( int i = _Min; i <= _Max; ++i )
             {
                 try
                 {
                     serv.Bind( i );
                     return i;
                 }
-                catch ( ... )
+                catch( ... )
                 {
                     continue;
                 }
@@ -580,7 +580,7 @@ namespace MiscCommon
                 serv.Bind( _Port );
                 return _Port;
             }
-            catch ( ... )
+            catch( ... )
                 {}
             return 0;
         }

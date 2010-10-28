@@ -54,34 +54,34 @@ void test_get_endpoints()
     // TODO: Move test strings these (below) txt file.
     // dgtest: https://dgrid-rb.fzk.de:7443/glite_wms_wmproxy_server
     // dech: https://grid25.gsi.de:7443/glite_wms_wmproxy_server
-    const string endpoint_DECH("https://grid25.gsi.de:7443/glite_wms_wmproxy_server");
-    const string endpoint_DGTEST("https://dgrid-rb.fzk.de:7443/glite_wms_wmproxy_server");
+    const string endpoint_DECH( "https://grid25.gsi.de:7443/glite_wms_wmproxy_server" );
+    const string endpoint_DGTEST( "https://dgrid-rb.fzk.de:7443/glite_wms_wmproxy_server" );
 
     StringVector_t endpoints;
     CWMPEndpoint ep;
     // DECH VO
-    string dech_jdl("$GAW_LOCATION/etc/simple_dech.jdl");
+    string dech_jdl( "$GAW_LOCATION/etc/simple_dech.jdl" );
     smart_path( &dech_jdl );
     ep.Get( &endpoints, dech_jdl );
     BOOST_CHECK( !endpoints.empty() );
     cout << ">>> DECH endpoints: ";
     copy( endpoints.begin(), endpoints.end(),
-          ostream_iterator<string>(cout, " "));
+          ostream_iterator<string>( cout, " " ) );
     cout << endl;
 
-    StringVector_t::const_iterator iter_DECH( find(endpoints.begin(), endpoints.end(), endpoint_DECH) );
+    StringVector_t::const_iterator iter_DECH( find( endpoints.begin(), endpoints.end(), endpoint_DECH ) );
     BOOST_CHECK( endpoints.end() != iter_DECH );
 
     // DGTEST VO
-  /*  string dgtest_jdl("$GAW_LOCATION/etc/simple_dgtest.jdl");
-    smart_path( &dgtest_jdl );
-    ep.Get( &endpoints, dgtest_jdl );
-    BOOST_CHECK( !endpoints.empty() );
-    cout << ">>> DGTEST endpoints: ";
-    copy( endpoints.begin(), endpoints.end(),
-          ostream_iterator<string>(cout, " "));
-    cout << endl;
+    /*  string dgtest_jdl("$GAW_LOCATION/etc/simple_dgtest.jdl");
+      smart_path( &dgtest_jdl );
+      ep.Get( &endpoints, dgtest_jdl );
+      BOOST_CHECK( !endpoints.empty() );
+      cout << ">>> DGTEST endpoints: ";
+      copy( endpoints.begin(), endpoints.end(),
+            ostream_iterator<string>(cout, " "));
+      cout << endl;
 
-    StringVector_t::const_iterator iter_DGTEST( find(endpoints.begin(), endpoints.end(), endpoint_DGTEST) );
-    BOOST_CHECK( endpoints.end() != iter_DGTEST );*/
+      StringVector_t::const_iterator iter_DGTEST( find(endpoints.begin(), endpoints.end(), endpoint_DGTEST) );
+      BOOST_CHECK( endpoints.end() != iter_DGTEST );*/
 }

@@ -29,7 +29,7 @@ namespace MiscCommon
     namespace gLite
     {
 
-        const std::string JDL_PARAMETERS("PARAMETERS");
+        const std::string JDL_PARAMETERS( "PARAMETERS" );
 
 
         template<class _T>
@@ -48,15 +48,15 @@ namespace MiscCommon
         }
 
         template<class _T>
-        void get_ad_attr( _T *_RetVal, const std::string &_JDL, const std::string &_AttrName ) throw(std::exception)
+        void get_ad_attr( _T *_RetVal, const std::string &_JDL, const std::string &_AttrName ) throw( std::exception )
         {
-            if ( !_RetVal )
-                throw std::invalid_argument("Return parameter must not be a NULL value.");
+            if( !_RetVal )
+                throw std::invalid_argument( "Return parameter must not be a NULL value." );
 
             glite::jdl::JobAd ad;
             ad.fromFile( _JDL );
 
-            if ( !ad.hasAttribute(_AttrName) )
+            if( !ad.hasAttribute( _AttrName ) )
                 return;
             _get_attr_value( _RetVal, _AttrName, &ad );
         }
@@ -67,7 +67,7 @@ namespace MiscCommon
             glite::jdl::JobAd ad;
             ad.fromFile( _JDL );
 
-            if ( !ad.hasAttribute(_attr) )
+            if( !ad.hasAttribute( _attr ) )
                 return;
 
             ad.delAttribute( _attr );

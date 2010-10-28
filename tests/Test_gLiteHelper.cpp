@@ -38,5 +38,5 @@ test_suite* init_unit_test_suite( int, char* [] )
 
 void test_()
 {
-  BOOST_CHECK(true);
+    BOOST_CHECK( true );
 }

@@ -43,36 +43,36 @@ test_suite* init_unit_test_suite( int, char* [] )
 
 void test_get_attr0()
 {
-  // DECH VO
-  string jdl("$GAW_LOCATION/etc/simple_dech.jdl");
-  smart_path( &jdl );
-  string Val;
-  get_ad_attr( &Val, jdl, glite::jdl::JDL::VIRTUAL_ORGANISATION );
-  BOOST_CHECK( Val == "dech" );
+    // DECH VO
+    string jdl( "$GAW_LOCATION/etc/simple_dech.jdl" );
+    smart_path( &jdl );
+    string Val;
+    get_ad_attr( &Val, jdl, glite::jdl::JDL::VIRTUAL_ORGANISATION );
+    BOOST_CHECK( Val == "dech" );
 }
 
 void test_get_attr1()
 {
-  // PARAMETERS
-  string jdl("$GAW_LOCATION/etc/simple_parametric.jdl");
-  smart_path( &jdl );
-  int Val;
-  get_ad_attr( &Val, jdl, JDL_PARAMETERS );
-  BOOST_CHECK( Val == 2 );
+    // PARAMETERS
+    string jdl( "$GAW_LOCATION/etc/simple_parametric.jdl" );
+    smart_path( &jdl );
+    int Val;
+    get_ad_attr( &Val, jdl, JDL_PARAMETERS );
+    BOOST_CHECK( Val == 2 );
 }
 
 void test_set_attr0()
 {
-  // PARAMETERS
-  string jdl("$GAW_LOCATION/etc/simple_parametric.jdl");
-  smart_path( &jdl );
-  const int ValNew(4);
-  set_ad_attr( ValNew, jdl, JDL_PARAMETERS );
-  
-  int Val;
-  get_ad_attr( &Val, jdl, JDL_PARAMETERS );
-    
-  BOOST_CHECK( Val == ValNew );
-  
-  set_ad_attr( 2, jdl, JDL_PARAMETERS );
+    // PARAMETERS
+    string jdl( "$GAW_LOCATION/etc/simple_parametric.jdl" );
+    smart_path( &jdl );
+    const int ValNew( 4 );
+    set_ad_attr( ValNew, jdl, JDL_PARAMETERS );
+
+    int Val;
+    get_ad_attr( &Val, jdl, JDL_PARAMETERS );
+
+    BOOST_CHECK( Val == ValNew );
+
+    set_ad_attr( 2, jdl, JDL_PARAMETERS );
 }

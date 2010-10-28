@@ -57,7 +57,7 @@ namespace MiscCommon
 
                 smart_XMLCh( const XMLCh * const _XMLCh )
                 {
-                    if ( _XMLCh )
+                    if( _XMLCh )
                         m_xmlString = xercesc::XMLString::replicate( _XMLCh );
                 }
 
@@ -73,10 +73,10 @@ namespace MiscCommon
 
                 std::string ToString() const
                 {
-                    if ( !m_xmlString )
+                    if( !m_xmlString )
                         return std::string();
                     char * szTmp = xercesc::XMLString::transcode( m_xmlString );
-                    if ( !szTmp )
+                    if( !szTmp )
                         return std::string();
                     std::string strRetVal( szTmp );
                     xercesc::XMLString::release( &szTmp );
@@ -95,7 +95,7 @@ namespace MiscCommon
 
                 void Release()
                 {
-                    if ( NULL != m_xmlString )
+                    if( NULL != m_xmlString )
                         xercesc::XMLString::release( &m_xmlString );
                 }
         };
@@ -159,18 +159,18 @@ namespace MiscCommon
         template <>
         inline xercesc::DOMNodeList* GetNodesByName( const xercesc::DOMNode *_ParentNode, const std::string &_NodeName )
         {
-            if ( !_ParentNode )
+            if( !_ParentNode )
                 return NULL;
             const smart_XMLCh ElementName( _NodeName.c_str() );
 
             const xercesc::DOMElement* element( NULL );
-            if ( xercesc::DOMNode::ELEMENT_NODE == _ParentNode->getNodeType() )
-	       {
-                if ( xercesc::DOMNode::ELEMENT_NODE == _ParentNode->getNodeType() )
+            if( xercesc::DOMNode::ELEMENT_NODE == _ParentNode->getNodeType() )
+            {
+                if( xercesc::DOMNode::ELEMENT_NODE == _ParentNode->getNodeType() )
                     element = dynamic_cast< const xercesc::DOMElement* >( _ParentNode ) ;
                 else
                     return NULL;
-	       }
+            }
 
             return( element->getElementsByTagName( ElementName ) );
         }
@@ -185,12 +185,12 @@ namespace MiscCommon
         template <>
         inline xercesc::DOMNode* GetSingleNodeByName( const xercesc::DOMDocument *_Doc, const std::string &_NodeName )
         {
-            if ( !_Doc )
+            if( !_Doc )
                 return NULL;
             const smart_XMLCh ElementName( _NodeName.c_str() );
 
             const xercesc::DOMNodeList *list = _Doc->getElementsByTagName( ElementName );
-            if ( !list )
+            if( !list )
                 return NULL;
             return list->item( 0 );
         }
@@ -206,7 +206,7 @@ namespace MiscCommon
         inline xercesc::DOMNode* GetSingleNodeByName( const xercesc::DOMNode *_node, const std::string &_NodeName )
         {
             const xercesc::DOMNodeList *list = GetNodesByName( _node, _NodeName );
-            if ( !list )
+            if( !list )
                 return NULL;
             return list->item( 0 );
         }
@@ -220,10 +220,10 @@ namespace MiscCommon
          *
          */
         template < class _T>
-        inline xercesc::DOMNode* GetSingleNodeByName_Ex( const _T *_Node, const std::string &_NodeName ) throw(std::exception)
+        inline xercesc::DOMNode* GetSingleNodeByName_Ex( const _T *_Node, const std::string &_NodeName ) throw( std::exception )
         {
             xercesc::DOMNode *node = GetSingleNodeByName( _Node, _NodeName.c_str() );
-            if ( !node )
+            if( !node )
                 throw( std::runtime_error( "can't find XML element \"" + _NodeName + "\"" ) );
             return node;
         }
@@ -238,11 +238,11 @@ namespace MiscCommon
         template <class _T>
         void get_node_value( const xercesc::DOMNode *_parent_node, const char *_node_name, _T *_data )
         {
-            xercesc::DOMNode *node( GetSingleNodeByName(_parent_node, _node_name) );
-            if ( !node )
+            xercesc::DOMNode *node( GetSingleNodeByName( _parent_node, _node_name ) );
+            if( !node )
                 return;
             xercesc::DOMNode *child( node->getFirstChild() );
-            if ( !child )
+            if( !child )
                 return;
             smart_XMLCh xmlTmpStr( child->getNodeValue() );
             std::istringstream ss( xmlTmpStr.ToString() );
@@ -259,11 +259,11 @@ namespace MiscCommon
         template <>
         inline void get_node_value<bool>( const xercesc::DOMNode *_parent_node, const char *_node_name, bool *_data )
         {
-            xercesc::DOMNode *node( GetSingleNodeByName(_parent_node, _node_name) );
-            if ( !node )
+            xercesc::DOMNode *node( GetSingleNodeByName( _parent_node, _node_name ) );
+            if( !node )
                 return;
             xercesc::DOMNode *child( node->getFirstChild() );
-            if ( !child )
+            if( !child )
                 return;
             smart_XMLCh xmlTmpStr( child->getNodeValue() );
             std::string str( xmlTmpStr.ToString() );

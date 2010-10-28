@@ -54,7 +54,7 @@ namespace MiscCommon
             int Init( const std::string &_LogFileName, bool _CreateNew = false,
                       unsigned char _logLevel = LOG_SEVERITY_INFO | LOG_SEVERITY_WARNING | LOG_SEVERITY_FAULT | LOG_SEVERITY_CRITICAL_ERROR )
             {
-                if ( m_log.get() )
+                if( m_log.get() )
                     throw std::logic_error( "Log's singleton class has been already initialized." );
 
                 m_log = CFileLogPtr( new CFileLog( _LogFileName, _CreateNew, _logLevel ) );
@@ -68,7 +68,7 @@ namespace MiscCommon
             }
             void push( LOG_SEVERITY _Severity, unsigned long _ErrorCode, const std::string &_Module, const std::string &_Message )
             {
-                if ( !m_log.get() )
+                if( !m_log.get() )
                 {
                     std::cerr << _Message << std::endl;
                     return;
@@ -108,7 +108,7 @@ namespace MiscCommon
         public:
             CLogImp()
             {
-                if ( CLogSingleton::Instance().IsReady() )
+                if( CLogSingleton::Instance().IsReady() )
                     CLogSingleton::Instance().push( LOG_SEVERITY_INFO, 0, g_cszMODULENAME_CORE, "Bringing >>> " + GetModuleName() + " <<< to life..." );
             }
             ~CLogImp()
@@ -141,7 +141,7 @@ namespace MiscCommon
             }
             void msgPush( LOG_SEVERITY _Severity, const std::string &_Message, unsigned long _ErrorCode = 0 )
             {
-            	return CLogSingleton::Instance().push( _Severity, _ErrorCode, GetModuleName(), _Message );
+                return CLogSingleton::Instance().push( _Severity, _ErrorCode, GetModuleName(), _Message );
             }
         private:
             std::string GetModuleName()

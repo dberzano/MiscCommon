@@ -38,21 +38,21 @@ namespace MiscCommon
 
         template <typename _Result, typename _Class, typename _Argument>
         class mem_fun1_t : public std::binary_function <
-                    _Class*,
-                    typename remove_cref<_Argument>::type, // was: Argument
-                    _Result >
+            _Class*,
+            typename remove_cref<_Argument>::type, // was: Argument
+            _Result >
         {
             public:
-                explicit mem_fun1_t(_Result (_Class::*member)(_Argument)): member_(member)
+                explicit mem_fun1_t( _Result( _Class::*member )( _Argument ) ): member_( member )
                 {
                 }
 
-                _Result operator()(_Class* object, _Argument argument) const
+                _Result operator()( _Class* object, _Argument argument ) const
                 {
-                    return (object->*member_)(argument);
+                    return ( object->*member_ )( argument );
                 }
             private:
-                _Result (_Class::*member_)(_Argument);
+                _Result( _Class::*member_ )( _Argument );
         };
         /**
          *
@@ -61,7 +61,7 @@ namespace MiscCommon
          *
          */
         template <typename _Result, typename _Class, typename _Argument>
-        mem_fun1_t<_Result, _Class, _Argument> mem_fun( _Result (_Class::*member)(_Argument) )
+        mem_fun1_t<_Result, _Class, _Argument> mem_fun( _Result( _Class::*member )( _Argument ) )
         {
             return mem_fun1_t<_Result, _Class, _Argument>( member );
         }
@@ -73,11 +73,11 @@ namespace MiscCommon
         template <class _Pair>
         struct select1st : public std::unary_function<_Pair, typename _Pair::first_type>
         {
-            typename _Pair::first_type& operator()(_Pair& __x) const
+            typename _Pair::first_type& operator()( _Pair& __x ) const
             {
                 return __x.first;
             }
-            const typename _Pair::first_type& operator()(const _Pair& __x) const
+            const typename _Pair::first_type& operator()( const _Pair& __x ) const
             {
                 return __x.first;
             }
@@ -90,11 +90,11 @@ namespace MiscCommon
         template <class _Pair>
         struct select2nd : public std::unary_function<_Pair, typename _Pair::second_type>
         {
-            typename _Pair::second_type& operator()(_Pair& __x) const
+            typename _Pair::second_type& operator()( _Pair& __x ) const
             {
                 return __x.second;
             }
-            const typename _Pair::second_type& operator()(const _Pair& __x) const
+            const typename _Pair::second_type& operator()( const _Pair& __x ) const
             {
                 return __x.second;
             }

@@ -27,9 +27,9 @@ namespace MiscCommon
     template <class _charT>
     struct char_traits_ci_base : std::char_traits<_charT>
     {
-        static bool eq(const _charT& _Left, const _charT& _Right);
-        static bool lt(const _charT& _Left, const _charT& _Right);
-        static int compare(const _charT *_First1, const _charT *_First2, size_t _Count);
+        static bool eq( const _charT& _Left, const _charT& _Right );
+        static bool lt( const _charT& _Left, const _charT& _Right );
+        static int compare( const _charT *_First1, const _charT *_First2, size_t _Count );
     };
     /**
      *
@@ -40,15 +40,15 @@ namespace MiscCommon
     struct char_traits_ci_base<char> : std::char_traits<char>
     {
         typedef char _charT;
-        static bool eq(const _charT& _Left, const _charT& _Right)
+        static bool eq( const _charT& _Left, const _charT& _Right )
         {
             // test for element equality
-            return (::toupper(_Left) == ::toupper(_Right));
+            return ( ::toupper( _Left ) == ::toupper( _Right ) );
         }
-        static bool lt(const _charT& _Left, const _charT& _Right)
+        static bool lt( const _charT& _Left, const _charT& _Right )
         {
             // test if _Left precedes _Right
-            return (::toupper(_Left) < ::toupper(_Right));
+            return ( ::toupper( _Left ) < ::toupper( _Right ) );
         }
     };
     /**
@@ -60,15 +60,15 @@ namespace MiscCommon
     struct char_traits_ci_base<wchar_t> : std::char_traits<wchar_t>
     {
         typedef wchar_t _charT;
-        static bool eq(const _charT& _Left, const _charT& _Right)
+        static bool eq( const _charT& _Left, const _charT& _Right )
         {
             // test for element equality
-            return (::towupper(_Left) == ::towupper(_Right));
+            return ( ::towupper( _Left ) == ::towupper( _Right ) );
         }
-        static bool lt(const _charT& _Left, const _charT& _Right)
+        static bool lt( const _charT& _Left, const _charT& _Right )
         {
             // test if _Left precedes _Right
-            return (::towupper(_Left) < ::towupper(_Right));
+            return ( ::towupper( _Left ) < ::towupper( _Right ) );
         }
     };
     /**
@@ -83,19 +83,19 @@ namespace MiscCommon
     {
         typedef std::_Secure_char_traits_tag _Secure_char_traits;
 
-        static int compare(const _charT *_First1, const _charT *_First2, size_t _Count)
+        static int compare( const _charT *_First1, const _charT *_First2, size_t _Count )
         {
             // compare [_First1, _First1 + _Count) with [_First2, ...)
-            return (::_memicmp(_First1, _First2, _Count * sizeof(_Elem)));
+            return ( ::_memicmp( _First1, _First2, _Count * sizeof( _Elem ) ) );
         }
-        static const _charT *find(const _charT *_First, size_t _Count,
-                                  const _charT& _Ch)
+        static const _charT *find( const _charT *_First, size_t _Count,
+                                   const _charT& _Ch )
         {
             // look for _Ch in [_First, _First + _Count)
-            for (; 0 < _Count; --_Count, ++_First)
-                if (eq(*_First, _Ch))
-                    return (_First);
-            return (0);
+            for( ; 0 < _Count; --_Count, ++_First )
+                if( eq( *_First, _Ch ) )
+                    return ( _First );
+            return ( 0 );
         }
     };
     /**

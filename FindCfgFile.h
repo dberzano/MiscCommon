@@ -30,9 +30,9 @@ namespace MiscCommon
     template <class _T>
     struct SFileExists
     {
-        bool operator() ( const _T &_Path ) const
+        bool operator()( const _T &_Path ) const
         {
-            _T path(_Path);
+            _T path( _Path );
             MiscCommon::smart_path( &path );
             return ( does_file_exists( path ) );
         }
@@ -77,7 +77,7 @@ namespace MiscCommon
                 return *this;
             }
 
-            CFindCfgFile &operator() ( const container_value &_Path )
+            CFindCfgFile &operator()( const container_value &_Path )
             {
                 m_Paths.push_back( _Path );
                 return *this;
@@ -85,13 +85,13 @@ namespace MiscCommon
 
             void GetCfg( _T *_RetVal )
             {
-                if ( !_RetVal )
+                if( !_RetVal )
                     return;
                 typename container_type::const_iterator iter(
                     find_if( m_Paths.begin(), m_Paths.end(), SFileExists<container_value>() )
                 );
 
-                if ( m_Paths.end() == iter )
+                if( m_Paths.end() == iter )
                     return;
 
                 *_RetVal = *iter;
@@ -99,7 +99,7 @@ namespace MiscCommon
 
             void DumpOrder( std::ostream *_stream, const container_value &_Seporator )
             {
-                if ( !_stream )
+                if( !_stream )
                     return;
 
                 std::copy( m_Paths.begin(), m_Paths.end(),

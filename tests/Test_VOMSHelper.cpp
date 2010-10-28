@@ -50,7 +50,7 @@ void test_get_voname()
     StringVector_t VONames;
     get_voname( &VONames );
     cout << ">>> VONames: ";
-    copy( VONames.begin(), VONames.end(), ostream_iterator<string>(cout, " ") );
+    copy( VONames.begin(), VONames.end(), ostream_iterator<string>( cout, " " ) );
     cout << " <<<" << endl;
     BOOST_CHECK( !VONames.empty() );
 }

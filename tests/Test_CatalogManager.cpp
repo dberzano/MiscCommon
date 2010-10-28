@@ -91,7 +91,7 @@ void test_cwd_except()
     gaw_lfc_cwd cwd;
     cwd.m_dir = "test_DIR_DOESNT_EXIST_test";
     cout << "---> Changing catalog directory to: " << cwd.m_dir << endl;
-    BOOST_CHECK_THROW( pCatalog->Run( cwd ), runtime_error );    
+    BOOST_CHECK_THROW( pCatalog->Run( cwd ), runtime_error );
 }
 
 void test_rmdir()
@@ -104,7 +104,7 @@ void test_rmdir()
     gaw_lfc_rmdir rmdir;
     rmdir.m_dir = "DDD_TEST_DDD";
     cout << "---> Removing directory: " << rmdir.m_dir << endl;
-    BOOST_CHECK_THROW( pCatalog->Run( rmdir ), runtime_error);
+    BOOST_CHECK_THROW( pCatalog->Run( rmdir ), runtime_error );
 }
 
 void test_mkdir_rmdir()

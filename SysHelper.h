@@ -43,7 +43,7 @@ namespace MiscCommon
      **/
     inline void get_cuser_name( std::string *_RetVal )
     {
-        if ( !_RetVal )
+        if( !_RetVal )
             return ;
 
         passwd *pwd( getpwuid( geteuid() ) );
@@ -57,7 +57,7 @@ namespace MiscCommon
      **/
     inline void get_homedir( uid_t _uid, std::string *_RetVal )
     {
-        if ( !_RetVal )
+        if( !_RetVal )
             return ;
 
         passwd *pwd = getpwuid( _uid );
@@ -71,7 +71,7 @@ namespace MiscCommon
      **/
     inline void get_homedir( const char *_UName, std::string *_RetVal )
     {
-        if ( !_RetVal )
+        if( !_RetVal )
             return ;
 
         passwd *pwd = getpwnam( _UName );
@@ -99,11 +99,11 @@ namespace MiscCommon
         // Checking for "~/"
         std::string path( *_Path );
         MiscCommon::trim_left( &path, ' ' );
-        if ( '~' == path[0] )
+        if( '~' == path[0] )
         {
             std::string path( *_Path );
             // ~/.../.../
-            if ( '/' == path[1] )
+            if( '/' == path[1] )
             {
                 std::string sHome;
                 get_cuser_homedir( &sHome );
@@ -117,7 +117,7 @@ namespace MiscCommon
             else // ~user/.../.../
             {
                 typename _T::size_type p = path.find( _T( "/" ) );
-                if ( _T::npos != p )
+                if( _T::npos != p )
                 {
                     const std::string uname = path.substr( 1, p - 1 );
                     std::string home_dir;
@@ -130,22 +130,22 @@ namespace MiscCommon
         }
 
         typename _T::size_type p_begin = _Path->find( _T( "$" ) );
-        if ( _T::npos == p_begin )
+        if( _T::npos == p_begin )
             return;
 
         ++p_begin; // Excluding '$' from the name
 
         typename _T::size_type p_end = _Path->find( _T( "/" ), p_begin );
-        if ( _T::npos == p_end )
+        if( _T::npos == p_end )
             p_end = _Path->size();
 
         const _T env_var( _Path->substr( p_begin, p_end - p_begin ) );
         // TODO: needs to be fixed to wide char: getenv
         LPCTSTR szvar( getenv( env_var.c_str() ) );
-        if ( !szvar )
+        if( !szvar )
             return;
         const _T var_val( szvar );
-        if ( var_val.empty() )
+        if( var_val.empty() )
             return;
 
         replace( _Path, _T( "$" ) + env_var, var_val );
@@ -158,7 +158,7 @@ namespace MiscCommon
      **/
     inline void get_hostname( std::string *_RetVal )
     {
-        if ( !_RetVal )
+        if( !_RetVal )
             return ;
 
         // getting host name - which is without domain name
@@ -167,7 +167,7 @@ namespace MiscCommon
 
         // getting host name with FCDN
         hostent *h = gethostbyname( std::string( &Buf[0] ).c_str() );
-        if ( !h )
+        if( !h )
             return ;
 
         *_RetVal = h->h_name;
@@ -180,8 +180,12 @@ namespace MiscCommon
     inline unsigned long gettid()
     {
 #ifdef __APPLE__
-        union { pthread_t th; unsigned long int i; } v = { };
-        v.th = pthread_self ();
+        union
+        {
+            pthread_t th;
+            unsigned long int i;
+        } v = { };
+        v.th = pthread_self();
         return v.i;
 #elif __linux
         return syscall( __NR_gettid );
@@ -285,11 +289,11 @@ namespace MiscCommon
 
     inline void get_env( const std::string &_EnvVarName, std::string *_RetVal )
     {
-        if ( !_RetVal )
+        if( !_RetVal )
             return;
 
         char *szBuf( getenv( _EnvVarName.c_str() ) );
-        if ( szBuf )
+        if( szBuf )
             _RetVal->assign( szBuf );
     }
     /**
@@ -302,14 +306,14 @@ namespace MiscCommon
     inline off_t file_size( const std::string &_FileName )
     {
         const int fd( ::open( _FileName.c_str(), O_RDONLY ) );
-        if ( -1 == fd )
+        if( -1 == fd )
             throw system_error( "Can't get file size of \"" + _FileName + "\"" );
 
         struct stat fs;
         const int ret( ::fstat( fd, &fs ) );
         close( fd );
 
-        if ( -1 == ret )
+        if( -1 == ret )
             throw system_error( "Can't get file size of \"" + _FileName + "\"" );
 
         return fs.st_size;
@@ -326,7 +330,7 @@ namespace MiscCommon
             file_size( _FileName );
             return true;
         }
-        catch ( ... )
+        catch( ... )
         {
             return false;
         }

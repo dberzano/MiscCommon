@@ -30,13 +30,13 @@ class IJobManager
         virtual QWidget *getWidget() = 0;
         virtual QIcon getIcon() = 0;
         // argument in seconds; if 0 is given the timer should stop
-        virtual void startUpdTimer(int _JobStatusUpdInterval) = 0;
+        virtual void startUpdTimer( int _JobStatusUpdInterval ) = 0;
         virtual int getJobsCount() const = 0;
-        virtual void setUserDefaults(const PoD::CPoDUserDefaults &_ud)
+        virtual void setUserDefaults( const PoD::CPoDUserDefaults &_ud )
         {
 
         }
-        virtual void setEnvironment(const std::string &_envp)
+        virtual void setEnvironment( const std::string &_envp )
         {
 
         }

@@ -66,9 +66,9 @@ namespace MiscCommon
                  * @return no return value
                  *
                  */
-                void GetChildren( MiscCommon::StringVector_t *_Container ) const throw (std::exception)
+                void GetChildren( MiscCommon::StringVector_t *_Container ) const throw( std::exception )
                 {
-                    if ( !_Container )
+                    if( !_Container )
                         throw std::invalid_argument( "CJobStatusObj:GetChildren: Argument is NULL." );
 
                     *_Container = m_status.getValStringList( glite::lb::JobStatus::CHILDREN );
@@ -87,18 +87,18 @@ namespace MiscCommon
          *  - 2. /opt/globus/bin/globus-url-copy
          *
          */
-        inline std::string get_globus_url_copy_exe() throw(std::exception)
+        inline std::string get_globus_url_copy_exe() throw( std::exception )
         {
             CFindCfgFile<std::string> globurlcp;
 
             globurlcp.SetOrder
-            ("$GLOBUS_LOCATION/bin/globus-url-copy")
-            ("/opt/globus/bin/globus-url-copy");
+            ( "$GLOBUS_LOCATION/bin/globus-url-copy" )
+            ( "/opt/globus/bin/globus-url-copy" );
 
             std::string val;
             globurlcp.GetCfg( &val );
-            if ( val.empty() )
-                throw std::runtime_error("Unable to find globus-url-copy executable");
+            if( val.empty() )
+                throw std::runtime_error( "Unable to find globus-url-copy executable" );
             MiscCommon::smart_path( &val );
             return val;
         }

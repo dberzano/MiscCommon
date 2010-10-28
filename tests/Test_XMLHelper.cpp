@@ -43,15 +43,15 @@ void test_smrat_XMLCh0()
     {
         XMLPlatformUtils::Initialize();
     }
-    catch (const XMLException& toCatch)
+    catch( const XMLException& toCatch )
     {
         throw runtime_error( "Failed to call XMLPlatformUtils::Initialize()" );
     }
-    smart_XMLCh xmlch("Test");
+    smart_XMLCh xmlch( "Test" );
     BOOST_CHECK( "Test" == xmlch );
     BOOST_CHECK( xmlch == "Test" );
-    BOOST_CHECK( smart_XMLCh("Test2") == "Test2" );
-    BOOST_CHECK( "Test2" == smart_XMLCh("Test2") );
+    BOOST_CHECK( smart_XMLCh( "Test2" ) == "Test2" );
+    BOOST_CHECK( "Test2" == smart_XMLCh( "Test2" ) );
 
     XMLPlatformUtils::Terminate();
 }
