@@ -77,8 +77,15 @@ namespace PoD
         // ---= PBS =---
         //
         bool m_uploadJobLog;        //!< specifies whether to upload jobs log files from workers when PoD jobs are completed.
-        bool m_sharedHome;          //!< the parameter specifies whether a shared home files system is used.
     } SPBSOptions_t;
+
+    typedef struct SOGEOptions
+    {
+        //
+        // ---= OGE/SGE =---
+        //
+        bool m_uploadJobLog;        //!< specifies whether to upload jobs log files from workers when PoD jobs are completed.
+    } SOGEOptions_t;
 
     typedef struct SPoDUserDefaultOptions
     {
@@ -86,6 +93,7 @@ namespace PoD
         SWorkerOptions_t m_worker;
         SLSFOptions_t m_lsf;
         SPBSOptions_t m_pbs;
+        SOGEOptions_t m_oge;
     } SPoDUserDefaultsOptions_t;
 
 // TODO: we use boost 1.32. This is the only method I found to convert boost::any to string.
@@ -158,7 +166,9 @@ namespace PoD
                 ;
                 config_file_options.add_options()
                 ( "pbs_plugin.upload_job_log", boost::program_options::value<bool>( &m_options.m_pbs.m_uploadJobLog )->default_value( false, "no" ), "" )
-                ( "pbs_plugin.shared_home", boost::program_options::value<bool>( &m_options.m_pbs.m_sharedHome )->default_value( false, "no" ), "" )
+                ;
+                config_file_options.add_options()
+                ( "oge_plugin.upload_job_log", boost::program_options::value<bool>( &m_options.m_oge.m_uploadJobLog )->default_value( false, "no" ), "" )
                 ;
 
                 if( !_get_default )
@@ -250,8 +260,10 @@ namespace PoD
                         << "upload_job_log=" << ud.getUnifiedBoolValueForBoolKey( "lsf_plugin.upload_job_log" ) << "\n";
                 _stream
                         << "[pbs_plugin]\n"
-                        << "upload_job_log=" << ud.getUnifiedBoolValueForBoolKey( "pbs_plugin.upload_job_log" ) << "\n"
-                        << "shared_home=" << ud.getUnifiedBoolValueForBoolKey( "pbs_plugin.shared_home" ) << "\n";
+                        << "upload_job_log=" << ud.getUnifiedBoolValueForBoolKey( "pbs_plugin.upload_job_log" ) << "\n";
+                _stream
+                        << "[oge_plugin]\n"
+                        << "upload_job_log=" << ud.getUnifiedBoolValueForBoolKey( "oge_plugin.upload_job_log" ) << "\n";
             }
 
         private:
