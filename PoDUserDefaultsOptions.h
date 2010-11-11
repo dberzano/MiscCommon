@@ -214,7 +214,7 @@ namespace PoD
             }
 
 
-            SPoDUserDefaultsOptions_t getOptions()
+            const SPoDUserDefaultsOptions_t getOptions() const
             {
                 return m_options;
             }
