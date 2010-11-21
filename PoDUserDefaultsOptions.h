@@ -20,10 +20,24 @@
 #include <boost/program_options/variables_map.hpp>
 #include <boost/program_options/options_description.hpp>
 #include <boost/program_options/parsers.hpp>
+// MiscCommon
+#include "FindCfgFile.h"
 
 namespace PoD
 {
     class CPoDUserDefaults;
+
+    inline std::string showCurrentPUDFile()
+    {
+        MiscCommon::CFindCfgFile<std::string> cfg;
+        cfg.SetOrder
+        ( "$HOME/.PoD/PoD.cfg" )
+        ( "$POD_LOCATION/etc/PoD.cfg" );
+        std::string val;
+        cfg.GetCfg( &val );
+
+        return val;
+    }
 
     typedef struct SCommonOptions
     {

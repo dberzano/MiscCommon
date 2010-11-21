@@ -61,7 +61,7 @@ namespace MiscCommon
     };
     /**
      *
-     * @brief The ::BEGIN_READ_XML_NODE macro precedes the sequence of ::READ_ELEMENT.
+     * @brief The ::BEGIN_READ_XML_NODE macro precedes the sequence of ::READ_NODE_VALUE.
      * @param[in] _T - Name of the parent class.
      * @param[in] _ELEMENT_NAME - Name of the XML element to read.
      *
@@ -106,13 +106,13 @@ namespace MiscCommon
 
     /**
      *
-     * @brief Closes the sequence of ::READ_ELEMENT.
+     * @brief Closes the sequence of READ_NODE_VALUE.
      *
      */
 #define END_READ_XML_NODE }
     /**
      *
-     * @brief The BEGIN_READ_XML_CFG(_T) macro precedes the sequence of ::READ_ELEMENT.
+     * @brief The BEGIN_READ_XML_CFG(_T) macro precedes the sequence of ::READ_NODE_VALUE.
      * @param[in] _T - Name of the parent class.
      * @note Example
      * @code
@@ -126,9 +126,9 @@ namespace MiscCommon
        private:
            // IXMLPersist implementation
            BEGIN_READ_XML_CFG(CCatalogManager)
-           READ_ELEMENT( "lfc_host", m_Data.m_sLFCHost )
-           READ_ELEMENT( "lfc_wrkdir", m_Data.m_sWrkDir )
-           READ_ELEMENT( "lfc_session_comment", m_Data.m_sLFCSessionComment )
+           READ_NODE_VALUE( "lfc_host", m_Data.m_sLFCHost )
+           READ_NODE_VALUE( "lfc_wrkdir", m_Data.m_sWrkDir )
+           READ_NODE_VALUE( "lfc_session_comment", m_Data.m_sLFCSessionComment )
            END_READ_XML_CFG
      ...
      };
@@ -139,7 +139,7 @@ namespace MiscCommon
 #define BEGIN_READ_XML_CFG(_T) BEGIN_READ_XML_NODE( _T, "config" )
     /**
      *
-     * @brief Closes the sequence of ::READ_ELEMENT.
+     * @brief Closes the sequence of ::READ_NODE_VALUE.
      * @note see the example of BEGIN_READ_XML_CFG(_T)
      *
      */
