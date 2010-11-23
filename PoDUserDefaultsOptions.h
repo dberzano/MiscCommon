@@ -32,7 +32,8 @@ namespace PoD
         MiscCommon::CFindCfgFile<std::string> cfg;
         cfg.SetOrder
         ( "$HOME/.PoD/PoD.cfg" )
-        ( "$POD_LOCATION/etc/PoD.cfg" );
+        ( "$POD_LOCATION/etc/PoD.cfg" )
+        ( "$POD_LOCATION/PoD.cfg" );
         std::string val;
         cfg.GetCfg( &val );
 
@@ -145,11 +146,11 @@ namespace PoD
                 boost::program_options::options_description config_file_options( "PoD user defaults options" );
                 // HACK: Don't make a long add_options, otherwise Eclipse 3.5's CDT indexer can't handle it
                 config_file_options.add_options()
-                ( "server.work_dir", boost::program_options::value<std::string>( &m_options.m_server.m_common.m_workDir )->default_value( "$POD_LOCATION/" ), "" )
-                ( "server.logfile_dir", boost::program_options::value<std::string>( &m_options.m_server.m_common.m_logFileDir )->default_value( "$POD_LOCATION/log" ), "" )
+                ( "server.work_dir", boost::program_options::value<std::string>( &m_options.m_server.m_common.m_workDir )->default_value( "$HOME/.PoD" ), "" )
+                ( "server.logfile_dir", boost::program_options::value<std::string>( &m_options.m_server.m_common.m_logFileDir )->default_value( "$HOME/.PoD/log" ), "" )
                 ( "server.logfile_overwrite", boost::program_options::value<bool>( &m_options.m_server.m_common.m_logFileOverwrite )->default_value( true, "yes" ), "" )
                 ( "server.log_level", boost::program_options::value<unsigned short>( &m_options.m_server.m_common.m_logLevel )->default_value( 1 ), "" )
-                ( "server.proof_cfg_path", boost::program_options::value<std::string>( &m_options.m_server.m_common.m_proofCFG )->default_value( "$POD_LOCATION/etc/proof.conf" ), "" )
+                ( "server.proof_cfg_path", boost::program_options::value<std::string>( &m_options.m_server.m_common.m_proofCFG )->default_value( "$HOME/.PoD/etc/proof.conf" ), "" )
                 ( "server.agent_shutdown_if_idle_for_sec", boost::program_options::value<int>( &m_options.m_server.m_common.m_shutdownIfIdleForSec )->default_value( 1800 ), "" )
                 ( "server.agent_local_client_port_min", boost::program_options::value<unsigned int>( &m_options.m_server.m_agentLocalClientPortMin )->default_value( 20000 ), "" )
                 ( "server.agent_local_client_port_max", boost::program_options::value<unsigned int>( &m_options.m_server.m_agentLocalClientPortMax )->default_value( 25000 ), "" )
