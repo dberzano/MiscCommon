@@ -45,7 +45,6 @@ namespace PoD
         std::string m_workDir;      //!< Working folder.
         std::string m_logFileDir;   //!< The log filename.
         bool m_logFileOverwrite;    //!< Overwrite log file each session.
-        std::string m_proofCFG;     //!< A location of the proof configuration file.
         int m_shutdownIfIdleForSec; //!< Shut down agent if its idle time is higher this value. If value is 0 then the feature is off.
         unsigned short m_logLevel;  //!< A log level
         unsigned int m_xproofPortsRangeMin;
@@ -151,7 +150,6 @@ namespace PoD
                 ( "server.logfile_dir", boost::program_options::value<std::string>( &m_options.m_server.m_common.m_logFileDir )->default_value( "$HOME/.PoD/log" ), "" )
                 ( "server.logfile_overwrite", boost::program_options::value<bool>( &m_options.m_server.m_common.m_logFileOverwrite )->default_value( true, "yes" ), "" )
                 ( "server.log_level", boost::program_options::value<unsigned short>( &m_options.m_server.m_common.m_logLevel )->default_value( 1 ), "" )
-                ( "server.proof_cfg_path", boost::program_options::value<std::string>( &m_options.m_server.m_common.m_proofCFG )->default_value( "$HOME/.PoD/etc/proof.conf" ), "" )
                 ( "server.agent_shutdown_if_idle_for_sec", boost::program_options::value<int>( &m_options.m_server.m_common.m_shutdownIfIdleForSec )->default_value( 1800 ), "" )
                 ( "server.agent_local_client_port_min", boost::program_options::value<unsigned int>( &m_options.m_server.m_agentLocalClientPortMin )->default_value( 20000 ), "" )
                 ( "server.agent_local_client_port_max", boost::program_options::value<unsigned int>( &m_options.m_server.m_agentLocalClientPortMax )->default_value( 25000 ), "" )
@@ -168,7 +166,6 @@ namespace PoD
                 ( "worker.logfile_dir", boost::program_options::value<std::string>( &m_options.m_worker.m_common.m_logFileDir )->default_value( "$POD_LOCATION/" ), "" )
                 ( "worker.logfile_overwrite", boost::program_options::value<bool>( &m_options.m_worker.m_common.m_logFileOverwrite )->default_value( true, "yes" ), "" )
                 ( "worker.log_level", boost::program_options::value<unsigned short>( &m_options.m_worker.m_common.m_logLevel )->default_value( 1 ), "" )
-                ( "worker.proof_cfg_path", boost::program_options::value<std::string>( &m_options.m_worker.m_common.m_proofCFG )->default_value( "$POD_LOCATION/proof.conf" ), "" )
                 ( "worker.set_my_rootsys", boost::program_options::value<bool>( &m_options.m_worker.m_setMyROOTSYS )->default_value( true, "yes" ), "" )
                 ( "worker.my_rootsys", boost::program_options::value<std::string>( &m_options.m_worker.m_myROOTSYS )->default_value( "$ROOTSYS" ), "" )
                 ( "worker.agent_shutdown_if_idle_for_sec", boost::program_options::value<int>( &m_options.m_worker.m_common.m_shutdownIfIdleForSec )->default_value( 1800 ), "" )
@@ -247,7 +244,6 @@ namespace PoD
                         << "logfile_dir=" << ud.getValueForKey( "server.logfile_dir" ) << "\n"
                         << "logfile_overwrite=" << ud.getUnifiedBoolValueForBoolKey( "server.logfile_overwrite" ) << "\n"
                         << "log_level=" << ud.getValueForKey( "server.log_level" ) << "\n"
-                        << "proof_cfg_path=" << ud.getValueForKey( "server.proof_cfg_path" ) << "\n"
                         << "agent_shutdown_if_idle_for_sec=" << ud.getValueForKey( "server.agent_shutdown_if_idle_for_sec" ) << "\n"
                         << "agent_local_client_port_min=" << ud.getValueForKey( "server.agent_local_client_port_min" ) << "\n"
                         << "agent_local_client_port_max=" << ud.getValueForKey( "server.agent_local_client_port_max" ) << "\n"
@@ -264,7 +260,6 @@ namespace PoD
                         << "logfile_dir=" << ud.getValueForKey( "worker.logfile_dir" ) << "\n"
                         << "logfile_overwrite=" << ud.getUnifiedBoolValueForBoolKey( "worker.logfile_overwrite" ) << "\n"
                         << "log_level=" << ud.getValueForKey( "worker.log_level" ) << "\n"
-                        << "proof_cfg_path=" << ud.getValueForKey( "worker.proof_cfg_path" ) << "\n"
                         << "set_my_rootsys=" << ud.getUnifiedBoolValueForBoolKey( "worker.set_my_rootsys" ) << "\n"
                         << "my_rootsys=" << ud.getValueForKey( "worker.my_rootsys" ) << "\n"
                         << "agent_shutdown_if_idle_for_sec=" << ud.getValueForKey( "worker.agent_shutdown_if_idle_for_sec" ) << "\n"
