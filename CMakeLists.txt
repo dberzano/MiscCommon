@@ -21,17 +21,14 @@ set(MISCCOMMON_VERSION "5.0.0")
 # Where to lookup modules
 #
 set (CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}")
-
 #
-# configure files
-# 
-configure_file( ${PROJECT_SOURCE_DIR}/Doxyfile.in ${PROJECT_BINARY_DIR}/Doxyfile @ONLY )
+# API Docs
 #
-# Custom targets
-#
-add_custom_target(MiscCommon-api-docs ${DOXYGEN_EXECUTABLE} ${PROJECT_BINARY_DIR}/Doxyfile
-    COMMENT "Generating MiscCommon API docs")
-
+if(DOXYGEN_FOUND)
+   configure_file( ${PROJECT_SOURCE_DIR}/Doxyfile.in ${PROJECT_BINARY_DIR}/Doxyfile @ONLY )
+   add_custom_target(MiscCommon-api-docs ${DOXYGEN_EXECUTABLE} ${PROJECT_BINARY_DIR}/Doxyfile
+       COMMENT "Generating MiscCommon API docs")
+endif(DOXYGEN_FOUND)
 #
 ## Unit tests
 #
