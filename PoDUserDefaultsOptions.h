@@ -39,6 +39,22 @@ namespace PoD
 
         return val;
     }
+    // PoD wrk package must be created in user's home directory.
+    // Otherwise PoD will not work when a shared home file system is used and
+    // a user specifies some other directory (like /tmp) as his/her PoD
+    // working directory. In this case PoD will be not able to find out that
+    // a shared home is used and will not be able to download wrk. package.
+    // This has happened at CERN's AFS, when user specified /tmp as
+    // PoD working dir, since AFS doesn't not support pipes.
+    // PoD failed to download the worker package, since tmp is not shared.
+    inline std::string showWrkPackage()
+    {    
+        return ("$HOME/.PoD/wrk/pod-worker");
+    }
+    inline std::string showWrkScript()
+    {
+        return ("$HOME/.PoD/wrk/PoDWorker.sh");
+    }
 
     typedef struct SCommonOptions
     {
