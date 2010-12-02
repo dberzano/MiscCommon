@@ -48,12 +48,12 @@ namespace PoD
     // PoD working dir, since AFS doesn't not support pipes.
     // PoD failed to download the worker package, since tmp is not shared.
     inline std::string showWrkPackage()
-    {    
-        return ("$HOME/.PoD/wrk/pod-worker");
+    {
+        return ( "$HOME/.PoD/wrk/pod-worker" );
     }
     inline std::string showWrkScript()
     {
-        return ("$HOME/.PoD/wrk/PoDWorker.sh");
+        return ( "$HOME/.PoD/wrk/PoDWorker.sh" );
     }
 
     typedef struct SCommonOptions
