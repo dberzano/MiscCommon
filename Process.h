@@ -456,8 +456,11 @@ namespace MiscCommon
         switch( child_pid = fork() )
         {
             case - 1:
-                close( fdpipe[0] );
-                close( fdpipe[1] );
+                if( _output )
+                {
+                    close( fdpipe[0] );
+                    close( fdpipe[1] );
+                }
                 // Unable to fork
                 throw std::runtime_error( "do_execv: Unable to fork process" );
 
