@@ -189,7 +189,7 @@ namespace PoD
                 ( "server.agent_node_readbuffer", boost::program_options::value<unsigned int>( &m_options.m_server.m_common.m_agentNodeReadBuffer )->default_value( 5000 ) )
                 ( "server.packet_forwarding", boost::program_options::value<std::string>( &m_options.m_server.m_packetForwarding )->default_value( "auto" ), "" )
                 ( "server.proof_cfg_entry_pattern",
-                  boost::program_options::value<std::string>( &m_options.m_server.m_proofCfgEntryPattern )->default_value( "worker %user_name%@%host% port=%port% pref=100" ), "" )
+                  boost::program_options::value<std::string>( &m_options.m_server.m_proofCfgEntryPattern )->default_value( "worker %user%@%host% port=%port% pref=100" ), "" )
                 ;
                 config_file_options.add_options()
                 ( "worker.work_dir", boost::program_options::value<std::string>( &m_options.m_worker.m_common.m_workDir )->default_value( "$POD_LOCATION/" ), "" )

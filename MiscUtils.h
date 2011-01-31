@@ -178,7 +178,7 @@ namespace MiscCommon
      *
      *  @brief finds elements in a string match a specified string and replaces it.
      *  @param[in,out] _pString - The string to be processed.
-     *  @param[in,out] _what - String to be replaced.
+     *  @param[in] _what - String to be replaced.
      *  @param[in] _with - Replacing string.
      *  @return A reference to the string object from which the elements have been replaced.
      *
