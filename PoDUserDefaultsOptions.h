@@ -68,6 +68,14 @@ namespace PoD
         unsigned int m_agentNodeReadBuffer; //!< A buffer size, used by a proxy (in bytes).
     } SCommonOptions_t;
 
+    typedef struct SUIOptions
+    {
+        //
+        // ---= UI =---
+        //
+        std::string m_workDir;      //!< Working folder.
+    } SUIOptions_t;
+
     typedef struct SServerOptions
     {
         //
@@ -81,6 +89,10 @@ namespace PoD
         std::string m_packetForwarding;
         unsigned int m_agentThreads;    //!< A number of threads in thread pool.
         std::string m_proofCfgEntryPattern;
+        std::string m_host; //!< remote PoD server's host name
+        std::string m_user; //!< remote PoD server's user name
+        std::string m_sshOpt; //!< additional ssh options, which will be used when connecting to a remote PoD server
+        std::string m_sshOpenDomain; //!< a name of a third party machine open to the outside world and from which direct connections to the server are possible.
     } SServerOptions_t;
 
     typedef struct SWorkerOptions
@@ -131,6 +143,7 @@ namespace PoD
 
     typedef struct SPoDUserDefaultOptions
     {
+        SUIOptions_t m_ui;
         SServerOptions_t m_server;
         SWorkerOptions_t m_worker;
         SLSFOptions_t m_lsf;
@@ -174,6 +187,9 @@ namespace PoD
                 boost::program_options::options_description config_file_options( "PoD user defaults options" );
                 // HACK: Don't make a long add_options, otherwise Eclipse 3.5's CDT indexer can't handle it
                 config_file_options.add_options()
+                ( "ui.work_dir", boost::program_options::value<std::string>( &m_options.m_ui.m_workDir )->default_value( "$HOME/.PoD" ), "" )
+                ;
+                config_file_options.add_options()
                 ( "server.work_dir", boost::program_options::value<std::string>( &m_options.m_server.m_common.m_workDir )->default_value( "$HOME/.PoD" ), "" )
                 ( "server.logfile_dir", boost::program_options::value<std::string>( &m_options.m_server.m_common.m_logFileDir )->default_value( "$HOME/.PoD/log" ), "" )
                 ( "server.logfile_overwrite", boost::program_options::value<bool>( &m_options.m_server.m_common.m_logFileOverwrite )->default_value( true, "yes" ), "" )
@@ -190,6 +206,12 @@ namespace PoD
                 ( "server.packet_forwarding", boost::program_options::value<std::string>( &m_options.m_server.m_packetForwarding )->default_value( "auto" ), "" )
                 ( "server.proof_cfg_entry_pattern",
                   boost::program_options::value<std::string>( &m_options.m_server.m_proofCfgEntryPattern )->default_value( "worker %user%@%host% port=%port% pref=100" ), "" )
+                ( "server.host",
+                  boost::program_options::value<std::string>( &m_options.m_server.m_host )->default_value( "" ), "" )
+                ( "server.user",
+                  boost::program_options::value<std::string>( &m_options.m_server.m_user )->default_value( "" ), "" )
+                ( "server.ssh_opt",
+                  boost::program_options::value<std::string>( &m_options.m_server.m_sshOpt )->default_value( "" ), "" )
                 ;
                 config_file_options.add_options()
                 ( "worker.work_dir", boost::program_options::value<std::string>( &m_options.m_worker.m_common.m_workDir )->default_value( "$POD_LOCATION/" ), "" )
@@ -274,7 +296,13 @@ namespace PoD
                 ud.init( "", true );
 
                 _stream
+                        << "[ui]\n"
+                        << "work_dir=" << ud.getValueForKey( "ui.work_dir" ) << "\n";
+                _stream
                         << "[server]\n"
+                        << "host=" << ud.getValueForKey( "server.host" ) << "\n"
+                        << "user=" << ud.getValueForKey( "server.user" ) << "\n"
+                        << "ssh_opt=" << ud.getValueForKey( "server.ssh_opt" ) << "\n"
                         << "work_dir=" << ud.getValueForKey( "server.work_dir" ) << "\n"
                         << "logfile_dir=" << ud.getValueForKey( "server.logfile_dir" ) << "\n"
                         << "logfile_overwrite=" << ud.getUnifiedBoolValueForBoolKey( "server.logfile_overwrite" ) << "\n"
