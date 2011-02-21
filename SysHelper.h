@@ -10,7 +10,7 @@
                             2007-04-01
         last changed by:    $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2007-2008 GSI GridTeam. All rights reserved.
+        Copyright (c) 2007-2011 GSI GridTeam. All rights reserved.
 *************************************************************************/
 #ifndef SYSHELPER_H_
 #define SYSHELPER_H_
@@ -21,6 +21,11 @@
 #include <sys/syscall.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+
+#ifdef __APPLE__
+#include <sys/types.h>
+#include <sys/sysctl.h>
+#endif
 
 // STD
 #include <typeinfo>
@@ -334,6 +339,40 @@ namespace MiscCommon
         {
             return false;
         }
+    }
+    /**
+     *
+     * @brief the function returns a number of available CPU cores
+     *
+     */
+    inline size_t getNCores()
+    {
+        size_t numCPU( 1 );
+#ifdef __APPLE__ //FreeBSD, MacOS X, NetBSD, OpenBSD, etc.
+        int mib[4];
+        size_t len = sizeof( numCPU );
+
+        /* set the mib for hw.ncpu */
+        mib[0] = CTL_HW;
+        mib[1] = HW_AVAILCPU;  // alternatively, try HW_NCPU;
+
+        /* get the number of CPUs from the system */
+        sysctl( mib, 2, &numCPU, &len, NULL, 0 );
+
+        if( numCPU < 1 )
+        {
+            mib[1] = HW_NCPU;
+            sysctl( mib, 2, &numCPU, &len, NULL, 0 );
+
+            if( numCPU < 1 )
+            {
+                numCPU = 1;
+            }
+        }
+#elif __linux // Linux, Solaris, & AIX (per comments)
+        numCPU = sysconf( _SC_NPROCESSORS_ONLN );
+#endif
+        return numCPU;
     }
 };
 #endif /*SYSHELPER_H_*/
