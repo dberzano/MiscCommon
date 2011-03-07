@@ -29,6 +29,14 @@ if(DOXYGEN_FOUND)
    add_custom_target(MiscCommon-api-docs ${DOXYGEN_EXECUTABLE} ${PROJECT_BINARY_DIR}/Doxyfile
        COMMENT "Generating MiscCommon API docs")
 endif(DOXYGEN_FOUND)
+
+
+#
+# Build pipe_log_engine
+#
+message(STATUS "Build the PipeLogEngine lib - YES")
+add_subdirectory( ${MiscCommon_SOURCE_DIR}/pipe_log_engine )
+
 #
 ## Unit tests
 #
