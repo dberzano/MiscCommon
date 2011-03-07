@@ -34,8 +34,20 @@ endif(DOXYGEN_FOUND)
 #
 # Build pipe_log_engine
 #
-message(STATUS "Build the PipeLogEngine lib - YES")
+message(STATUS "Build the pipe_log_engine lib - YES")
 add_subdirectory( ${MiscCommon_SOURCE_DIR}/pipe_log_engine )
+
+#
+# Build pod_protocol
+#
+message(STATUS "Build the pod_protocol lib - YES")
+add_subdirectory( ${MiscCommon_SOURCE_DIR}/pod_protocol )
+
+#
+# Build proof_status_file
+#
+message(STATUS "Build the proof_status_file lib - YES")
+add_subdirectory( ${MiscCommon_SOURCE_DIR}/proof_status_file )
 
 #
 ## Unit tests

@@ -12,7 +12,7 @@
 #
 #        Copyright (c) 2011 GSI, Scientific Computing group. All rights reserved.
 #*************************************************************************
-project( pipe_log_engine )
+project( pod_protocol )
 
 #
 # Where to lookup modules
@@ -23,23 +23,23 @@ set (CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}")
 # Source files
 #
 set( SOURCE_FILES
-     logEngine.cpp )
+     Protocol.cpp 
+     ProtocolCommands.cpp
+)
 
 include_directories(
     ${PROJECT_SOURCE_DIR}
     ${MiscCommon_LOCATION}
-    ${Boost_INCLUDE_DIRS}
 )
 
 #
 # pod-ssh executable
 #
-add_library(pipe_log_engine SHARED ${SOURCE_FILES})
+add_library(pod_protocol SHARED ${SOURCE_FILES})
 
 target_link_libraries (
-    pipe_log_engine
-    ${Boost_THREAD_LIBRARY} 
+    pod_protocol
 )
 
-install(TARGETS pipe_log_engine DESTINATION lib)
+install(TARGETS pod_protocol DESTINATION lib)
 

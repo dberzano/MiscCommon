@@ -12,7 +12,7 @@
 #
 #        Copyright (c) 2011 GSI, Scientific Computing group. All rights reserved.
 #*************************************************************************
-project( pipe_log_engine )
+project( proof_status_file )
 
 #
 # Where to lookup modules
@@ -23,7 +23,8 @@ set (CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}")
 # Source files
 #
 set( SOURCE_FILES
-     logEngine.cpp )
+     ProofStatusFile.cpp
+)
 
 include_directories(
     ${PROJECT_SOURCE_DIR}
@@ -31,15 +32,20 @@ include_directories(
     ${Boost_INCLUDE_DIRS}
 )
 
+set(Boost_filesystem_libs ${Boost_FILESYSTEM_LIBRARY})
+if(local_boost_version VERSION_GREATER "1.33.1")
+  set(Boost_filesystem_libs ${Boost_filesystem_libs} ${Boost_SYSTEM_LIBRARY})
+endif(local_boost_version VERSION_GREATER "1.33.1")
+
 #
 # pod-ssh executable
 #
-add_library(pipe_log_engine SHARED ${SOURCE_FILES})
+add_library(proof_status_file SHARED ${SOURCE_FILES})
 
 target_link_libraries (
-    pipe_log_engine
-    ${Boost_THREAD_LIBRARY} 
+    proof_status_file
+    ${Boost_filesystem_libs}
 )
 
-install(TARGETS pipe_log_engine DESTINATION lib)
+install(TARGETS proof_status_file DESTINATION lib)
 
