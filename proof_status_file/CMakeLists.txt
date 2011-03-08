@@ -25,6 +25,9 @@ set (CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}")
 set( SOURCE_FILES
      ProofStatusFile.cpp
 )
+set( SRC_HDRS
+     ProofStatusFile.h
+)
 
 include_directories(
     ${PROJECT_SOURCE_DIR}
@@ -38,9 +41,13 @@ if(local_boost_version VERSION_GREATER "1.33.1")
 endif(local_boost_version VERSION_GREATER "1.33.1")
 
 #
-# pod-ssh executable
+# lib
 #
-add_library(proof_status_file SHARED ${SOURCE_FILES})
+if (CMAKE_GENERATOR STREQUAL "Xcode")
+    add_library(proof_status_file SHARED ${SOURCE_FILES} ${SRC_HDRS})
+else (CMAKE_GENERATOR STREQUAL "Xcode")
+    add_library(proof_status_file SHARED ${SOURCE_FILES})
+endif (CMAKE_GENERATOR STREQUAL "Xcode")
 
 target_link_libraries (
     proof_status_file

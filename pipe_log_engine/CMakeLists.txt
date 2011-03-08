@@ -23,7 +23,12 @@ set (CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}")
 # Source files
 #
 set( SOURCE_FILES
-     logEngine.cpp )
+     logEngine.cpp
+)
+
+set( SRC_HDRS
+     logEngine.h
+)
 
 include_directories(
     ${PROJECT_SOURCE_DIR}
@@ -32,9 +37,13 @@ include_directories(
 )
 
 #
-# pod-ssh executable
+# lib
 #
-add_library(pipe_log_engine SHARED ${SOURCE_FILES})
+if (CMAKE_GENERATOR STREQUAL "Xcode")
+    add_library(pipe_log_engine SHARED ${SOURCE_FILES} ${SRC_HDRS})
+else (CMAKE_GENERATOR STREQUAL "Xcode")
+    add_library(pipe_log_engine SHARED ${SOURCE_FILES})
+endif (CMAKE_GENERATOR STREQUAL "Xcode")
 
 target_link_libraries (
     pipe_log_engine

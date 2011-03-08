@@ -27,15 +27,24 @@ set( SOURCE_FILES
      ProtocolCommands.cpp
 )
 
+set( SRC_HDRS
+     Protocol.h 
+     ProtocolCommands.h
+)
+
 include_directories(
     ${PROJECT_SOURCE_DIR}
     ${MiscCommon_LOCATION}
 )
 
 #
-# pod-ssh executable
+# lib
 #
-add_library(pod_protocol SHARED ${SOURCE_FILES})
+if (CMAKE_GENERATOR STREQUAL "Xcode")
+    add_library(pod_protocol SHARED ${SOURCE_FILES} ${SRC_HDRS})
+else (CMAKE_GENERATOR STREQUAL "Xcode")
+    add_library(pod_protocol SHARED ${SOURCE_FILES})
+endif (CMAKE_GENERATOR STREQUAL "Xcode")
 
 target_link_libraries (
     pod_protocol
