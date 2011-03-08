@@ -8,8 +8,6 @@
  */
 //=============================================================================
 #include "logEngine.h"
-// pod-ssh
-//#include "version.h"
 // BOOST
 #include <boost/bind.hpp>
 // MiscCommon
@@ -25,15 +23,13 @@ CLogEngine::~CLogEngine()
     stop();
 }
 //=============================================================================
-void CLogEngine::start( const string &_wrkDir )
+void CLogEngine::start( const string &_pipeFilePath )
 {
     m_stopLogEngine = 0;
     // create a named pipe
     // it's used to collect outputs from the threads and called shell scripts...
-    m_pipeName = _wrkDir;
+    m_pipeName = _pipeFilePath;
     smart_path( &m_pipeName );
-    smart_append( &m_pipeName, '/' );
-    m_pipeName += ".pod_ssh_pipe";
     int ret_val = mkfifo( m_pipeName.c_str(), 0666 );
     if(( -1 == ret_val ) && ( EEXIST != errno ) )
         throw runtime_error( "Can't create a named pipe: " + m_pipeName );
@@ -114,8 +110,7 @@ void CLogEngine::thread_worker( int _fd, const string & _pipename )
 
         if( retval < 0 )
         {
-// TODO:
-            //          cerr << PROJECT_NAME << ": Problem in the log engine: " << errno2str() << endl;
+            cerr << ": Problem in the log engine: " << errno2str() << endl;
             break;
         }
 
