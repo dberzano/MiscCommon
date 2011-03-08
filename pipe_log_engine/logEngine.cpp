@@ -115,7 +115,7 @@ void CLogEngine::thread_worker( int _fd, const string & _pipename )
         if( retval < 0 )
         {
 // TODO:
-  //          cerr << PROJECT_NAME << ": Problem in the log engine: " << errno2str() << endl;
+            //          cerr << PROJECT_NAME << ": Problem in the log engine: " << errno2str() << endl;
             break;
         }
 
