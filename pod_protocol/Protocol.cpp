@@ -106,8 +106,9 @@ CProtocol::EStatus_t CProtocol::read( int _socket )
     while( true )
     {
         // need to read more to complete the header
-        const ssize_t bytes_read = ::recv( _socket, &tmp_buf[0],
-                                           MAX_MSG_SIZE, 0 );
+        // we use read (instead of recv) to allow non socket transports
+        const ssize_t bytes_read = ::read( _socket, &tmp_buf[0],
+                                           MAX_MSG_SIZE );
         if( 0 == bytes_read )
             return stDISCONNECT;
 
