@@ -50,6 +50,12 @@ message(STATUS "Build the proof_status_file lib - YES")
 add_subdirectory( ${MiscCommon_SOURCE_DIR}/proof_status_file )
 
 #
+# Build SSHTunnel
+#
+message(STATUS "Build the SSHTunnel lib - YES")
+add_subdirectory( ${MiscCommon_SOURCE_DIR}/SSHTunnel )
+
+#
 ## Unit tests
 #
 if (BUILD_TESTS)
