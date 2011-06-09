@@ -56,6 +56,12 @@ message(STATUS "Build the SSHTunnel lib - YES")
 add_subdirectory( ${MiscCommon_SOURCE_DIR}/SSHTunnel )
 
 #
+# Build pod_sys_files
+#
+message(STATUS "Build the pod_sys_files lib - YES")
+add_subdirectory( ${MiscCommon_SOURCE_DIR}/pod_sys_files )
+
+#
 ## Unit tests
 #
 if (BUILD_TESTS)
