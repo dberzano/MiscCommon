@@ -64,6 +64,9 @@ void CLogEngine::stop()
 //=============================================================================
 void CLogEngine::operator()( const string &_msg, const string &_id ) const
 {
+    if( !m_fd )
+        return;
+
     // All the following calls must be thread-safe.
 
     // print time with RFC 2822 - compliant date format
@@ -88,12 +91,23 @@ void CLogEngine::operator()( const string &_msg, const string &_id ) const
     out += "\t[";
     out += timestr;
     out += "]\t";
-    if( _msg.size() > PIPE_BUF )
-        out += "ERROR. Message is too long.\n";
-    else
-        out += _msg;
-    if( write( m_fd, out.c_str(), out.size() ) < 0 )
-        throw system_error( "Write error" );
+    out += _msg;
+
+    // We need to send by PIPE_BUF portions
+    CHARVector_t buf;
+    buf.reserve( out.size() );
+    copy( out.begin(), out.end(),
+          back_inserter( buf ) );
+
+    size_t total = 0;
+    int n = 0;
+    size_t len = buf.size();
+    while( total < len )
+    {
+        if(( n = write( m_fd, &buf[total], len - total ) ) < 0 )
+            throw system_error( "LogEngine: Write error" );
+        total += n;
+    }
 }
 //=============================================================================
 void CLogEngine::thread_worker( int _fd, const string & _pipename )

@@ -31,6 +31,10 @@ class CSSHTunnel
         {
             m_needToKill = false;
         }
+        void attach()
+        {
+            m_needToKill = true;
+        }
 
     private:
         void killTunnel();

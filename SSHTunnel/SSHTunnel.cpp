@@ -51,7 +51,7 @@ void CSSHTunnel::killTunnel()
     {
         kill( m_pid, SIGKILL );
         short count( 0 );
-        const short max_try( 600 ); // force to wait for about 30 secs
+        const short max_try( 100 ); // force to wait for about 5 secs
         while( IsProcessExist( m_pid ) )
         {
             ++count;
