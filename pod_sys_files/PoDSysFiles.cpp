@@ -7,10 +7,6 @@
 //
 //=============================================================================
 #include "PoDSysFiles.h"
-// BOOST
-//#include <boost/program_options/options_description.hpp>
-//#include <boost/program_options/parsers.hpp>
-//#include <boost/program_options/variables_map.hpp>
 // STD
 #include <sstream>
 #include <stdexcept>
@@ -21,11 +17,8 @@
 //=============================================================================
 using namespace std;
 using namespace MiscCommon;
-//namespace bpo = boost::program_options;
 //=============================================================================
-CEnvironment::CEnvironment():
-    m_srvPort( 0 ),
-    m_ud( NULL )
+CEnvironment::CEnvironment(): m_ud( NULL )
 {
 
 }

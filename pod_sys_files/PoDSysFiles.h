@@ -21,7 +21,6 @@ class CEnvironment
 
     public:
         void init();
-
         std::string version() const
         {
             return m_localVer;
@@ -29,14 +28,6 @@ class CEnvironment
         std::string PoDPath() const
         {
             return m_PoDPath;
-        }
-        std::string serverHost() const
-        {
-            return m_srvHost;
-        }
-        unsigned int serverPort() const
-        {
-            return m_srvPort;
         }
         const PoD::SPoDUserDefaultsOptions_t getUD() const
         {
@@ -130,8 +121,6 @@ class CEnvironment
     private:
         std::string m_PoDPath;
         std::string m_localVer;
-        std::string m_srvHost;
-        unsigned int m_srvPort;
         PoD::SPoDUserDefaultsOptions_t *m_ud;
         std::string m_wrkDir;
 };
