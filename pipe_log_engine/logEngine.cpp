@@ -62,9 +62,13 @@ void CLogEngine::stop()
     unlink( m_pipeName.c_str() );
 }
 //=============================================================================
-void CLogEngine::operator()( const string &_msg, const string &_id ) const
+void CLogEngine::operator()( const string &_msg, const string &_id,
+                             bool _debugMsg ) const
 {
     if( !m_fd )
+        return;
+
+    if( _debugMsg && !m_debugMode )
         return;
 
     // All the following calls must be thread-safe.
