@@ -31,6 +31,7 @@ class CEnvironment
         }
         const PoD::SPoDUserDefaultsOptions_t getUD() const
         {
+            assert( m_ud ); // did you forget to call the Init method?
             return *m_ud;
         }
         std::string srvInfoFile() const
@@ -112,6 +113,15 @@ class CEnvironment
 
             std::string ret( m_wrkDir );
             ret += "etc/pod-remote.cfg";
+            return ret;
+        }
+        std::string pod_sshCfgFile() const
+        {
+            if( m_wrkDir.empty() )
+                return( "" );
+
+            std::string ret( m_wrkDir );
+            ret += "etc/pod-ssh.cfg";
             return ret;
         }
 

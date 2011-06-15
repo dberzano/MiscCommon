@@ -381,6 +381,40 @@ namespace PoD
             write_ini( _filename, pt );
         }
     };
+    struct SPoDSSHOptions
+    {
+        std::string m_config;
+
+        void load( const std::string &_filename )
+        {
+            // Create an empty property tree object
+            using boost::property_tree::ptree;
+            ptree pt;
+
+            read_ini( _filename, pt );
+
+            try
+            {
+                m_config = pt.get<std::string>( "pod-ssh.config" );
+            }
+            catch( ... )
+            {
+                //ignore missing nodes
+            }
+        }
+        void save( const std::string &_filename )
+        {
+            // Create an empty property tree object
+            using boost::property_tree::ptree;
+            ptree pt;
+
+            pt.put( "pod-ssh.config", m_config );
+
+            // Write the property tree to the XML file.
+            write_ini( _filename, pt );
+        }
+    };
+
 #endif
 }
 
