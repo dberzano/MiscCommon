@@ -136,7 +136,15 @@ namespace MiscCommon
 
         typename _T::size_type p_begin = _Path->find( _T( "$" ) );
         if( _T::npos == p_begin )
+        {
+            //make the path to be the canonicalized absolute pathname
+            char resolved_path[PATH_MAX];
+            char *res = realpath( _Path->c_str(), resolved_path );
+            if( NULL != res )
+                *_Path = resolved_path;
+            
             return;
+        }
 
         ++p_begin; // Excluding '$' from the name
 
@@ -328,7 +336,7 @@ namespace MiscCommon
      * @brief
      *
      */
-    inline bool does_file_exists( const std::string &_FileName )
+    inline bool file_exists( const std::string &_FileName )
     {
         try
         {
