@@ -142,7 +142,7 @@ namespace MiscCommon
             char *res = realpath( _Path->c_str(), resolved_path );
             if( NULL != res )
                 *_Path = resolved_path;
-            
+
             return;
         }
 
