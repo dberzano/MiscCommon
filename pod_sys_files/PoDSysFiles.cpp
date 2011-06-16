@@ -18,17 +18,17 @@
 using namespace std;
 using namespace MiscCommon;
 //=============================================================================
-CEnvironment::CEnvironment(): m_ud( NULL )
+CPoDEnvironment::CPoDEnvironment(): m_ud( NULL )
 {
 
 }
 //=============================================================================
-CEnvironment::~CEnvironment()
+CPoDEnvironment::~CPoDEnvironment()
 {
     delete m_ud;
 }
 //=============================================================================
-void CEnvironment::init()
+void CPoDEnvironment::init()
 {
     char *pod_location;
     pod_location = getenv( "POD_LOCATION" );
@@ -56,7 +56,7 @@ void CEnvironment::init()
     _localVersion();
 }
 //=============================================================================
-void CEnvironment::_localVersion()
+void CPoDEnvironment::_localVersion()
 {
     string version_file_name( m_PoDPath );
     version_file_name += "etc/version";

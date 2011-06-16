@@ -13,11 +13,11 @@
 // MiscCommon
 #include "PoDUserDefaultsOptions.h"
 //=============================================================================
-class CEnvironment
+class CPoDEnvironment
 {
     public:
-        CEnvironment();
-        ~CEnvironment();
+        CPoDEnvironment();
+        ~CPoDEnvironment();
 
     public:
         void init();
