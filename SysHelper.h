@@ -21,7 +21,7 @@
 #include <sys/syscall.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-
+#include <limits.h> 
 #ifdef __APPLE__
 #include <sys/types.h>
 #include <sys/sysctl.h>
