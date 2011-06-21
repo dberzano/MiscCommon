@@ -25,7 +25,6 @@ CLogEngine::~CLogEngine()
 //=============================================================================
 void CLogEngine::start( const string &_pipeFilePath )
 {
-    m_stopLogEngine = 0;
     // create a named pipe
     // it's used to collect outputs from the threads and called shell scripts...
     m_pipeName = _pipeFilePath;
@@ -45,20 +44,19 @@ void CLogEngine::start( const string &_pipeFilePath )
 //=============================================================================
 void CLogEngine::stop()
 {
-    if( NULL != m_thread )
-    {
-        m_stopLogEngine = 1;
-        this->operator()( "Done\n", "**" );
-        m_thread->join();
-        delete m_thread;
-        m_thread = NULL;
-    }
-
     if( m_fd > 0 )
     {
         close( m_fd );
         m_fd = 0;
     }
+
+    if( NULL != m_thread )
+    {
+        m_thread->join();
+        delete m_thread;
+        m_thread = NULL;
+    }
+
     unlink( m_pipeName.c_str() );
 }
 //=============================================================================
@@ -73,28 +71,39 @@ void CLogEngine::operator()( const string &_msg, const string &_id,
 
     // All the following calls must be thread-safe.
 
-    // print time with RFC 2822 - compliant date format
     char timestr[200];
-    time_t t = time( NULL );
-    struct tm tmp;
-    if( localtime_r( &t, &tmp ) == NULL )
+    // print date/time only when printing debug messages
+    if( _debugMsg )
     {
-        // TODO: log it.
-        return;
-    }
+        // print time with RFC 2822 - compliant date format
+        time_t t = time( NULL );
+        struct tm tmp;
+        if( localtime_r( &t, &tmp ) == NULL )
+        {
+            // TODO: log it.
+            return;
+        }
 
-    if( strftime( timestr, sizeof( timestr ), "%a, %d %b %Y %T %z", &tmp ) == 0 )
-    {
-        // TODO: log it.
-        return;
+        if( strftime( timestr, sizeof( timestr ), "%a, %d %b %Y %T %z", &tmp ) == 0 )
+        {
+            // TODO: log it.
+            return;
+        }
     }
 
     // write to a pipe is an atomic operation,
     // according to POSIX we just need to be shorter than PIPE_BUF
     string out( _id );
-    out += "\t[";
-    out += timestr;
-    out += "]\t";
+    // print date/time only when printing debug messages
+    if( _debugMsg )
+    {
+        out += "\t[";
+        out += timestr;
+        out += "]\t";
+    }
+    else
+        out += "\t";
+
     out += _msg;
 
     // We need to send by PIPE_BUF portions
@@ -116,7 +125,7 @@ void CLogEngine::operator()( const string &_msg, const string &_id,
 //=============================================================================
 void CLogEngine::thread_worker( int _fd, const string & _pipename )
 {
-    while( _fd > 0 && !m_stopLogEngine )
+    while( _fd > 0 )
     {
         fd_set readset;
         FD_ZERO( &readset );
