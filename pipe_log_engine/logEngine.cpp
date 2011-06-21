@@ -25,6 +25,7 @@ CLogEngine::~CLogEngine()
 //=============================================================================
 void CLogEngine::start( const string &_pipeFilePath )
 {
+    m_stopLogEngine = 0;
     // create a named pipe
     // it's used to collect outputs from the threads and called shell scripts...
     m_pipeName = _pipeFilePath;
@@ -44,17 +45,20 @@ void CLogEngine::start( const string &_pipeFilePath )
 //=============================================================================
 void CLogEngine::stop()
 {
+    if( NULL != m_thread )
+    {
+        m_stopLogEngine = 1;
+        // send just *one* charecter to wake up the thread.
+        this->operator()( "\0", "" );
+        m_thread->join();
+        delete m_thread;
+        m_thread = NULL;
+    }
+
     if( m_fd > 0 )
     {
         close( m_fd );
         m_fd = 0;
-    }
-
-    if( NULL != m_thread )
-    {
-        m_thread->join();
-        delete m_thread;
-        m_thread = NULL;
     }
 
     unlink( m_pipeName.c_str() );
@@ -69,11 +73,20 @@ void CLogEngine::operator()( const string &_msg, const string &_id,
     if( _debugMsg && !m_debugMode )
         return;
 
+    // this is the stop signal from the "stop" method
+    if( _msg.empty() && _id.empty() )
+    {
+        write( m_fd, "\0", 1 );
+        return;
+    }
+
     // All the following calls must be thread-safe.
 
+    string out( _id );
     char timestr[200];
+
     // print date/time only when printing debug messages
-    if( _debugMsg )
+    if( m_debugMode )
     {
         // print time with RFC 2822 - compliant date format
         time_t t = time( NULL );
@@ -93,9 +106,9 @@ void CLogEngine::operator()( const string &_msg, const string &_id,
 
     // write to a pipe is an atomic operation,
     // according to POSIX we just need to be shorter than PIPE_BUF
-    string out( _id );
+
     // print date/time only when printing debug messages
-    if( _debugMsg )
+    if( m_debugMode )
     {
         out += "\t[";
         out += timestr;
@@ -125,7 +138,7 @@ void CLogEngine::operator()( const string &_msg, const string &_id,
 //=============================================================================
 void CLogEngine::thread_worker( int _fd, const string & _pipename )
 {
-    while( _fd > 0 )
+    while( _fd > 0 && !m_stopLogEngine )
     {
         fd_set readset;
         FD_ZERO( &readset );
@@ -149,6 +162,10 @@ void CLogEngine::thread_worker( int _fd, const string & _pipename )
             while( true )
             {
                 numread = read( _fd, buf, read_size );
+                // don't print the last Control character
+                // it was sent just to wake up the thread
+                if( m_stopLogEngine && 1 == numread )
+                    break;
                 if( numread > 0 )
                     cout << string( buf, numread );
                 else

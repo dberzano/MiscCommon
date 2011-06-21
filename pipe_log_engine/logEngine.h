@@ -18,7 +18,8 @@ class CLogEngine
         CLogEngine( bool _debugMode = false ):
             m_fd( 0 ),
             m_thread( NULL ),
-            m_debugMode( _debugMode )
+            m_debugMode( _debugMode ),
+            m_stopLogEngine( 0 )
         {}
         ~CLogEngine();
         void start( const std::string &_pipeFilePath );
@@ -41,6 +42,7 @@ class CLogEngine
         boost::thread *m_thread;
         std::string m_pipeName;
         bool m_debugMode;
+        volatile sig_atomic_t m_stopLogEngine;
 };
 //=============================================================================
 #endif
