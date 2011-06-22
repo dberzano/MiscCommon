@@ -76,7 +76,8 @@ void CLogEngine::operator()( const string &_msg, const string &_id,
     // this is the stop signal from the "stop" method
     if( _msg.empty() && _id.empty() )
     {
-        write( m_fd, "\0", 1 );
+        if( write( m_fd, "\0", 1 ) < 0 )
+            throw system_error( "LogEngine: Write error" );
         return;
     }
 
