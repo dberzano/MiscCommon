@@ -141,7 +141,14 @@ namespace MiscCommon
             char resolved_path[PATH_MAX];
             char *res = realpath( _Path->c_str(), resolved_path );
             if( NULL != res )
+            {
+                // add trailing slash if needed, since realpath removes it
+                std::string::iterator it = _Path->end() - 1;
+                bool trailing_slash = ( *it == '/' );
                 *_Path = resolved_path;
+                if( trailing_slash )
+                    smart_append( _Path, '/' );
+            };
 
             return;
         }

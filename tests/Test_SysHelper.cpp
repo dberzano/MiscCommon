@@ -119,7 +119,7 @@ BOOST_AUTO_TEST_CASE( test_MiscCommon_smart_path8 )
 //=============================================================================
 BOOST_AUTO_TEST_CASE( test_MiscCommon_smart_path9 )
 {
-    // regression bug test.
+    // regression bug test. smart_path used to remove the trailing slash.
     // check that smart_path doesn't remove the last symbol
     string path( "$HOME/" );
     smart_path( &path );
