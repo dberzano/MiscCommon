@@ -117,6 +117,17 @@ BOOST_AUTO_TEST_CASE( test_MiscCommon_smart_path8 )
 //    BOOST_CHECK( sTempl == path );
 }
 //=============================================================================
+BOOST_AUTO_TEST_CASE( test_MiscCommon_smart_path9 )
+{
+    // regression bug test.
+    // check that smart_path doesn't remove the last symbol
+    string path( "/home/anar/" );
+    const string sTempl( "/home/anar/" );
+    smart_path( &path );
+    // TODO: rewrite test, so that there will be no hard-codded "/home/anar"
+    //    BOOST_CHECK( sTempl == path );
+}
+//=============================================================================
 BOOST_AUTO_TEST_CASE( test_file_size0 )
 {
     // Creating test file
