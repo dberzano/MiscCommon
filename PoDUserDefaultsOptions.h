@@ -350,10 +350,9 @@ namespace PoD
             using boost::property_tree::ptree;
             ptree pt;
 
-            read_ini( _filename, pt );
-
             try
             {
+                read_ini( _filename, pt );
                 m_connectionString = pt.get<std::string>( "pod-remote.connectionString" );
                 m_PoDLocation = pt.get<std::string>( "pod-remote.PoDLocation" );
                 m_env = pt.get<std::string>( "pod-remote.env" );
@@ -390,11 +389,9 @@ namespace PoD
             // Create an empty property tree object
             using boost::property_tree::ptree;
             ptree pt;
-
-            read_ini( _filename, pt );
-
             try
             {
+                read_ini( _filename, pt );
                 m_config = pt.get<std::string>( "pod-ssh.config" );
             }
             catch( ... )
