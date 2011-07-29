@@ -53,6 +53,9 @@ void CPoDEnvironment::init()
     smart_path( &m_wrkDir );
     smart_append( &m_wrkDir, '/' );
 
+    m_dotPoDPath = "$HOME/.PoD/";
+    smart_path( &m_dotPoDPath );
+
     _localVersion();
 }
 //=============================================================================

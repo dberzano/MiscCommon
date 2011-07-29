@@ -111,7 +111,7 @@ class CPoDEnvironment
             if( m_wrkDir.empty() )
                 return( "" );
 
-            std::string ret( m_wrkDir );
+            std::string ret( m_dotPoDPath );
             ret += "etc/pod-remote.cfg";
             return ret;
         }
@@ -120,7 +120,7 @@ class CPoDEnvironment
             if( m_wrkDir.empty() )
                 return( "" );
 
-            std::string ret( m_wrkDir );
+            std::string ret( m_dotPoDPath );
             ret += "etc/pod-ssh.cfg";
             return ret;
         }
@@ -133,6 +133,7 @@ class CPoDEnvironment
         std::string m_localVer;
         PoD::SPoDUserDefaultsOptions_t *m_ud;
         std::string m_wrkDir;
+        std::string m_dotPoDPath;
 };
 
 #endif
