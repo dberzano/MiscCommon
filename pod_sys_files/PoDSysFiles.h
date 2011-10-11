@@ -70,6 +70,15 @@ class CPoDEnvironment
             ret += "rmt_srv_tunnel_agent.pid";
             return ret;
         }
+        std::string tunnelRemotePidFile() const
+        {
+            if( m_wrkDir.empty() )
+                return( "" );
+
+            std::string ret( m_wrkDir );
+            ret += "tunnel_pod-remote.pid";
+            return ret;
+        }
         std::string pod_remotePidFile() const
         {
             if( m_wrkDir.empty() )
