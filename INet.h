@@ -604,6 +604,30 @@ namespace MiscCommon
         {
             return htonl( _value );
         }
+        /**
+         *
+         * @brief A helper function, which insures that whole buffer was written.
+         *
+         */
+        void writeall( int _handle, const std::string &_msg )
+        {
+            size_t total = 0;
+            int n = 0;
+
+            std::vector<char> buf;
+            buf.reserve( _msg.size() );
+            copy( _msg.begin(), _msg.end(), back_inserter( buf ) );
+
+            const size_t len = buf.size();
+
+            while( total < len )
+            {
+                if(( n = write( _handle, &buf[total], len - total ) ) < 0 )
+                    throw system_error( "send command: Write error" );
+                total += n;
+            }
+        }
+
     };
 };
 
