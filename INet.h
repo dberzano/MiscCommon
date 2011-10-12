@@ -609,7 +609,7 @@ namespace MiscCommon
          * @brief A helper function, which insures that whole buffer was written.
          *
          */
-        void writeall( int _handle, const std::string &_msg )
+        inline void writeall( int _handle, const std::string &_msg )
         {
             size_t total = 0;
             int n = 0;
