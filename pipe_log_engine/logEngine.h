@@ -32,7 +32,10 @@ class CLogEngine
         {
             operator()( _msg, _id, true );
         }
-
+        void setDbgFlag( bool _dbgFlag )
+        {
+            m_debugMode = _dbgFlag;
+        }
 
     private:
         void thread_worker( int _fd, const std::string & _pipename );
