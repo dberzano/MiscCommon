@@ -335,7 +335,8 @@ namespace PoD
     {
         std::string m_connectionString;
         std::string m_PoDLocation;
-        std::string m_env;
+        std::string m_envLocal;
+        std::string m_envRemote;
         size_t m_localAgentPort;
         size_t m_localXpdPort;
 
@@ -355,7 +356,8 @@ namespace PoD
                 read_ini( _filename, pt );
                 m_connectionString = pt.get<std::string>( "pod-remote.connectionString" );
                 m_PoDLocation = pt.get<std::string>( "pod-remote.PoDLocation" );
-                m_env = pt.get<std::string>( "pod-remote.env" );
+                m_envLocal = pt.get<std::string>( "pod-remote.envLocal" );
+                m_envRemote = pt.get<std::string>( "pod-remote.envRemote" );
                 m_localAgentPort = pt.get<size_t>( "pod-remote.localAgentPort" );
                 m_localXpdPort = pt.get<size_t>( "pod-remote.localXpdPort" );
             }
@@ -372,7 +374,8 @@ namespace PoD
 
             pt.put( "pod-remote.connectionString", m_connectionString );
             pt.put( "pod-remote.PoDLocation", m_PoDLocation );
-            pt.put( "pod-remote.env", m_env );
+            pt.put( "pod-remote.envLocal", m_envLocal );
+            pt.put( "pod-remote.envRemote", m_envRemote );
             pt.put( "pod-remote.localAgentPort", m_localAgentPort );
             pt.put( "pod-remote.localXpdPort", m_localXpdPort );
 
