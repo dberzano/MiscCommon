@@ -52,13 +52,17 @@ namespace PoD
     // This has happened at CERN's AFS, when user specified /tmp as
     // PoD working dir, since AFS doesn't not support pipes.
     // PoD failed to download the worker package, since tmp is not shared.
+    inline std::string showWrkPackageDir()
+    {
+        return ( "$HOME/.PoD/wrk/" );
+    }
     inline std::string showWrkPackage()
     {
-        return ( "$HOME/.PoD/wrk/pod-worker" );
+        return ( showWrkPackageDir()+"pod-worker" );
     }
     inline std::string showWrkScript()
     {
-        return ( "$HOME/.PoD/wrk/PoDWorker.sh" );
+        return ( showWrkPackageDir()+"PoDWorker.sh" );
     }
 
     typedef struct SCommonOptions
