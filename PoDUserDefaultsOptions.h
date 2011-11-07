@@ -58,11 +58,11 @@ namespace PoD
     }
     inline std::string showWrkPackage()
     {
-        return ( showWrkPackageDir()+"pod-worker" );
+        return ( showWrkPackageDir() + "pod-worker" );
     }
     inline std::string showWrkScript()
     {
-        return ( showWrkPackageDir()+"PoDWorker.sh" );
+        return ( showWrkPackageDir() + "PoDWorker.sh" );
     }
 
     typedef struct SCommonOptions

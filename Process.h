@@ -435,7 +435,8 @@ namespace MiscCommon
     }
 
     //TODO: Document me!
-    inline void do_execv( const std::string &_Command, const StringVector_t &_Params, size_t _Delay, std::string *_output ) throw( std::exception )
+    inline void do_execv( const std::string &_Command, const StringVector_t &_Params,
+                          size_t _Delay, std::string *_output, std::string *_errout = NULL ) throw( std::exception )
     {
         pid_t child_pid;
         std::vector<const char*> cargs; //careful with c_str()!!!
@@ -446,11 +447,17 @@ namespace MiscCommon
             cargs.push_back( iter->c_str() );
         cargs.push_back( 0 );
 
-        int fdpipe[2];
+        int fdpipe_out[2];
+        int fdpipe_err[2];
         if( _output )
         {
-            if( pipe( fdpipe ) )
-                throw system_error( "Pipe error" );
+            if( pipe( fdpipe_out ) )
+                throw system_error( "Can't create stdout pipe." );
+        }
+        if( _errout )
+        {
+            if( pipe( fdpipe_err ) )
+                throw system_error( "Can't create stderr pipe." );
         }
 
         switch( child_pid = fork() )
@@ -458,8 +465,13 @@ namespace MiscCommon
             case - 1:
                 if( _output )
                 {
-                    close( fdpipe[0] );
-                    close( fdpipe[1] );
+                    close( fdpipe_out[0] );
+                    close( fdpipe_out[1] );
+                }
+                if( _errout )
+                {
+                    close( fdpipe_err[0] );
+                    close( fdpipe_err[1] );
                 }
                 // Unable to fork
                 throw std::runtime_error( "do_execv: Unable to fork process" );
@@ -467,11 +479,16 @@ namespace MiscCommon
             case 0:
                 if( _output )
                 {
-                    close( fdpipe[0] );
-                    dup2( fdpipe[1], STDOUT_FILENO );
-                    close( fdpipe[1] );
+                    close( fdpipe_out[0] );
+                    dup2( fdpipe_out[1], STDOUT_FILENO );
+                    close( fdpipe_out[1] );
                 }
-
+                if( _errout )
+                {
+                    close( fdpipe_err[0] );
+                    dup2( fdpipe_err[1], STDERR_FILENO );
+                    close( fdpipe_err[1] );
+                }
                 // child: execute the required command, on success does not return
                 execv( _Command.c_str(), const_cast<char **>( &cargs[0] ) );
                 // not usually reached
@@ -481,13 +498,24 @@ namespace MiscCommon
         //parent
         if( _output )
         {
-            close( fdpipe[1] );
+            close( fdpipe_out[1] );
             char buf;
             std::stringstream ss;
-            while( read( fdpipe[0], &buf, 1 ) > 0 )
+            while( read( fdpipe_out[0], &buf, 1 ) > 0 )
                 ss << buf;
 
             *_output = ss.str();
+
+        }
+        if( _errout )
+        {
+            close( fdpipe_err[1] );
+            char buf;
+            std::stringstream ss;
+            while( read( fdpipe_err[0], &buf, 1 ) > 0 )
+                ss << buf;
+
+            *_errout = ss.str();
 
         }
         for( size_t i = 0; i < _Delay; ++i )
