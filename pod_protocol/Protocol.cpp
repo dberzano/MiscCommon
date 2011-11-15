@@ -10,7 +10,7 @@
                             2009-12-07
         last changed by:    $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2009-2011 GSI, Scientific Computing devision. All rights reserved.
+        Copyright (c) 2009-2011 GSI, Scientific Computing division. All rights reserved.
 *************************************************************************/
 #include "Protocol.h"
 // API
