@@ -341,6 +341,7 @@ namespace PoD
         std::string m_PoDLocation;
         std::string m_envLocal;
         std::string m_envRemote;
+        std::string m_envSSHOpenDomain;
         size_t m_localAgentPort;
         size_t m_localXpdPort;
 
@@ -362,6 +363,7 @@ namespace PoD
                 m_PoDLocation = pt.get<std::string>( "pod-remote.PoDLocation" );
                 m_envLocal = pt.get<std::string>( "pod-remote.envLocal" );
                 m_envRemote = pt.get<std::string>( "pod-remote.envRemote" );
+                m_envSSHOpenDomain = pt.get<std::string>( "pod-remote.envSSHOpenDomain" );
                 m_localAgentPort = pt.get<size_t>( "pod-remote.localAgentPort" );
                 m_localXpdPort = pt.get<size_t>( "pod-remote.localXpdPort" );
             }
@@ -380,6 +382,7 @@ namespace PoD
             pt.put( "pod-remote.PoDLocation", m_PoDLocation );
             pt.put( "pod-remote.envLocal", m_envLocal );
             pt.put( "pod-remote.envRemote", m_envRemote );
+            pt.put( "pod-remote.envSSHOpenDomain", m_envSSHOpenDomain );
             pt.put( "pod-remote.localAgentPort", m_localAgentPort );
             pt.put( "pod-remote.localXpdPort", m_localXpdPort );
 
