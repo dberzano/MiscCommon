@@ -344,10 +344,13 @@ namespace PoD
         std::string m_envSSHOpenDomain;
         size_t m_localAgentPort;
         size_t m_localXpdPort;
+        size_t m_localMainTunnelPort;
+
 
         SPoDRemoteOptions():
             m_localAgentPort( 0 ),
-            m_localXpdPort( 0 )
+            m_localXpdPort( 0 ),
+            m_localMainTunnelPort(0)
         {}
 
         void load( const std::string &_filename )
@@ -366,6 +369,7 @@ namespace PoD
                 m_envSSHOpenDomain = pt.get<std::string>( "pod-remote.envSSHOpenDomain" );
                 m_localAgentPort = pt.get<size_t>( "pod-remote.localAgentPort" );
                 m_localXpdPort = pt.get<size_t>( "pod-remote.localXpdPort" );
+                m_localMainTunnelPort = pt.get<size_t>( "pod-remote.localMainTunnelPort" );
             }
             catch( ... )
             {
@@ -385,6 +389,7 @@ namespace PoD
             pt.put( "pod-remote.envSSHOpenDomain", m_envSSHOpenDomain );
             pt.put( "pod-remote.localAgentPort", m_localAgentPort );
             pt.put( "pod-remote.localXpdPort", m_localXpdPort );
+            pt.put( "pod-remote.localMainTunnelPort", m_localMainTunnelPort );
 
             // Write the property tree to the XML file.
             write_ini( _filename, pt );
