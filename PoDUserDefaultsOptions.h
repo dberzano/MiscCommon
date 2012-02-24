@@ -350,7 +350,7 @@ namespace PoD
         SPoDRemoteOptions():
             m_localAgentPort( 0 ),
             m_localXpdPort( 0 ),
-            m_localMainTunnelPort(0)
+            m_localMainTunnelPort( 0 )
         {}
 
         void load( const std::string &_filename )
