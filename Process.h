@@ -148,7 +148,7 @@ namespace MiscCommon
                 bool done( false );
                 do
                 {
-                    error = sysctl( mib, 3, NULL, &buffSize, NULL, NULL );
+                    error = sysctl( mib, 3, NULL, &buffSize, NULL, 0 );
                     if( error != 0 )
                         throw system_error( "Error occurred while retrieving a running processes list" );
 
@@ -157,7 +157,7 @@ namespace MiscCommon
                     if( BSDProcInfo == NULL )
                         throw system_error( "Error occurred while retrieving a running processes list. Unable to allocate the buffer." );
 
-                    error = sysctl( mib, 3, BSDProcInfo, &buffSize, NULL, NULL );
+                    error = sysctl( mib, 3, BSDProcInfo, &buffSize, NULL, 0 );
 
                     // Here we successfully got the process information.
                     // Thus set the variable to end this sysctl calling loop
