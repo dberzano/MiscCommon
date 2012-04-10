@@ -10,7 +10,7 @@
                             2009-06-30
         last changed by:    $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2009-2010 GSI GridTeam. All rights reserved.
+        Copyright (c) 2009-2012 GSI GridTeam. All rights reserved.
 *************************************************************************/
 #ifndef PODUSERDEFAULTSOPTIONS_H_
 #define PODUSERDEFAULTSOPTIONS_H_
@@ -44,26 +44,6 @@ namespace PoD
 
         return val;
     }
-    // PoD wrk package must be created in user's home directory.
-    // Otherwise PoD will not work when a shared home file system is used and
-    // a user specifies some other directory (like /tmp) as his/her PoD
-    // working directory. In this case PoD will be not able to find out that
-    // a shared home is used and will not be able to download wrk. package.
-    // This has happened at CERN's AFS, when user specified /tmp as
-    // PoD working dir, since AFS doesn't not support pipes.
-    // PoD failed to download the worker package, since tmp is not shared.
-    inline std::string showWrkPackageDir()
-    {
-        return ( "$HOME/.PoD/wrk/" );
-    }
-    inline std::string showWrkPackage()
-    {
-        return ( showWrkPackageDir() + "pod-worker" );
-    }
-    inline std::string showWrkScript()
-    {
-        return ( showWrkPackageDir() + "PoDWorker.sh" );
-    }
 
     typedef struct SCommonOptions
     {
@@ -83,6 +63,11 @@ namespace PoD
         // ---= SERVER =---
         //
         SCommonOptions_t m_common;
+        // SahredFS is used as a location for job scripts.
+        // Some RMSs require that job scripts reside on FS which is accessible by its WNs.
+        // We can't use m_workDir for this, because it could be a case that the only shared FS is AFS, which
+        // can't be used as PoD's working director as it doesn't support pipes.
+        std::string m_sharedFS;
         unsigned int m_agentLocalClientPortMin;
         unsigned int m_agentLocalClientPortMax;
         unsigned int m_agentPortsRangeMin;
@@ -184,6 +169,7 @@ namespace PoD
                 // HACK: Don't make a long add_options, otherwise Eclipse 3.5's CDT indexer can't handle it
                 config_file_options.add_options()
                 ( "server.work_dir", boost::program_options::value<std::string>( &m_options.m_server.m_common.m_workDir )->default_value( "$HOME/.PoD" ), "" )
+                ( "server.shared_fs", boost::program_options::value<std::string>( &m_options.m_server.m_sharedFS )->default_value( "$HOME/.PoD" ), "" )
                 ( "server.logfile_dir", boost::program_options::value<std::string>( &m_options.m_server.m_common.m_logFileDir )->default_value( "$HOME/.PoD/log" ), "" )
                 ( "server.logfile_overwrite", boost::program_options::value<bool>( &m_options.m_server.m_common.m_logFileOverwrite )->default_value( true, "yes" ), "" )
                 ( "server.log_level", boost::program_options::value<unsigned short>( &m_options.m_server.m_common.m_logLevel )->default_value( 1 ), "" )
@@ -285,6 +271,7 @@ namespace PoD
                 _stream
                         << "[server]\n"
                         << "work_dir=" << ud.getValueForKey( "server.work_dir" ) << "\n"
+                        << "shared_fs=" << ud.getValueForKey( "server.shared_fs" ) << "\n"
                         << "logfile_dir=" << ud.getValueForKey( "server.logfile_dir" ) << "\n"
                         << "logfile_overwrite=" << ud.getUnifiedBoolValueForBoolKey( "server.logfile_overwrite" ) << "\n"
                         << "log_level=" << ud.getValueForKey( "server.log_level" ) << "\n"
@@ -428,6 +415,33 @@ namespace PoD
     };
 
 #endif
+
+    inline std::string showWrkPackageDir( CPoDUserDefaults *_ud = NULL )
+    {
+        std::string sSharedFS;
+        if( NULL == _ud )
+        {
+            CPoDUserDefaults ud;
+            std::string podCFG( showCurrentPUDFile() );
+            MiscCommon::smart_path( &podCFG );
+            ud.init( podCFG );
+            sSharedFS = ud.getValueForKey( "server.shared_fs" );
+        }
+        else
+            sSharedFS = _ud->getValueForKey( "server.shared_fs" );
+
+        MiscCommon::smart_path( &sSharedFS );
+        MiscCommon::smart_append( &sSharedFS, '/' );
+        return ( sSharedFS + "wrk/" );
+    }
+    inline std::string showWrkPackage( CPoDUserDefaults *_ud = NULL )
+    {
+        return ( showWrkPackageDir( _ud ) + "pod-worker" );
+    }
+    inline std::string showWrkScript( CPoDUserDefaults *_ud = NULL )
+    {
+        return ( showWrkPackageDir( _ud ) + "PoDWorker.sh" );
+    }
 }
 
 #endif /* PODUSERDEFAULTSOPTIONS_H_ */
