@@ -67,7 +67,7 @@ namespace PoD
         // Some RMSs require that job scripts reside on FS which is accessible by its WNs.
         // We can't use m_workDir for this, because it could be a case that the only shared FS is AFS, which
         // can't be used as PoD's working director as it doesn't support pipes.
-        std::string m_sharedFS;
+        std::string m_sandboxDir;
         unsigned int m_agentLocalClientPortMin;
         unsigned int m_agentLocalClientPortMax;
         unsigned int m_agentPortsRangeMin;
@@ -169,7 +169,7 @@ namespace PoD
                 // HACK: Don't make a long add_options, otherwise Eclipse 3.5's CDT indexer can't handle it
                 config_file_options.add_options()
                 ( "server.work_dir", boost::program_options::value<std::string>( &m_options.m_server.m_common.m_workDir )->default_value( "$HOME/.PoD" ), "" )
-                ( "server.shared_fs", boost::program_options::value<std::string>( &m_options.m_server.m_sharedFS )->default_value( "$HOME/.PoD" ), "" )
+                ( "server.sandbox_dir", boost::program_options::value<std::string>( &m_options.m_server.m_sandboxDir )->default_value( "$HOME/.PoD" ), "" )
                 ( "server.logfile_dir", boost::program_options::value<std::string>( &m_options.m_server.m_common.m_logFileDir )->default_value( "$HOME/.PoD/log" ), "" )
                 ( "server.logfile_overwrite", boost::program_options::value<bool>( &m_options.m_server.m_common.m_logFileOverwrite )->default_value( true, "yes" ), "" )
                 ( "server.log_level", boost::program_options::value<unsigned short>( &m_options.m_server.m_common.m_logLevel )->default_value( 1 ), "" )
@@ -271,7 +271,7 @@ namespace PoD
                 _stream
                         << "[server]\n"
                         << "work_dir=" << ud.getValueForKey( "server.work_dir" ) << "\n"
-                        << "shared_fs=" << ud.getValueForKey( "server.shared_fs" ) << "\n"
+                        << "sandbox_dir=" << ud.getValueForKey( "server.sandbox_dir" ) << "\n"
                         << "logfile_dir=" << ud.getValueForKey( "server.logfile_dir" ) << "\n"
                         << "logfile_overwrite=" << ud.getUnifiedBoolValueForBoolKey( "server.logfile_overwrite" ) << "\n"
                         << "log_level=" << ud.getValueForKey( "server.log_level" ) << "\n"
@@ -418,21 +418,27 @@ namespace PoD
 
     inline std::string showWrkPackageDir( CPoDUserDefaults *_ud = NULL )
     {
-        std::string sSharedFS;
+        std::string sSandboxDir;
         if( NULL == _ud )
         {
             CPoDUserDefaults ud;
             std::string podCFG( showCurrentPUDFile() );
             MiscCommon::smart_path( &podCFG );
             ud.init( podCFG );
-            sSharedFS = ud.getValueForKey( "server.shared_fs" );
+            sSandboxDir = ud.getValueForKey( "server.sandbox_dir" );
+            if( sSandboxDir.empty() )
+                sSandboxDir = ud.getValueForKey( "server.work_dir" );
         }
         else
-            sSharedFS = _ud->getValueForKey( "server.shared_fs" );
+        {
+            sSandboxDir = _ud->getValueForKey( "server.sandbox_dir" );
+            if( sSandboxDir.empty() )
+                sSandboxDir = _ud->getValueForKey( "server.work_dir" );
+        }
 
-        MiscCommon::smart_path( &sSharedFS );
-        MiscCommon::smart_append( &sSharedFS, '/' );
-        return ( sSharedFS + "wrk/" );
+        MiscCommon::smart_path( &sSandboxDir );
+        MiscCommon::smart_append( &sSandboxDir, '/' );
+        return ( sSandboxDir + "wrk/" );
     }
     inline std::string showWrkPackage( CPoDUserDefaults *_ud = NULL )
     {
