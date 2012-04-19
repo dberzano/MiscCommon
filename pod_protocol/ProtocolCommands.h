@@ -10,7 +10,7 @@
                             2009-12-22
         last changed by:    $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2009-2011 GSI, Scientific Computing division. All rights reserved.
+        Copyright (c) 2009-2012 GSI, Scientific Computing division. All rights reserved.
 *************************************************************************/
 #ifndef PROTOCOLCOMMANDS_H_
 #define PROTOCOLCOMMANDS_H_
@@ -22,7 +22,8 @@
 // pod-agetn
 #include "Protocol.h"
 //=============================================================================
-const uint16_t g_protocolCommandsVersion = 5;
+// v6: added m_timeStamp to SHostInfoCmd
+const uint16_t g_protocolCommandsVersion = 6;
 //=============================================================================
 namespace PROOFAgent
 {
@@ -101,7 +102,8 @@ namespace PROOFAgent
             m_xpdPort( 0 ),
             m_xpdPid( 0 ),
             m_agentPort( 0 ),
-            m_agentPid( 0 )
+            m_agentPid( 0 ),
+            m_timeStamp( 0 )
         {
         }
         size_t size() const
@@ -114,6 +116,7 @@ namespace PROOFAgent
             size += sizeof( m_agentPid );
             size += m_version.size() + 1;
             size += m_PoDPath.size() + 1;
+            size += sizeof( m_timeStamp );
             return size;
         }
         void normalizeToLocal();
@@ -129,7 +132,8 @@ namespace PROOFAgent
                      m_xpdPort == val.m_xpdPort &&
                      m_xpdPid == val.m_xpdPid &&
                      m_agentPort == val.m_agentPort &&
-                     m_agentPid == val.m_agentPid );
+                     m_agentPid == val.m_agentPid &&
+                     m_timeStamp == val.m_timeStamp );
         }
 
         std::string m_username;
@@ -140,6 +144,7 @@ namespace PROOFAgent
         uint32_t m_xpdPid;
         uint16_t m_agentPort;
         uint32_t m_agentPid;
+        uint32_t m_timeStamp; // defines a time stamp when PoD Job was submitted  
     };
     inline std::ostream &operator<< ( std::ostream &_stream, const SHostInfoCmd &val )
     {
@@ -147,7 +152,8 @@ namespace PROOFAgent
                 << val.m_username << ":" << val.m_host
                 << ": [" << val.m_xpdPid << "] " << val.m_xpdPort
                 << ":" << val.m_version << ":" << val.m_PoDPath
-                << "; agent [" << val.m_agentPid << "] on port " << val.m_agentPort;
+                << "; agent [" << val.m_agentPid << "] on port " << val.m_agentPort
+                << "; submitted on " << val.m_timeStamp;
         return _stream;
     }
 //=============================================================================
