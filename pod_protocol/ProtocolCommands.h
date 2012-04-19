@@ -144,7 +144,7 @@ namespace PROOFAgent
         uint32_t m_xpdPid;
         uint16_t m_agentPort;
         uint32_t m_agentPid;
-        uint32_t m_timeStamp; // defines a time stamp when PoD Job was submitted  
+        uint32_t m_timeStamp; // defines a time stamp when PoD Job was submitted
     };
     inline std::ostream &operator<< ( std::ostream &_stream, const SHostInfoCmd &val )
     {

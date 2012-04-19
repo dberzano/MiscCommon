@@ -40,8 +40,8 @@ void SVersionCmd::_convertFromData( const MiscCommon::BYTEVector_t &_data )
     if( _data.size() < size() )
     {
         stringstream ss;
-        ss << "VersionCmd: Protocol message data is too short, expected " << size() 
-        << " received " << _data.size();
+        ss << "VersionCmd: Protocol message data is too short, expected " << size()
+           << " received " << _data.size();
         throw std::runtime_error( ss.str() );
     }
 
@@ -129,11 +129,11 @@ void SHostInfoCmd::_convertFromData( const MiscCommon::BYTEVector_t &_data )
     if( _data.size() < size() )
     {
         stringstream ss;
-        ss << "HostInfoCmd: Protocol message data is too short, expected " << size() 
-        << " received " << _data.size();
+        ss << "HostInfoCmd: Protocol message data is too short, expected " << size()
+           << " received " << _data.size();
         throw std::runtime_error( ss.str() );
     }
-    
+
     m_xpdPort = _data[idx++];
     m_xpdPort += ( _data[idx] << 8 );
 
@@ -152,12 +152,12 @@ void SHostInfoCmd::_convertFromData( const MiscCommon::BYTEVector_t &_data )
     m_agentPid += ( _data[idx++] << 8 );
     m_agentPid += ( _data[idx++] << 16 );
     m_agentPid += ( _data[idx] << 24 );
-    
+
     ++idx;
     m_timeStamp = _data[idx++];
     m_timeStamp += ( _data[idx++] << 8 );
     m_timeStamp += ( _data[idx++] << 16 );
-    m_timeStamp += ( _data[idx] << 24 );    
+    m_timeStamp += ( _data[idx] << 24 );
 }
 //=============================================================================
 void SHostInfoCmd::_convertToData( MiscCommon::BYTEVector_t *_data ) const
@@ -210,11 +210,11 @@ void SIdCmd::_convertFromData( const MiscCommon::BYTEVector_t &_data )
     if( _data.size() < size() )
     {
         stringstream ss;
-        ss << "IdCmd: Protocol message data is too short, expected " << size() 
-        << " received " << _data.size();
+        ss << "IdCmd: Protocol message data is too short, expected " << size()
+           << " received " << _data.size();
         throw std::runtime_error( ss.str() );
     }
-    
+
     m_id = _data[0];
     m_id += ( _data[1] << 8 );
     m_id += ( _data[2] << 16 );
@@ -262,8 +262,8 @@ void SWnListCmd::_convertFromData( const MiscCommon::BYTEVector_t &_data )
     if( _data.size() < size() )
     {
         stringstream ss;
-        ss << "WnListCmd: Protocol message data is too short, expected " << size() 
-        << " received " << _data.size();
+        ss << "WnListCmd: Protocol message data is too short, expected " << size()
+           << " received " << _data.size();
         throw std::runtime_error( ss.str() );
     }
 }
