@@ -82,8 +82,6 @@ namespace MiscCommon
 
         private:
             CFileLogPtr m_log;
-            /// 0 - all messages, 1 - Info/Warning, 2 - (1)/
-            unsigned short m_logLevel;
     };
 
     /**
