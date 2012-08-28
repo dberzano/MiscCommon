@@ -20,10 +20,11 @@
 #include <netdb.h>
 #include <sys/syscall.h>
 #include <sys/stat.h>
+#include <sys/types.h>
 #include <fcntl.h>
 #include <limits.h>
+#include <unistd.h>
 #ifdef __APPLE__
-#include <sys/types.h>
 #include <sys/sysctl.h>
 #endif
 
