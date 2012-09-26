@@ -58,9 +58,14 @@ CProofStatusFile::~CProofStatusFile()
 bool CProofStatusFile::readAdminPath( const string &_xpdCFGFileName,
                                       EAdminPathType _type )
 {
+#if BOOST_FILESYSTEM_VERSION == 2 
     //TODO: keeping fs::native is important for boost version earlier 1.34
     if( !fs::exists( fs::path( _xpdCFGFileName, fs::native ) ) )
         return false;
+#else
+    if( !fs::exists( fs::path( _xpdCFGFileName ) ) )
+        return false;
+#endif
 
     // Read the content of the xpd.cf
     ifstream f( _xpdCFGFileName.c_str() );
@@ -90,7 +95,11 @@ bool CProofStatusFile::readAdminPath( const string &_xpdCFGFileName,
         p += "/PoDServer";
 
     //TODO: keeping fs::native is important for boost version earlier 1.34
+#if BOOST_FILESYSTEM_VERSION == 2 
     fs::path admin_path( p, fs::native );
+#else
+    fs::path admin_path( p );
+#endif
 
     if( fs::exists( admin_path ) )
         swap( m_adminPath, admin_path );
@@ -147,7 +156,11 @@ void CProofStatusFile::enumStatusFiles()
     stringstream ss;
     ss << m_adminPath.string() << "/" << ".xproofd." << m_xpdPort << "/activesessions";
     //TODO: keeping fs::native is important for boost version earlier 1.34
+#if BOOST_FILESYSTEM_VERSION == 2 
     fs::path fullpath( ss.str(), fs::native );
+#else
+    fs::path fullpath( ss.str() );
+#endif
 
     if( !fs::exists( fullpath ) )
     {
@@ -165,18 +178,28 @@ void CProofStatusFile::enumStatusFiles()
         {
             continue;
         }
+#if BOOST_FILESYSTEM_VERSION == 2
         else if( fs::extension( itr->leaf() ) == ".status" )
+#else
+        else if( fs::extension( itr->path().filename() ) == ".status" )
+#endif
         {
             m_files.push_back( *itr );
 
             // read a proof status from the file
-            ifstream f( itr->string().c_str() );
+#if BOOST_FILESYSTEM_VERSION == 2
+	    string fProofStatus(itr->string());
+#else
+            string fProofStatus(itr->path().string());
+#endif
+            ifstream f( fProofStatus.c_str() );
+
             if( !f.is_open() )
             {
                 // TODO: Think, whether we need to throw here
                 stringstream ss;
                 ss << "Can't open proof status file ["
-                   << itr->string().c_str()
+                   << fProofStatus
                    << "].";
                 throw runtime_error( ss.str() );
             }

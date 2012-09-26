@@ -36,6 +36,8 @@ include_directories(
     ${Boost_INCLUDE_DIRS}
 )
 
+set(Boost_libs_for_pipe_log ${Boost_SYSTEM_LIBRARY} ${Boost_THREAD_LIBRARY})
+
 #
 # lib
 #
@@ -47,7 +49,7 @@ endif (CMAKE_GENERATOR STREQUAL "Xcode")
 
 target_link_libraries (
     pipe_log_engine
-    ${Boost_THREAD_LIBRARY} 
+    ${Boost_libs_for_pipe_log} 
 )
 
 install(TARGETS pipe_log_engine DESTINATION lib)
