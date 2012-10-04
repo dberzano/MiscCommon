@@ -36,7 +36,7 @@ include_directories(
     ${Boost_INCLUDE_DIRS}
 )
 
-set(Boost_libs_for_pipe_log ${Boost_SYSTEM_LIBRARY} ${Boost_THREAD_LIBRARY})
+set(Boost_libs_for_pipe_log ${Boost_THREAD_LIBRARY} ${Boost_SYSTEM_LIBRARY})
 
 #
 # lib
