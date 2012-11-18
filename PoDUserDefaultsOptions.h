@@ -102,6 +102,7 @@ namespace PoD
         // ---= PBS =---
         //
         bool m_uploadJobLog;        //!< specifies whether to upload jobs log files from workers when PoD jobs are completed.
+        std::string m_optionsFile;  //!< a ful path to the file, which contains additional PBS options
     } SPBSOptions_t;
 
     typedef struct SOGEOptions
@@ -204,6 +205,7 @@ namespace PoD
                 ;
                 config_file_options.add_options()
                 ( "pbs_plugin.upload_job_log", boost::program_options::value<bool>( &m_options.m_pbs.m_uploadJobLog )->default_value( false, "no" ), "" )
+                ( "pbs_plugin.options_file", boost::program_options::value<std::string>( &m_options.m_pbs.m_optionsFile )->default_value( "$POD_LOCATION/etc/Job.pbs.option" ), "" )
                 ;
                 config_file_options.add_options()
                 ( "ge_plugin.upload_job_log", boost::program_options::value<bool>( &m_options.m_oge.m_uploadJobLog )->default_value( false, "no" ), "" )
@@ -304,7 +306,8 @@ namespace PoD
                         << "upload_job_log=" << ud.getUnifiedBoolValueForBoolKey( "lsf_plugin.upload_job_log" ) << "\n";
                 _stream
                         << "[pbs_plugin]\n"
-                        << "upload_job_log=" << ud.getUnifiedBoolValueForBoolKey( "pbs_plugin.upload_job_log" ) << "\n";
+                        << "upload_job_log=" << ud.getUnifiedBoolValueForBoolKey( "pbs_plugin.upload_job_log" ) << "\n"
+                        << "options_file=" << ud.getValueForKey( "pbs_plugin.options_file" ) << "\n";
                 _stream
                         << "[ge_plugin]\n"
                         << "upload_job_log=" << ud.getUnifiedBoolValueForBoolKey( "ge_plugin.upload_job_log" ) << "\n"
