@@ -58,7 +58,7 @@ CProofStatusFile::~CProofStatusFile()
 bool CProofStatusFile::readAdminPath( const string &_xpdCFGFileName,
                                       EAdminPathType _type )
 {
-#if BOOST_FILESYSTEM_VERSION == 2 
+#if BOOST_FILESYSTEM_VERSION == 2
     //TODO: keeping fs::native is important for boost version earlier 1.34
     if( !fs::exists( fs::path( _xpdCFGFileName, fs::native ) ) )
         return false;
@@ -95,7 +95,7 @@ bool CProofStatusFile::readAdminPath( const string &_xpdCFGFileName,
         p += "/PoDServer";
 
     //TODO: keeping fs::native is important for boost version earlier 1.34
-#if BOOST_FILESYSTEM_VERSION == 2 
+#if BOOST_FILESYSTEM_VERSION == 2
     fs::path admin_path( p, fs::native );
 #else
     fs::path admin_path( p );
@@ -156,7 +156,7 @@ void CProofStatusFile::enumStatusFiles()
     stringstream ss;
     ss << m_adminPath.string() << "/" << ".xproofd." << m_xpdPort << "/activesessions";
     //TODO: keeping fs::native is important for boost version earlier 1.34
-#if BOOST_FILESYSTEM_VERSION == 2 
+#if BOOST_FILESYSTEM_VERSION == 2
     fs::path fullpath( ss.str(), fs::native );
 #else
     fs::path fullpath( ss.str() );
@@ -188,9 +188,9 @@ void CProofStatusFile::enumStatusFiles()
 
             // read a proof status from the file
 #if BOOST_FILESYSTEM_VERSION == 2
-	    string fProofStatus(itr->string());
+            string fProofStatus( itr->string() );
 #else
-            string fProofStatus(itr->path().string());
+            string fProofStatus( itr->path().string() );
 #endif
             ifstream f( fProofStatus.c_str() );
 

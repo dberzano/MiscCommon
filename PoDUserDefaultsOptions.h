@@ -123,6 +123,13 @@ namespace PoD
         std::string m_optionsFile;  //!< a ful path to the file, which contains additional job desciption options (Condor's jdl)
     } SCondorOptions_t;
 
+    typedef struct SSlurmOptions
+    {
+        //
+        // ---= SLURM =---
+        //
+        bool m_uploadJobLog;        //!< specifies whether to upload jobs log files from workers when PoD jobs are completed.
+    } SSlurmOptions_t;
 
     typedef struct SPoDUserDefaultOptions
     {
@@ -132,6 +139,7 @@ namespace PoD
         SPBSOptions_t m_pbs;
         SOGEOptions_t m_oge;
         SCondorOptions_t m_condor;
+        SSlurmOptions_t m_slurm;
     } SPoDUserDefaultsOptions_t;
 
 // TODO: we use boost 1.32. This is the only method I found to convert boost::any to string.
@@ -216,6 +224,9 @@ namespace PoD
                 ( "condor_plugin.options_file", boost::program_options::value<std::string>( &m_options.m_condor.m_optionsFile )->default_value( "$POD_LOCATION/etc/Job.condor.option" ), "" )
                 ;
 
+                config_file_options.add_options()
+                ( "slurm_plugin.upload_job_log", boost::program_options::value<bool>( &m_options.m_slurm.m_uploadJobLog )->default_value( false, "no" ), "" )
+                ;
 
                 if( !_get_default )
                 {
@@ -316,6 +327,9 @@ namespace PoD
                         << "[condor_plugin]\n"
                         << "upload_job_log=" << ud.getUnifiedBoolValueForBoolKey( "condor_plugin.upload_job_log" ) << "\n"
                         << "options_file=" << ud.getValueForKey( "condor_plugin.options_file" ) << "\n";
+                _stream
+                        << "[slurm_plugin]\n"
+                        << "upload_job_log=" << ud.getUnifiedBoolValueForBoolKey( "slurm_plugin.slurm_job_log" ) << "\n";
             }
 
         private:
