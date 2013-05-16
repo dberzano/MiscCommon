@@ -329,7 +329,7 @@ namespace PoD
                         << "options_file=" << ud.getValueForKey( "condor_plugin.options_file" ) << "\n";
                 _stream
                         << "[slurm_plugin]\n"
-                        << "upload_job_log=" << ud.getUnifiedBoolValueForBoolKey( "slurm_plugin.slurm_job_log" ) << "\n";
+                        << "upload_job_log=" << ud.getUnifiedBoolValueForBoolKey( "slurm_plugin.upload_job_log" ) << "\n";
             }
 
         private:
