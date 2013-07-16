@@ -301,7 +301,7 @@ namespace PoD
                         << "agent_node_readbuffer=" << ud.getValueForKey( "server.agent_node_readbuffer" ) << "\n"
                         << "packet_forwarding=" << ud.getValueForKey( "server.packet_forwarding" ) << "\n"
                         << "proof_cfg_entry_pattern=" << ud.getValueForKey( "server.proof_cfg_entry_pattern" ) << "\n"
-                        << "server.gen_temp_ssh_keys=" << ud.getUnifiedBoolValueForBoolKey( "server.gen_temp_ssh_keys" ) << "\n";
+                        << "gen_temp_ssh_keys=" << ud.getUnifiedBoolValueForBoolKey( "server.gen_temp_ssh_keys" ) << "\n";
                 _stream
                         << "[worker]\n"
                         << "work_dir=" << ud.getValueForKey( "worker.work_dir" ) << "\n"

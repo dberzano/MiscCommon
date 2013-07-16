@@ -68,7 +68,7 @@ void CSSHTunnel::killTunnel()
 //=============================================================================
 void CSSHTunnel::create( const string &_connectionStr,
                          size_t _localPort, size_t _remotePort,
-                         const string &_openDomain = "" )
+                         const string &_openDomain )
 {
     // delete tunnel's file
     killTunnel();

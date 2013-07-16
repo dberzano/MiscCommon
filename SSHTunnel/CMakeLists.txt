@@ -48,6 +48,7 @@ target_link_libraries (
     SSHTunnel
 )
 
+
 install(TARGETS SSHTunnel DESTINATION lib)
 install(PROGRAMS ssh-tunnel DESTINATION bin/private)
 

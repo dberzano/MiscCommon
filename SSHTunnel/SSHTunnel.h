@@ -24,7 +24,7 @@ class CSSHTunnel
         void setPidFile( const std::string &_filename );
         void create( const std::string &_connectionStr,
                      size_t _localPort, size_t _remotePort,
-                     const std::string &_openDomain );
+                     const std::string &_openDomain = "" );
         pid_t pid();
         // the tunnel will be not closed when object is deleted
         void deattach()
