@@ -100,6 +100,17 @@ void CSSHTunnel::create( const string &_connectionStr,
 
                 string o_arg( "-o" );
                 o_arg += _openDomain;
+                
+                string i_arg( "-i" );
+                if (m_IdentityFile.empty())
+                {
+                    i_arg.clear();
+                }
+                else
+                {
+                    smart_path(&m_IdentityFile);
+                    i_arg += m_IdentityFile;
+                }
 
                 string sBatch;
 //                if( _opt.m_batchMode )
@@ -109,7 +120,7 @@ void CSSHTunnel::create( const string &_connectionStr,
                        pid_arg.c_str(),
                        l_arg.c_str(), p_arg.str().c_str(),
                        r_arg.str().c_str(),
-                       o_arg.c_str(), sBatch.c_str(), NULL );
+                       o_arg.c_str(), i_arg.c_str(), sBatch.c_str(), NULL );
                 // we shoud never come to this point of execution
                 exit( 1 );
             }

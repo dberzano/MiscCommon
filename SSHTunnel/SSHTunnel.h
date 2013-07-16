@@ -16,7 +16,9 @@
 class CSSHTunnel
 {
     public:
-        CSSHTunnel(): m_pid( 0 ), m_needToKill( true )
+        CSSHTunnel():
+            m_pid( 0 ),
+            m_needToKill( true )
         {
         }
         ~CSSHTunnel();
@@ -35,6 +37,11 @@ class CSSHTunnel
         {
             m_needToKill = true;
         }
+    void useIdentityFile(const std::string &_filename)
+    {
+        m_IdentityFile = _filename;
+    }
+    
 
     private:
         void killTunnel();
@@ -43,6 +50,7 @@ class CSSHTunnel
         std::string m_pidFile;
         pid_t m_pid;
         bool m_needToKill;
+    std::string m_IdentityFile;
 };
 //=============================================================================
 #endif
