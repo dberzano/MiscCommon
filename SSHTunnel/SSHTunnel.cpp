@@ -100,17 +100,15 @@ void CSSHTunnel::create( const string &_connectionStr,
 
                 string o_arg( "-o" );
                 o_arg += _openDomain;
-                
+
                 string i_arg( "-i" );
-                if (m_IdentityFile.empty())
+                if( !m_IdentityFile.empty() )
                 {
-                    i_arg.clear();
-                }
-                else
-                {
-                    smart_path(&m_IdentityFile);
+                    smart_path( &m_IdentityFile );
                     i_arg += m_IdentityFile;
                 }
+                else
+                    i_arg.clear();
 
                 string sBatch;
 //                if( _opt.m_batchMode )
@@ -135,7 +133,7 @@ void CSSHTunnel::create( const string &_connectionStr,
         ++count;
         pid();
         if( count >= max_try )
-            throw runtime_error( "Can't setup an SSH tunnel." );
+            throw runtime_error( "Can't setup SSH tunnel." );
         usleep( 50000 ); // delays for 0.05 seconds
     }
 }
