@@ -99,8 +99,11 @@ void CSSHTunnel::create( const string &_connectionStr,
                 r_arg << "-r" << _remotePort;
 
                 string o_arg( "-o" );
-                o_arg += _openDomain;
-
+                if(!_openDomain.empty())
+                    o_arg += _openDomain;
+                else
+                    o_arg.clear();
+                
                 string i_arg( "-i" );
                 if( !m_IdentityFile.empty() )
                 {

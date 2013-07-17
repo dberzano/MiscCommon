@@ -44,7 +44,8 @@ OPEN_DOMAIN=""
 DEBUG=""
 BATCH_MODE=""
 PID_FILE=""
-while getopts ":l:o:p:r:f:dbh" opt; do
+IDENTITY_FILE=""
+while getopts ":l:o:p:r:f:i:dbh" opt; do
   case $opt in
   f)
     PID_FILE="$OPTARG"
@@ -60,6 +61,9 @@ while getopts ":l:o:p:r:f:dbh" opt; do
     ;;
   o)
     OPEN_DOMAIN="$OPTARG"
+    ;;
+  i)
+    IDENTITY_FILE="$OPTARG"
     ;;
   d)
     DEBUG="YES"
@@ -108,6 +112,7 @@ if [ -z "$OPEN_DOMAIN" ]; then
    # The PoD server I'm trying to reach is not bound to that adapter!
    # We need to use localhost on the public domain to connect to the server
    $SSH_CMD -N -L $LOCAL_PORT:localhost:$REMOTE_PORT $SSH_CON_STR &
+   echo "DBG SSH Tunnel (w/t open domain): $SSH_CMD $IDENTITY_FILE -N -L $LOCAL_PORT:localhost:$REMOTE_PORT $SSH_CON_STR"
    PID=$!
 else
    # we must use connection string without a user name
@@ -116,7 +121,7 @@ else
       SSH_REMOTE_HOST=$SSH_CON_STR
    fi
    $SSH_CMD -N -L $LOCAL_PORT:$SSH_REMOTE_HOST:$REMOTE_PORT $OPEN_DOMAIN &
-   echo "DBG: $SSH_CMD -N -L $LOCAL_PORT:$SSH_REMOTE_HOST:$REMOTE_PORT $OPEN_DOMAIN"
+   echo "DBG SSH Tunnel (w. open domain): $SSH_CMD $IDENTITY_FILE -N -L $LOCAL_PORT:$SSH_REMOTE_HOST:$REMOTE_PORT $OPEN_DOMAIN"
    PID=$!
 fi
 
