@@ -110,6 +110,7 @@ namespace PROOFAgent
         {
             size_t size( m_username.size() + 1 );
             size += m_host.size() + 1;
+            size += m_ipv4.size() + 1;
             size += sizeof( m_xpdPort );
             size += sizeof( m_xpdPid );
             size += sizeof( m_agentPort );
@@ -127,6 +128,7 @@ namespace PROOFAgent
         {
             return ( m_username == val.m_username &&
                      m_host == val.m_host &&
+                     m_ipv4 == val.m_ipv4 &&
                      m_version == val.m_version &&
                      m_PoDPath == val.m_PoDPath &&
                      m_xpdPort == val.m_xpdPort &&
@@ -138,6 +140,7 @@ namespace PROOFAgent
 
         std::string m_username;
         std::string m_host;
+        std::string m_ipv4;
         std::string m_version;
         std::string m_PoDPath;
         uint16_t m_xpdPort;

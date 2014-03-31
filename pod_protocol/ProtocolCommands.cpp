@@ -111,6 +111,18 @@ void SHostInfoCmd::_convertFromData( const MiscCommon::BYTEVector_t &_data )
             ++idx;
             break;
         }
+        m_ipv4.push_back( c );
+    }
+
+    for( ; iter != iter_end; ++iter, ++idx )
+    {
+        char c( *iter );
+        if( '\0' == c )
+        {
+            ++iter;
+            ++idx;
+            break;
+        }
         m_version.push_back( c );
     }
 
@@ -165,6 +177,8 @@ void SHostInfoCmd::_convertToData( MiscCommon::BYTEVector_t *_data ) const
     std::copy( m_username.begin(), m_username.end(), std::back_inserter( *_data ) );
     _data->push_back( '\0' );
     std::copy( m_host.begin(), m_host.end(), std::back_inserter( *_data ) );
+    _data->push_back( '\0' );
+    std::copy( m_ipv4.begin(), m_ipv4.end(), std::back_inserter( *_data ) );
     _data->push_back( '\0' );
     std::copy( m_version.begin(), m_version.end(), std::back_inserter( *_data ) );
     _data->push_back( '\0' );
