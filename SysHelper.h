@@ -30,6 +30,11 @@
 
 // STD
 #include <typeinfo>
+#include <iostream>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <cstring>
 
 // HACK: On the SLC3 HOST_NAME_MAX is undefined
 #ifndef HOST_NAME_MAX
@@ -192,6 +197,47 @@ namespace MiscCommon
             return ;
 
         *_RetVal = h->h_name;
+    }
+
+    /**
+     * @brief Gets the IP address used for outbound connections.
+     * @param[out] _RetVal - The returned buffer string. Must not be NULL.
+     **/
+    inline int get_outipv4( std::string *_RetVal )
+    {
+        if (!_RetVal)
+            return -1;
+
+        int fd;
+        struct sockaddr_in bind_addr, out_addr, det_addr;
+        socklen_t det_addr_len;
+
+        memset( &bind_addr, 0, sizeof(bind_addr) );
+        memset( &out_addr,  0, sizeof(out_addr)  );
+        memset( &det_addr,  0, sizeof(det_addr)  );
+
+        if ( (fd = socket(AF_INET, SOCK_DGRAM, 0)) < 0 )
+            return -1;
+
+        bind_addr.sin_family = AF_INET;
+        bind_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+        bind_addr.sin_port = htons(0);
+        if ( bind(fd, (struct sockaddr *)&bind_addr, sizeof(bind_addr)) < 0 )
+            return -1;
+
+        out_addr.sin_family = AF_INET;
+        out_addr.sin_addr.s_addr = inet_addr("1.2.3.4");
+        out_addr.sin_port = htons(1);
+        if ( connect(fd, (struct sockaddr *)&out_addr, sizeof(out_addr) ) < 0)
+            return -1;
+
+        det_addr_len = sizeof(det_addr);
+        if ( getsockname(fd, (struct sockaddr *)&det_addr, &det_addr_len) < 0 )
+            return -1;
+
+        *_RetVal = inet_ntoa(det_addr.sin_addr);
+
+        return 0;
     }
 
     /**
