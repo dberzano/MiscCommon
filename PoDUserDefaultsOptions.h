@@ -75,6 +75,7 @@ namespace PoD
         std::string m_packetForwarding;
         unsigned int m_agentThreads;    //!< A number of threads in thread pool.
         std::string m_proofCfgEntryPattern;
+        std::string m_proofCfgMasterPattern;
         bool m_genTempSSHKeys; //!< Indicates, whether PoD need to generate temporary SSH keys for WNs. Useful in case PoD server has only ssh port open for incoming connection.
     } SServerOptions_t;
 
@@ -195,6 +196,8 @@ namespace PoD
                 ( "server.packet_forwarding", boost::program_options::value<std::string>( &m_options.m_server.m_packetForwarding )->default_value( "auto" ), "" )
                 ( "server.proof_cfg_entry_pattern",
                   boost::program_options::value<std::string>( &m_options.m_server.m_proofCfgEntryPattern )->default_value( "worker %user%@%host% port=%port% pref=100" ), "" )
+                ( "server.proof_cfg_master_pattern",
+                  boost::program_options::value<std::string>( &m_options.m_server.m_proofCfgMasterPattern )->default_value( "master %host%" ), "" )
                 ( "server.gen_temp_ssh_keys", boost::program_options::value<bool>( &m_options.m_server.m_genTempSSHKeys )->default_value( false ), "" )
                 ;
                 config_file_options.add_options()
@@ -301,6 +304,7 @@ namespace PoD
                         << "agent_node_readbuffer=" << ud.getValueForKey( "server.agent_node_readbuffer" ) << "\n"
                         << "packet_forwarding=" << ud.getValueForKey( "server.packet_forwarding" ) << "\n"
                         << "proof_cfg_entry_pattern=" << ud.getValueForKey( "server.proof_cfg_entry_pattern" ) << "\n"
+                        << "proof_cfg_master_pattern=" << ud.getValueForKey( "server.proof_cfg_master_pattern" ) << "\n"
                         << "gen_temp_ssh_keys=" << ud.getUnifiedBoolValueForBoolKey( "server.gen_temp_ssh_keys" ) << "\n";
                 _stream
                         << "[worker]\n"
