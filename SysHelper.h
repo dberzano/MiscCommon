@@ -222,20 +222,27 @@ namespace MiscCommon
         bind_addr.sin_family = AF_INET;
         bind_addr.sin_addr.s_addr = htonl(INADDR_ANY);
         bind_addr.sin_port = htons(0);
-        if ( bind(fd, (struct sockaddr *)&bind_addr, sizeof(bind_addr)) < 0 )
+        if ( bind(fd, (struct sockaddr *)&bind_addr, sizeof(bind_addr)) < 0 ) {
+            close(fd);
             return -1;
+        }
 
         out_addr.sin_family = AF_INET;
         out_addr.sin_addr.s_addr = inet_addr("1.2.3.4");
         out_addr.sin_port = htons(1);
-        if ( connect(fd, (struct sockaddr *)&out_addr, sizeof(out_addr) ) < 0)
+        if ( connect(fd, (struct sockaddr *)&out_addr, sizeof(out_addr) ) < 0) {
+            close(fd);
             return -1;
+        }
 
         det_addr_len = sizeof(det_addr);
-        if ( getsockname(fd, (struct sockaddr *)&det_addr, &det_addr_len) < 0 )
+        if ( getsockname(fd, (struct sockaddr *)&det_addr, &det_addr_len) < 0 ) {
+            close(fd);
             return -1;
+        }
 
         *_RetVal = inet_ntoa(det_addr.sin_addr);
+        close(fd);
 
         return 0;
     }
