@@ -155,6 +155,7 @@ namespace PROOFAgent
                 << val.m_username << ":" << val.m_host
                 << ": [" << val.m_xpdPid << "] " << val.m_xpdPort
                 << ":" << val.m_version << ":" << val.m_PoDPath
+                << "; IPv4: " << val.m_ipv4
                 << "; agent [" << val.m_agentPid << "] on port " << val.m_agentPort
                 << "; submitted on " << val.m_timeStamp;
         return _stream;

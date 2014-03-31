@@ -76,6 +76,7 @@ namespace PoD
         unsigned int m_agentThreads;    //!< A number of threads in thread pool.
         std::string m_proofCfgEntryPattern;
         std::string m_proofCfgMasterPattern;
+        bool m_useIpInsteadOfHost; //!< Tells agent clients the server's IPv4 instead of hostname, and tests xproofd from the server using remote IPv4 instead of hostname.
         bool m_genTempSSHKeys; //!< Indicates, whether PoD need to generate temporary SSH keys for WNs. Useful in case PoD server has only ssh port open for incoming connection.
     } SServerOptions_t;
 
@@ -198,6 +199,7 @@ namespace PoD
                   boost::program_options::value<std::string>( &m_options.m_server.m_proofCfgEntryPattern )->default_value( "worker %user%@%host% port=%port% pref=100" ), "" )
                 ( "server.proof_cfg_master_pattern",
                   boost::program_options::value<std::string>( &m_options.m_server.m_proofCfgMasterPattern )->default_value( "master %host%" ), "" )
+                ( "server.use_ip_instead_of_host", boost::program_options::value<bool>( &m_options.m_server.m_useIpInsteadOfHost )->default_value( false ), "" )
                 ( "server.gen_temp_ssh_keys", boost::program_options::value<bool>( &m_options.m_server.m_genTempSSHKeys )->default_value( false ), "" )
                 ;
                 config_file_options.add_options()
@@ -305,6 +307,7 @@ namespace PoD
                         << "packet_forwarding=" << ud.getValueForKey( "server.packet_forwarding" ) << "\n"
                         << "proof_cfg_entry_pattern=" << ud.getValueForKey( "server.proof_cfg_entry_pattern" ) << "\n"
                         << "proof_cfg_master_pattern=" << ud.getValueForKey( "server.proof_cfg_master_pattern" ) << "\n"
+                        << "use_ip_instead_of_host=" << ud.getUnifiedBoolValueForBoolKey( "server.use_ip_instead_of_host" ) << "\n"
                         << "gen_temp_ssh_keys=" << ud.getUnifiedBoolValueForBoolKey( "server.gen_temp_ssh_keys" ) << "\n";
                 _stream
                         << "[worker]\n"
